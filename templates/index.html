@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Linescope_Server · 首页</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <style>
+    :root{
+      --bg:#0b1020;--panel:#121a2a;--text:#e8eefc;--muted:#a9b4ce;--accent:#5aa9ff;--ok:#28c76f;--warn:#ff9f43;--err:#ea5455;--shadow:0 10px 30px rgba(0,0,0,.35)
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:radial-gradient(1200px 800px at 20% -10%, #1c2b4d 0%, var(--bg) 55%);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"PingFang SC","Helvetica Neue",Arial,"Noto Sans","Microsoft Yahei",sans-serif}
+    a{color:var(--accent);text-decoration:none}
+    header{position:sticky;top:0;z-index:10;backdrop-filter:blur(6px);background:linear-gradient(180deg, rgba(18,26,42,.9), rgba(18,26,42,.6));border-bottom:1px solid rgba(255,255,255,.08)}
+    .container{max-width:1200px;margin:0 auto;padding:18px 16px}
+    .row{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+    .brand{grid-column:span 12;display:flex;justify-content:space-between;align-items:center}
+    .brand h1{font-size:18px;margin:0;letter-spacing:.5px;font-weight:700}
+    .brand .sub{font-size:12px;color:var(--muted)}
+    .btn{height:36px;padding:0 14px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:var(--text);cursor:pointer}
+    .btn.primary{background:linear-gradient(135deg,#4ea1ff,#5a8bff);border:none;color:#fff}
+    .grid{padding:16px}
+    .panel{grid-column:span 12;background:var(--panel);border-radius:16px;box-shadow:var(--shadow);padding:16px}
+    .panel h2{font-size:14px;color:var(--muted);margin:0 0 8px}
+    .kpis{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+    .kpi{grid-column:span 12;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px}
+    .kpi .title{font-size:12px;color:var(--muted)}
+    .kpi .value{font-size:22px;font-weight:800;letter-spacing:.3px}
+    .kpi .desc{font-size:12px;color:var(--muted)}
+    @media(min-width:768px){.kpi{grid-column:span 6}}
+    @media(min-width:1024px){.kpi{grid-column:span 4}}
+    .status{color:var(--muted);font-size:12px}
+    .cta{display:flex;gap:10px}
+    .chart{width:100%;height:260px}
+    footer{color:var(--muted);font-size:12px;padding:24px;text-align:center;opacity:.9}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container row">
+      <div class="brand">
+        <div>
+          <h1>Linescope_Server · 首页</h1>
+          <div class="sub">MPU9250 / BME280 / TSL2561 · Flask 服务</div>
+        </div>
+        <div class="cta">
+          <a class="btn" href="/result">识别结果</a>
+          <a class="btn primary" href="/dashboard">进入仪表盘</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container grid">
+    <section class="panel">
+      <h2>最新数据</h2>
+      <div class="kpis">
+        <div class="kpi"><div class="title">时间戳（北京）</div><div id="ts" class="value">—</div><div class="desc">最后一次上报时间</div></div>
+        <div class="kpi"><div class="title">晃动速度 (°/s)</div><div id="sway" class="value">—</div><div class="desc">MPU9250 陀螺仪</div></div>
+        <div class="kpi"><div class="title">温度 (°C)</div><div id="temp" class="value">—</div><div class="desc">BME280</div></div>
+        <div class="kpi"><div class="title">湿度 (%RH)</div><div id="hum" class="value">—</div><div class="desc">BME280</div></div>
+        <div class="kpi"><div class="title">气压 (hPa)</div><div id="press" class="value">—</div><div class="desc">BME280</div></div>
+        <div class="kpi"><div class="title">光照 (Lux)</div><div id="lux" class="value">—</div><div class="desc">TSL2561</div></div>
+      </div>
+      <div style="margin-top:12px" class="status" id="status">正在加载最新数据…</div>
+    </section>
+
+    <section class="panel">
+      <h2>近 24 小时 · 快速预览</h2>
+      <div id="miniChart" class="chart"></div>
+    </section>
+  </main>
+
+  <footer>
+    数据来源：/api/sensors & /api/sensors/latest · 由 utils/data/data.txt 间接提供
+  </footer>
+
+  <script>
+    const $ = (s)=>document.querySelector(s);
+    const fmt = (n, d=2)=> (n==null||isNaN(n))?"—":Number(n).toFixed(d);
+
+    async function fetchLatest(){
+      const r = await fetch('/api/sensors/latest');
+      if(!r.ok) throw new Error('latest fetch failed');
+      return await r.json();
+    }
+
+    async function fetchRecent24h(){
+      // 先取全部，再在前端截 24h；或直接调用 /api/sensors?limit=96
+      const r = await fetch('/api/sensors?limit=96'); // 30 分钟一次，24h = 48；保守取 96
+      if(!r.ok) throw new Error('series fetch failed');
+      const j = await r.json();
+      return j.rows || [];
+    }
+
+    function renderLatest(x){
+      $('#ts').textContent = x.timestamp_Beijing || '—';
+      $('#sway').textContent = fmt(x.sway_speed_dps);
+      $('#temp').textContent = fmt(x.temperature_C);
+      $('#hum').textContent  = fmt(x.humidity_RH);
+      $('#press').textContent= fmt(x.pressure_hPa);
+      $('#lux').textContent  = fmt(x.lux, 0);
+      $('#status').innerHTML = '最新数据时间：<strong>'+(x.timestamp_Beijing||'—')+'</strong>';
+    }
+
+    function renderMini(rows){
+      const ec = echarts.init(document.getElementById('miniChart'));
+      const parse = (s)=> s.replace(' ', 'T');
+      const last = rows.length? new Date(rows[rows.length-1].dt.replace(' ','T')).getTime(): Date.now();
+      const start = last - 24*3600*1000;
+      const list = rows.filter(r=>{
+        const t = new Date(parse(r.dt)).getTime();
+        return t>=start && t<=last;
+      });
+      const x = list.map(r=>parse(r.dt));
+      const sway = list.map(r=>r.sway_speed_dps);
+      const temp = list.map(r=>r.temperature_C);
+
+      ec.setOption({
+        backgroundColor:'transparent',
+        tooltip:{trigger:'axis'},
+        grid:{left:45,right:20,top:20,bottom:40},
+        dataZoom:[{type:'inside'},{type:'slider',bottom:10}],
+        xAxis:{type:'time',axisLabel:{color:'#c9d4ef'},splitLine:{lineStyle:{color:'rgba(255,255,255,.08)'}}},
+        yAxis:[
+          {type:'value',name:'°/s',axisLabel:{color:'#c9d4ef'},splitLine:{lineStyle:{color:'rgba(255,255,255,.08)'}}},
+          {type:'value',name:'°C',axisLabel:{color:'#c9d4ef'}}
+        ],
+        series:[
+          {name:'晃动速度',type:'line',showSymbol:false,areaStyle:{opacity:.05},data:x.map((t,i)=>[t,sway[i]])},
+          {name:'温度',type:'line',yAxisIndex:1,showSymbol:false,data:x.map((t,i)=>[t,temp[i]])}
+        ]
+      });
+      window.addEventListener('resize',()=>ec.resize());
+    }
+
+    async function boot(){
+      try{
+        const [latest, series] = await Promise.all([fetchLatest(), fetchRecent24h()]);
+        renderLatest(latest);
+        renderMini(series);
+      }catch(err){
+        document.getElementById('status').innerHTML = '<span style="color:var(--err)">加载失败</span>';
+        console.error(err);
+      }
+      // 每 60 秒刷新最新
+      setInterval(async ()=>{
+        try{ const latest = await fetchLatest(); renderLatest(latest);}catch(e){}
+      }, 60*1000);
+    }
+
+    boot();
+  </script>
+</body>
+</html>

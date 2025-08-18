@@ -1,0 +1,10 @@
+opencv-python
+tzdata>=2024.1
+Flask
+# 数值与图像数组
+numpy
+# Linux 生产部署常用的 WSGI 服务器
+# gunicorn
+
+# Windows 上更省事的 WSGI 服务器
+# waitress

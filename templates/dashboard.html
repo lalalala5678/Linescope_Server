@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Linescope · 传感器数据仪表盘</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <!-- 可选：若你希望使用更丰富的图表，请启用 Chart.js（没有也会自动降级为 Canvas 绘制） -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+</head>
+<body>
+  <header class="header">
+    <nav class="nav container">
+      <div class="brand">
+        <span class="brand-badge"></span>
+        <span>Linescope Server</span>
+      </div>
+      <div class="nav-links">
+        <a href="/">首页</a>
+        <a href="/dashboard" class="active">仪表盘</a>
+        <a href="/result">图像流</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container" id="dashboard-root">
+    <section class="hero">
+      <h1 class="m-0">传感器数据仪表盘</h1>
+      <p class="text-muted mt-1">展示来自 STM32 集群的历史数据与统计。</p>
+    </section>
+
+    <!-- 图表卡片 -->
+    <section class="card chart-card">
+      <div class="card-header">
+        历史趋势
+      </div>
+      <div class="card-body">
+        <div class="chart-toolbar">
+          <div class="text-muted text-sm">
+            <span id="last-updated">Loading...</span>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn btn-outline" id="btn-reset">重置表格滚动</button>
+            <button class="btn" id="btn-refresh">刷新数据</button>
+            <button class="btn btn-primary" id="btn-download">下载 CSV</button>
+          </div>
+        </div>
+        <div class="chart-canvas">
+          <canvas id="chart1"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- 统计卡片 -->
+    <section class="grid mt-3">
+      <div class="card col-3">
+        <div class="card-header">晃动速度 (°/s)</div>
+        <div class="card-body">
+          <div>最小值：<strong id="stats-sway-min">-</strong></div>
+          <div>最大值：<strong id="stats-sway-max">-</strong></div>
+          <div>平均值：<strong id="stats-sway-avg">-</strong></div>
+          <div>最近值：<strong id="stats-sway-latest">-</strong></div>
+        </div>
+      </div>
+      <div class="card col-3">
+        <div class="card-header">温度 (°C)</div>
+        <div class="card-body">
+          <div>最小值：<strong id="stats-temp-min">-</strong></div>
+          <div>最大值：<strong id="stats-temp-max">-</strong></div>
+          <div>平均值：<strong id="stats-temp-avg">-</strong></div>
+          <div>最近值：<strong id="stats-temp-latest">-</strong></div>
+        </div>
+      </div>
+      <div class="card col-3">
+        <div class="card-header">相对湿度 (%RH)</div>
+        <div class="card-body">
+          <div>平均值：<strong id="stats-humid-avg">-</strong></div>
+        </div>
+      </div>
+      <div class="card col-3">
+        <div class="card-header">气压 / 光照</div>
+        <div class="card-body">
+          <div>气压平均 (hPa)：<strong id="stats-press-avg">-</strong></div>
+          <div>光照平均 (Lux)：<strong id="stats-lux-avg">-</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 表格卡片 -->
+    <section class="card mt-3">
+      <div class="card-header">
+        历史记录
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table class="table" id="sensor-table" aria-label="传感器历史数据">
+            <thead>
+              <tr>
+                <th>时间戳（北京）</th>
+                <th class="text-right">晃动速度 (°/s)</th>
+                <th class="text-right">温度 (°C)</th>
+                <th class="text-right">湿度 (%RH)</th>
+                <th class="text-right">气压 (hPa)</th>
+                <th class="text-right">光照 (Lux)</th>
+              </tr>
+            </thead>
+            <tbody id="sensor-tbody">
+              <!-- 由 script.js 渲染 -->
+              <tr>
+                <td colspan="6">
+                  <div class="skeleton" style="height:18px;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="6">
+                  <div class="skeleton" style="height:18px;"></div>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="6">
+                  <div class="skeleton" style="height:18px;"></div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-muted text-sm mt-2">
+          提示：当晃动速度超过阈值（示例：&gt; 60 °/s）时，表格行会以淡红色高亮。
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>© 2025 Linescope Server · 吉林电网项目</div>
+  </footer>
+
+  <!-- 不注入任何模板变量；script.js 会自动调用 /api/sensor-data 拉取数据 -->
+  <script src="/static/js/script.js"></script>
+</body>
+</html>

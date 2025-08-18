@@ -1,0 +1,36 @@
+GetImage返回值
+
+类型：numpy.ndarray
+
+形状：(H, W, 3) —— 三通道彩色图，尺寸与 utils/data/test_image.jpg 一致
+
+通道顺序：默认 BGR（OpenCV 习惯）；当 return_rgb=True 时返回 RGB
+
+数据类型：uint8
+
+数值范围：0–255
+
+色彩空间：近似 sRGB；无 alpha 通道
+
+内存布局：C-contiguous（可直接 cv2.imencode/imshow）
+
+拷贝语义：返回的是已绘制的新数组；修改它不会回写磁盘
+
+简例：
+
+from utils.GetImage import get_processed_image
+import cv2, numpy as np
+
+img = get_processed_image()          # BGR, uint8, shape=(H,W,3)
+assert img.dtype == np.uint8
+assert img.ndim == 3 and img.shape[2] == 3
+
+# OpenCV 直接使用
+ok, buf = cv2.imencode('.jpg', img)  # -> JPEG 字节
+jpg_bytes = buf.tobytes()
+
+# 若需要 RGB / PIL
+rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+# from PIL import Image; Image.fromarray(rgb)
+
+
