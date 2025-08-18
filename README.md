@@ -31,3 +31,30 @@
 - **香橙派**：用于数据传输、图像识别。
 - **4G 监控**：用于实时监控。
 - **服务器**：用于接收、存储数据并在前端展示-使用 python flask。
+
+## 文件结构
+
+项目的文件结构如下：
+
+LINESCOPE_SERVER/
+├── .venv/ # Python 虚拟环境
+├── static/ # 静态资源（CSS, JS, 图片等）
+│ ├── css/
+│ │ └── styles.css # 项目样式文件
+│ ├── images/
+│ └── js/
+│ └── script.js # 前端脚本文件
+├── templates/ # HTML 模板文件
+│ ├── dashboard.html # 通过图表展示以往传感器数据
+│ ├── index.html # 首页
+│ └── result.html # 展示图像识别结果
+├── utils/ # 工具模块
+│ ├── data/
+│ ├── DataRead.py # 数据读取模块
+│ ├── DataStore.py # 数据存储模块
+│ ├── GetImage.py # 图像获取模块
+│ └── GetSensorData.py # 传感器数据获取模块
+├── app.py # Flask 主应用
+├── app.log # 日志文件
+├── README.md # 项目说明文档
+└── requirements.txt # 项目依赖
