@@ -1,15 +1,14 @@
 /* =========================================================
  * Linescope Server - static/js/script.js
- * 功能：
- *  - Dashboard：拉数据、表格渲染、统计、图表（Chart.js 或 Canvas 兜底）
- *  - Result：MJPEG 流状态指示（在线/离线）
- *  - 通用：下载 CSV、格式化工具等
- * 依赖：
- *  - 可选 Chart.js（如果引入则自动启用更丰富的图表；未引入则自动降级）
+ * 多图：晃动速度、温度、湿度、气压、光照各一张图
+ * Chart.js 可选；无则自动使用 Canvas 兜底
  * ========================================================= */
 
 (() => {
-  const isDashboard = !!document.querySelector('#dashboard-root') || !!document.querySelector('#chart1') || !!document.querySelector('#sensor-table');
+  const isDashboard =
+    !!document.querySelector('#dashboard-root') ||
+    !!document.querySelector('#chart-sway') ||
+    !!document.querySelector('#sensor-table');
   const isResult = !!document.querySelector('.stream-container');
 
   /* -----------------------------
@@ -55,8 +54,6 @@
     return `${head}\n${body}`;
   };
 
-  const last = (arr, n) => (n ? arr.slice(-n) : arr[arr.length - 1]);
-
   /* -----------------------------
    * Dashboard 页面逻辑
    * ----------------------------- */
@@ -64,26 +61,21 @@
     const state = {
       refreshMs: 5 * 60 * 1000, // 5分钟刷新
       rows: [],
-      chart: null,
-      fallbackCanvas: null,
-      fallbackCtx: null,
+      charts: {},          // {id: ChartInstance}
+      fallbackCtxs: {},    // {id: CanvasRenderingContext2D}
+      fallbackSized: {},   // {id: boolean}
     };
 
-    // 优先使用模板注入数据：在 dashboard.html 里可以放：
-    // <script>window.__LINESCOPE_DATA__ = {{ data_json|safe }}</script>
     const preload = window.__LINESCOPE_DATA__;
     if (Array.isArray(preload) && preload.length) {
       state.rows = preload;
       renderAll(state);
     } else {
-      // 首次拉取
       await fetchAndRender(state);
     }
 
-    // 自动刷新
     setInterval(() => fetchAndRender(state), state.refreshMs);
 
-    // 交互按钮
     const btnRefresh = $('#btn-refresh');
     const btnDownload = $('#btn-download');
     const btnReset = $('#btn-reset');
@@ -95,7 +87,6 @@
     });
     if (btnReset) btnReset.addEventListener('click', () => renderTable(state.rows, { resetScroll: true }));
 
-    // 表格内横向滚动时吸顶表头（移动端友好）
     const tblWrap = $('.table-wrap');
     if (tblWrap) {
       tblWrap.addEventListener('scroll', throttle(() => {
@@ -125,7 +116,7 @@
   function renderAll(state) {
     renderStats(state.rows);
     renderTable(state.rows);
-    renderChart(state);
+    renderCharts(state);   // ★ 改成多图渲染
   }
 
   function renderStats(rows) {
@@ -142,7 +133,6 @@
         latest: vs.length ? vs[vs.length - 1] : NaN,
       };
     });
-    // 显示到页面（可在 dashboard.html 放这些元素）
     setText('#stats-sway-min', fmtNum(stats.sway_speed_dps?.min));
     setText('#stats-sway-max', fmtNum(stats.sway_speed_dps?.max));
     setText('#stats-sway-avg', fmtNum(stats.sway_speed_dps?.avg));
@@ -168,9 +158,7 @@
     const tbody = $('#sensor-tbody');
     if (!table || !tbody) return;
 
-    // 渲染所有行（考虑到 672 行，直接一次性 innerHTML 即可）
     const html = rows.map(r => {
-      // 可在此加入异常高亮：如 sway_speed_dps > 阈值
       const alert = Number(r.sway_speed_dps) > 60 ? ' row-alert' : '';
       return `
         <tr class="${alert}">
@@ -191,124 +179,94 @@
     }
   }
 
-  function renderChart(state) {
-    const labels = state.rows.map(r => r.timestamp_Beijing);
-    const sway = state.rows.map(r => +r.sway_speed_dps);
-    const temp = state.rows.map(r => +r.temperature_C);
-    const humid = state.rows.map(r => +r.humidity_RH);
+  /* -----------------------------
+   * 多图渲染
+   * ----------------------------- */
+  function renderCharts(state) {
+    const rows = state.rows || [];
+    const labels = rows.map(r => r.timestamp_Beijing);
 
-    const canvasEl = $('#chart1');
-    if (!canvasEl) return;
+    const series = {
+      'chart-sway':  { label: 'Sway (°/s)',     data: rows.map(r => +r.sway_speed_dps), yTitle: '°/s' },
+      'chart-temp':  { label: 'Temp (°C)',      data: rows.map(r => +r.temperature_C), yTitle: '°C' },
+      'chart-humid': { label: 'Humidity (%RH)', data: rows.map(r => +r.humidity_RH),   yTitle: '%RH' },
+      'chart-press': { label: 'Pressure (hPa)', data: rows.map(r => +r.pressure_hPa),  yTitle: 'hPa' },
+      'chart-lux':   { label: 'Lux',            data: rows.map(r => +r.lux),           yTitle: 'Lux' },
+    };
 
-    // 优先使用 Chart.js
+    // 优先 Chart.js
     if (window.Chart) {
-      if (state.chart) {
-        // 更新数据
-        state.chart.data.labels = labels;
-        state.chart.data.datasets[0].data = sway;
-        state.chart.data.datasets[1].data = temp;
-        state.chart.data.datasets[2].data = humid;
-        state.chart.update('none');
-      } else {
-        const ctx = canvasEl.getContext('2d');
-        state.chart = new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels,
-            datasets: [
-              {
-                label: 'Sway (°/s)',
-                data: sway,
+      Object.entries(series).forEach(([id, conf]) => {
+        const canvas = $(`#${id}`);
+        if (!canvas) return;
+
+        if (state.charts[id]) {
+          const ch = state.charts[id];
+          ch.data.labels = labels;
+          ch.data.datasets[0].data = conf.data;
+          ch.update('none');
+        } else {
+          const ctx = canvas.getContext('2d');
+          state.charts[id] = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels,
+              datasets: [{
+                label: conf.label,
+                data: conf.data,
                 borderWidth: 2,
                 tension: 0.25,
-                pointRadius: 0,
-                yAxisID: 'y',
-              },
-              {
-                label: 'Temp (°C)',
-                data: temp,
-                borderWidth: 2,
-                tension: 0.25,
-                pointRadius: 0,
-                yAxisID: 'y1',
-              },
-              {
-                label: 'Humidity (%RH)',
-                data: humid,
-                borderWidth: 1,
-                borderDash: [4, 4],
-                tension: 0.25,
-                pointRadius: 0,
-                yAxisID: 'y2',
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: { mode: 'index', intersect: false },
-            plugins: {
-              legend: { display: true },
-              tooltip: {
-                callbacks: {
-                  title: (items) => {
-                    const i = items[0]?.dataIndex ?? 0;
-                    return labels[i] || '';
-                  },
-                },
-              },
+                pointRadius: 0
+              }]
             },
-            scales: {
-              x: {
-                ticks: { maxTicksLimit: 8 },
-                grid: { display: false },
-              },
-              y: {
-                position: 'left',
-                title: { display: true, text: '°/s' },
-                grid: { drawBorder: false },
-              },
-              y1: {
-                position: 'right',
-                title: { display: true, text: '°C' },
-                grid: { drawOnChartArea: false, drawBorder: false },
-              },
-              y2: {
-                position: 'right',
-                display: false,
-              },
-            },
-          },
-        });
-      }
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              interaction: { mode: 'index', intersect: false },
+              plugins: { legend: { display: true } },
+              scales: {
+                x: { ticks: { maxTicksLimit: 8 }, grid: { display: false } },
+                y: {
+                  position: 'left',
+                  title: { display: true, text: conf.yTitle },
+                  grid: { drawBorder: false }
+                }
+              }
+            }
+          });
+        }
+      });
       return;
     }
 
-    // 无 Chart.js 时，使用最简 Canvas 兜底折线
-    if (!state.fallbackCanvas) {
-      state.fallbackCanvas = canvasEl;
-      state.fallbackCtx = canvasEl.getContext('2d');
-      // 让 Canvas 匹配容器大小（简单处理）
-      const parent = canvasEl.parentElement;
-      const w = parent?.clientWidth || 800;
-      const h = parent?.clientHeight || 300;
-      canvasEl.width = w * devicePixelRatio;
-      canvasEl.height = h * devicePixelRatio;
-      canvasEl.style.width = w + 'px';
-      canvasEl.style.height = h + 'px';
-    }
-    drawTinyLines(state.fallbackCtx, state.fallbackCanvas, [
-      { data: sway, title: '°/s' },
-      { data: temp, title: '°C' },
-    ]);
+    // 无 Chart.js：使用 Canvas 兜底
+    Object.entries(series).forEach(([id, conf]) => {
+      const canvas = $(`#${id}`);
+      if (!canvas) return;
+
+      // 首次时设置尺寸匹配容器
+      if (!state.fallbackSized[id]) {
+        const parent = canvas.parentElement;
+        const w = parent?.clientWidth || 800;
+        const h = parent?.clientHeight || 300;
+        canvas.width = w * devicePixelRatio;
+        canvas.height = h * devicePixelRatio;
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        state.fallbackSized[id] = true;
+      }
+      const ctx = state.fallbackCtxs[id] || canvas.getContext('2d');
+      state.fallbackCtxs[id] = ctx;
+      drawSingleLine(ctx, canvas, labels, conf.data, conf.yTitle);
+    });
   }
 
-  function drawTinyLines(ctx, canvas, seriesList) {
+  function drawSingleLine(ctx, canvas, labels, data, yTitle) {
     if (!ctx || !canvas) return;
     const W = canvas.width, H = canvas.height;
+
     ctx.clearRect(0, 0, W, H);
 
-    // 坐标系留边
     const padL = 60 * devicePixelRatio;
     const padR = 20 * devicePixelRatio;
     const padT = 20 * devicePixelRatio;
@@ -328,35 +286,34 @@
     }
     ctx.restore();
 
-    // 每条数据单独归一化
-    seriesList.forEach((s, idx) => {
-      const xs = s.data;
-      if (!xs || xs.length < 2) return;
-      const min = Math.min(...xs.filter(Number.isFinite));
-      const max = Math.max(...xs.filter(Number.isFinite));
-      const span = (max - min) || 1;
-      const n = xs.length;
+    // 归一化
+    const vals = data.filter(Number.isFinite);
+    if (vals.length < 2) return;
+    const min = Math.min(...vals);
+    const max = Math.max(...vals);
+    const span = (max - min) || 1;
+    const n = data.length;
 
-      ctx.save();
-      ctx.lineWidth = (idx === 0 ? 2 : 1) * devicePixelRatio;
-      // 不指定颜色，保持浏览器默认（与项目“不要指定颜色”的设计一致）
-      ctx.beginPath();
-      for (let i = 0; i < n; i++) {
-        const x = padL + (W - padL - padR) * (i / (n - 1));
-        const y = padT + (H - padT - padB) * (1 - (xs[i] - min) / span);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-      ctx.restore();
+    // 折线
+    ctx.save();
+    ctx.lineWidth = 2 * devicePixelRatio;
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const v = data[i];
+      const x = padL + (W - padL - padR) * (i / Math.max(1, n - 1));
+      const y = padT + (H - padT - padB) * (1 - ((v - min) / span));
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.restore();
 
-      // 轴标题
-      ctx.save();
-      ctx.fillStyle = 'currentColor';
-      ctx.font = `${12 * devicePixelRatio}px system-ui, -apple-system, Segoe UI, Roboto, Arial`;
-      ctx.fillText(s.title, 8 * devicePixelRatio, (padT + 14 * devicePixelRatio) + idx * (16 * devicePixelRatio));
-      ctx.restore();
-    });
+    // 轴标题
+    ctx.save();
+    ctx.fillStyle = 'currentColor';
+    ctx.font = `${12 * devicePixelRatio}px system-ui, -apple-system, Segoe UI, Roboto, Arial`;
+    ctx.fillText(yTitle, 8 * devicePixelRatio, padT + 14 * devicePixelRatio);
+    ctx.restore();
   }
 
   /* -----------------------------
@@ -389,13 +346,11 @@
       img.addEventListener('error', () => setStatus(false));
     }
 
-    // 周期探测后端健康；若断线尝试重载图片
     setInterval(async () => {
       try {
         const r = await fetch('/healthz', { cache: 'no-store' });
         if (r.ok) {
           setStatus(true);
-          // 如果 <img> 的 src 被浏览器断开，重新指向以触发连接
           if (img && (!img.complete || img.naturalWidth === 0)) {
             const url = img.getAttribute('src');
             img.setAttribute('src', url.includes('?') ? url + '&ts=' + Date.now() : url + '?ts=' + Date.now());
@@ -417,9 +372,5 @@
     if (isResult) initResultPage();
   });
 
-  /* -----------------------------
-   * DOM 快捷选择器
-   * ----------------------------- */
   function $(sel, root = document) { return root.querySelector(sel); }
-
 })();

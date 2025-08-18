@@ -6,7 +6,7 @@
   <title>Linescope · 传感器数据仪表盘</title>
   <link rel="stylesheet" href="/static/css/styles.css">
   <!-- 可选：若你希望使用更丰富的图表，请启用 Chart.js（没有也会自动降级为 Canvas 绘制） -->
-  <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header class="header">
@@ -29,11 +29,9 @@
       <p class="text-muted mt-1">展示来自 STM32 集群的历史数据与统计。</p>
     </section>
 
-    <!-- 图表卡片 -->
+    <!-- 顶部工具条 -->
     <section class="card chart-card">
-      <div class="card-header">
-        历史趋势
-      </div>
+      <div class="card-header">趋势概览</div>
       <div class="card-body">
         <div class="chart-toolbar">
           <div class="text-muted text-sm">
@@ -45,8 +43,39 @@
             <button class="btn btn-primary" id="btn-download">下载 CSV</button>
           </div>
         </div>
-        <div class="chart-canvas">
-          <canvas id="chart1"></canvas>
+      </div>
+    </section>
+
+    <!-- 五个单独图表 -->
+    <section class="grid mt-3">
+      <div class="card col-6 chart-card">
+        <div class="card-header">晃动速度 (°/s)</div>
+        <div class="card-body">
+          <div class="chart-canvas"><canvas id="chart-sway"></canvas></div>
+        </div>
+      </div>
+      <div class="card col-6 chart-card">
+        <div class="card-header">温度 (°C)</div>
+        <div class="card-body">
+          <div class="chart-canvas"><canvas id="chart-temp"></canvas></div>
+        </div>
+      </div>
+      <div class="card col-6 chart-card">
+        <div class="card-header">湿度 (%RH)</div>
+        <div class="card-body">
+          <div class="chart-canvas"><canvas id="chart-humid"></canvas></div>
+        </div>
+      </div>
+      <div class="card col-6 chart-card">
+        <div class="card-header">气压 (hPa)</div>
+        <div class="card-body">
+          <div class="chart-canvas"><canvas id="chart-press"></canvas></div>
+        </div>
+      </div>
+      <div class="card col-12 chart-card">
+        <div class="card-header">光照 (Lux)</div>
+        <div class="card-body">
+          <div class="chart-canvas"><canvas id="chart-lux"></canvas></div>
         </div>
       </div>
     </section>
@@ -88,9 +117,7 @@
 
     <!-- 表格卡片 -->
     <section class="card mt-3">
-      <div class="card-header">
-        历史记录
-      </div>
+      <div class="card-header">历史记录</div>
       <div class="card-body">
         <div class="table-wrap">
           <table class="table" id="sensor-table" aria-label="传感器历史数据">
@@ -106,21 +133,9 @@
             </thead>
             <tbody id="sensor-tbody">
               <!-- 由 script.js 渲染 -->
-              <tr>
-                <td colspan="6">
-                  <div class="skeleton" style="height:18px;"></div>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="6">
-                  <div class="skeleton" style="height:18px;"></div>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="6">
-                  <div class="skeleton" style="height:18px;"></div>
-                </td>
-              </tr>
+              <tr><td colspan="6"><div class="skeleton" style="height:18px;"></div></td></tr>
+              <tr><td colspan="6"><div class="skeleton" style="height:18px;"></div></td></tr>
+              <tr><td colspan="6"><div class="skeleton" style="height:18px;"></div></td></tr>
             </tbody>
           </table>
         </div>
@@ -135,7 +150,6 @@
     <div>© 2025 Linescope Server · 吉林电网项目</div>
   </footer>
 
-  <!-- 不注入任何模板变量；script.js 会自动调用 /api/sensor-data 拉取数据 -->
   <script src="/static/js/script.js"></script>
 </body>
 </html>
