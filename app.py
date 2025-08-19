@@ -12,20 +12,20 @@ from logging.handlers import RotatingFileHandler
 from typing import Generator, List, Dict, Any, Optional
 
 from flask import Flask, Response, jsonify, render_template, url_for , request
-
+import cv2
+import numpy as np
 # 将项目根目录加入 sys.path，确保 utils 可被导入（在某些部署结构下有用）
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-# === 业务模块导入（按照你给的接口文档） ===
+# === 业务模块导入 ===
 from utils.DataRead import read_sensor_data  # -> List[Dict[str, Any]]
 from utils.GetImage import get_processed_image  # -> np.ndarray (BGR, uint8)
 from utils import DataStore  # 我们只需要用到 DataStore.main()
 
-# OpenCV 用于 JPEG 编码
-import cv2
-import numpy as np
+
+
 
 
 # =========================
@@ -44,7 +44,7 @@ class AppConfig:
 
 
 class PeriodicJob:
-    """简单的周期性任务封装（基于线程 + Event），易读、轻量"""
+    """简单的周期性任务封装（基于线程 + Event）"""
     def __init__(self, interval_seconds: int, target, name: str = "PeriodicJob"):
         self.interval_seconds = int(interval_seconds)
         self._target = target
@@ -281,4 +281,5 @@ app = create_app()
 
 if __name__ == "__main__":
     # 注意：开发时可开启 debug；生产建议由 WSGI/Gunicorn/Uvicorn 托管
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    while 1 :
+        app.run(host="0.0.0.0", port=5000, debug=True)
