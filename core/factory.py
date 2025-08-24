@@ -1,6 +1,6 @@
 import os
 import logging
-from flask import Flask
+from flask import Flask, jsonify
 
 from config import AppConfig, configure_logging
 from routes import register_main_routes, register_api_routes
@@ -24,10 +24,27 @@ def create_app() -> Flask:
     configure_logging(cfg)
     logger = logging.getLogger(__name__)
 
-    app = Flask(__name__)
+    # 获取项目根目录路径
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    template_folder = os.path.join(project_root, 'templates')
+    static_folder = os.path.join(project_root, 'static')
+    
+    app = Flask(__name__, 
+                template_folder=template_folder,
+                static_folder=static_folder)
     app.config["APP_CFG"] = cfg
     app.config["JOBS_STARTED"] = False
 
+    # 添加全局错误处理器
+    @app.errorhandler(404)
+    def not_found_error(error):
+        return jsonify({"error": "Resource not found"}), 404
+    
+    @app.errorhandler(500)
+    def internal_error(error):
+        logger.error(f"Internal server error: {error}")
+        return jsonify({"error": "Internal server error"}), 500
+    
     # 注册路由
     register_main_routes(app)
     register_api_routes(app)

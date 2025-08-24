@@ -24,11 +24,14 @@ def register_main_routes(app: Flask) -> None:
         """
         try:
             data: List[Dict[str, Any]] = read_sensor_data()
+            # 将 data 以 JSON 字符串形式传到模板，便于前端直接使用
+            return render_template("dashboard.html", data_json=json.dumps(data, ensure_ascii=False))
+        except FileNotFoundError as e:
+            logging.getLogger(__name__).error(f"Data file not found: {e}")
+            return render_template("dashboard.html", data_json=json.dumps([], ensure_ascii=False))
         except Exception as e:
             logging.getLogger(__name__).exception("read_sensor_data failed: %s", e)
-            data = []
-        # 将 data 以 JSON 字符串形式传到模板，便于前端直接使用
-        return render_template("dashboard.html", data_json=json.dumps(data, ensure_ascii=False))
+            return render_template("dashboard.html", data_json=json.dumps([], ensure_ascii=False))
 
     @app.route("/result")
     def result_page():
@@ -44,7 +47,12 @@ def register_main_routes(app: Flask) -> None:
         将 GetImage.get_processed_image() 连续输出为 MJPEG（multipart/x-mixed-replace）。
         任何支持 MJPEG 的 <img> 标签或 <video> 标签均可播放。
         """
-        return Response(
-            mjpeg_generator(frame_interval=app.config["APP_CFG"].stream_frame_interval_sec),
-            mimetype="multipart/x-mixed-replace; boundary=frame",
-        )
+        try:
+            return Response(
+                mjpeg_generator(frame_interval=app.config["APP_CFG"].stream_frame_interval_sec),
+                mimetype="multipart/x-mixed-replace; boundary=frame",
+            )
+        except Exception as e:
+            logging.getLogger(__name__).error(f"Error in video stream: {e}")
+            # 返回一个空的响应或错误页面
+            return Response("Video stream error", status=500, mimetype="text/plain")

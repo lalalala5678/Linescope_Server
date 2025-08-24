@@ -16,9 +16,9 @@ Linescope Server 是贵州线镜项目的服务器端应用，采用 Python Flas
 ### 数据处理流程
 
 1. **数据采集**: STM32F4 收集传感器数据并通过数传模块发送到香橙派
-2. **数据传输**: 香橙派每30分钟通过4G模块向服务器发送数据
-3. **图像处理**: 4G监控模块获取图像，香橙派进行图像识别后传输结果
-4. **数据展示**: 服务器接收数据并在Web界面实时展示
+2. **数据传输**: 香橙派每 30 分钟通过 4G 模块向服务器发送数据
+3. **图像处理**: 4G 监控模块获取图像，香橙派进行图像识别后传输结果
+4. **数据展示**: 服务器接收数据并在 Web 界面实时展示
 
 ### 技术栈
 
@@ -73,16 +73,19 @@ Linescope_Server/
 本次重构主要完成了以下优化：
 
 ### 1. 模块化架构
+
 - **配置分离**: 将配置相关代码移至 `config/` 模块
-- **核心功能解耦**: 将应用工厂、后台任务、流媒体处理分离到 `core/` 模块  
-- **路由分离**: 将页面路由和API路由分别组织到 `routes/` 模块
+- **核心功能解耦**: 将应用工厂、后台任务、流媒体处理分离到 `core/` 模块
+- **路由分离**: 将页面路由和 API 路由分别组织到 `routes/` 模块
 
 ### 2. 代码组织改进
-- **app.py 简化**: 从286行代码简化至21行，仅保留应用入口逻辑
+
+- **app.py 简化**: 从 286 行代码简化至 21 行，仅保留应用入口逻辑
 - **职责单一**: 每个模块职责明确，便于维护和测试
 - **导入优化**: 统一模块导入和依赖管理
 
 ### 3. 可维护性提升
+
 - **配置集中管理**: 所有配置参数集中在 `AppConfig` 类中
 - **日志标准化**: 统一的日志配置和格式
 - **错误处理**: 完善的异常处理和日志记录
@@ -103,11 +106,13 @@ pip install -r requirements.txt
 ### 运行应用
 
 #### 开发模式
+
 ```bash
 python app.py
 ```
 
 #### 生产模式 (推荐)
+
 ```bash
 # 使用 Gunicorn (Linux/macOS)
 gunicorn -w 4 -b 0.0.0.0:5000 app:app
@@ -122,16 +127,16 @@ waitress-serve --host=0.0.0.0 --port=5000 app:app
 
 ### 主要端点
 
-| 端点 | 方法 | 描述 |
-|------|------|------|
-| `/` | GET | 应用首页 |
-| `/dashboard` | GET | 数据仪表板页面 |
-| `/result` | GET | 图像识别结果页面 |
-| `/stream.mjpg` | GET | MJPEG 视频流 |
-| `/api/sensor-data` | GET | 获取传感器数据 |
-| `/api/sensors?limit=N` | GET | 获取最近N条传感器数据 |
-| `/api/sensors/latest` | GET | 获取最新传感器数据 |
-| `/healthz` | GET | 健康检查 |
+| 端点                   | 方法 | 描述                    |
+| ---------------------- | ---- | ----------------------- |
+| `/`                    | GET  | 应用首页                |
+| `/dashboard`           | GET  | 数据仪表板页面          |
+| `/result`              | GET  | 图像识别结果页面        |
+| `/stream.mjpg`         | GET  | MJPEG 视频流            |
+| `/api/sensor-data`     | GET  | 获取传感器数据          |
+| `/api/sensors?limit=N` | GET  | 获取最近 N 条传感器数据 |
+| `/api/sensors/latest`  | GET  | 获取最新传感器数据      |
+| `/healthz`             | GET  | 健康检查                |
 
 ### 数据格式
 
@@ -153,8 +158,8 @@ waitress-serve --host=0.0.0.0 --port=5000 app:app
 
 应用配置位于 `config/settings.py` 中的 `AppConfig` 类：
 
-- `datastore_interval_minutes`: 数据存储间隔（分钟，默认30）
-- `stream_frame_interval_sec`: 视频流帧间隔（秒，默认0.2）
+- `datastore_interval_minutes`: 数据存储间隔（分钟，默认 30）
+- `stream_frame_interval_sec`: 视频流帧间隔（秒，默认 0.2）
 - `log_file`: 日志文件路径
 - `log_max_bytes`: 日志文件最大大小（字节）
 - `log_backup_count`: 日志备份文件数量
@@ -210,13 +215,6 @@ grep ERROR app.log
 
 本项目采用 MIT 许可证。详情请参阅 [LICENSE](LICENSE) 文件。
 
-## 联系方式
-
-如有问题或建议，请通过以下方式联系：
-
-- 项目仓库: [GitHub Repository URL]
-- 邮箱: [contact@example.com]
-
 ---
 
-*最后更新: 2024年8月*
+_最后更新: 2025 年 8 月_
