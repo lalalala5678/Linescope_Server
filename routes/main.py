@@ -1,6 +1,6 @@
 import json
 import logging
-from flask import Flask, render_template, url_for, Response
+from flask import Flask, render_template, url_for, Response, send_from_directory
 from typing import List, Dict, Any
 
 from utils.DataRead import read_sensor_data
@@ -56,3 +56,18 @@ def register_main_routes(app: Flask) -> None:
             logging.getLogger(__name__).error(f"Error in video stream: {e}")
             # 返回一个空的响应或错误页面
             return Response("Video stream error", status=500, mimetype="text/plain")
+    
+    @app.route('/sw.js')
+    def service_worker():
+        """
+        Service Worker 文件路由
+        需要从根路径提供以确保正确的 scope
+        """
+        return send_from_directory('static', 'sw.js', mimetype='application/javascript')
+    
+    @app.route('/manifest.json') 
+    def manifest():
+        """
+        PWA Manifest 文件路由
+        """
+        return send_from_directory('static', 'manifest.json', mimetype='application/json')

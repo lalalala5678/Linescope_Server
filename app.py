@@ -18,4 +18,5 @@ app = create_app()
 
 if __name__ == "__main__":
     # 注意：开发时可开启 debug；生产建议由 WSGI/Gunicorn/Uvicorn 托管
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    while 1:
+        app.run(host="0.0.0.0", port=5000, debug=True)

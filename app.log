@@ -1635,3 +1635,326 @@ NameError: name 'jsonify' is not defined
 [2025-08-25 02:15:16] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:15:16] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
 [2025-08-25 02:15:17] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:15:17] "GET /api/sensors/latest HTTP/1.1" 200 -
 [2025-08-25 02:15:17] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:15:17] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 02:15:59] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 02:21:03] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 02:21:03] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 02:21:03] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:21:03] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:21:04] [INFO] werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.29.22.158:5000
+[2025-08-25 02:21:04] [INFO] werkzeug - [33mPress CTRL+C to quit[0m
+[2025-08-25 02:21:04] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 02:21:04] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 02:21:04] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 02:21:04] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:21:04] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:21:04] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 02:21:04] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 02:21:06] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:06] "GET / HTTP/1.1" 200 -
+[2025-08-25 02:21:06] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:06] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:21:06] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:06] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:21:07] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:07] "GET /static/images/images.jpg HTTP/1.1" 200 -
+[2025-08-25 02:21:07] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:07] "[36mGET /static/js/api.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:21:07] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:07] "[36mGET /static/js/charts.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:21:07] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:07] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:21:07] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:07] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 02:21:07] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:07] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 02:21:12] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:12] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-25 02:21:12] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:12] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:21:12] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:12] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:21:12] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:12] "[36mGET /static/js/api.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:21:12] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:12] "[36mGET /static/js/charts.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:21:12] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:12] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:21:14] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:14] "GET /result HTTP/1.1" 200 -
+[2025-08-25 02:21:14] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:14] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:21:15] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:15] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-25 02:21:15] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:15] "GET /stream.mjpg?t=1756059675115 HTTP/1.1" 200 -
+[2025-08-25 02:21:15] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 02:21:38] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:38] "GET /result HTTP/1.1" 200 -
+[2025-08-25 02:21:38] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:38] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:21:38] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:38] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-25 02:21:38] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 02:21:38] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:38] "GET /stream.mjpg?t=1756059698434 HTTP/1.1" 200 -
+[2025-08-25 02:21:40] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 02:21:40] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 02:21:40] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:21:40] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:21:42] [INFO] werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.29.22.158:5000
+[2025-08-25 02:21:42] [INFO] werkzeug - [33mPress CTRL+C to quit[0m
+[2025-08-25 02:21:42] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 02:21:42] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 02:21:42] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 02:21:42] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:21:42] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:21:42] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 02:21:42] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 02:21:43] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:43] "GET /result HTTP/1.1" 200 -
+[2025-08-25 02:21:43] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:43] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:21:43] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:43] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-25 02:21:43] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 02:21:43] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:43] "GET /stream.mjpg?t=1756059703580 HTTP/1.1" 200 -
+[2025-08-25 02:21:44] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 02:21:48] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 02:21:51] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 02:21:53] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 02:21:53] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 02:21:53] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:21:53] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:21:54] [INFO] werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.29.22.158:5000
+[2025-08-25 02:21:54] [INFO] werkzeug - [33mPress CTRL+C to quit[0m
+[2025-08-25 02:21:54] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 02:21:55] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 02:21:55] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 02:21:55] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:21:55] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:21:55] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 02:21:55] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 02:21:57] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:57] "GET /result HTTP/1.1" 200 -
+[2025-08-25 02:21:57] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:57] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:21:57] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:57] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-25 02:21:57] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:57] "GET /static/images/images.jpg HTTP/1.1" 200 -
+[2025-08-25 02:21:58] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 02:21:58] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:21:58] "GET /stream.mjpg?t=1756059717944 HTTP/1.1" 200 -
+[2025-08-25 02:22:00] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:22:00] "GET / HTTP/1.1" 200 -
+[2025-08-25 02:22:00] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:22:00] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:22:00] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:22:00] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:22:00] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:22:00] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 02:22:00] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:22:00] "[36mGET /static/js/api.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:22:00] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:22:00] "[36mGET /static/js/charts.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:22:00] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:22:00] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:22:00] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:22:00] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 02:22:01] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:22:01] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 02:22:52] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 02:23:34] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:23:34] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-25 02:23:34] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:23:34] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:23:34] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:23:34] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:23:34] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:23:34] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 02:23:34] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:23:34] "[36mGET /static/js/api.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:23:34] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:23:34] "[36mGET /static/js/charts.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:23:34] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:23:34] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:23:40] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:23:40] "GET /result HTTP/1.1" 200 -
+[2025-08-25 02:23:40] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:23:40] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:23:40] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:23:40] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-25 02:23:40] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:23:40] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 02:23:40] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:23:40] "GET /stream.mjpg?t=1756059820769 HTTP/1.1" 200 -
+[2025-08-25 02:23:41] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 02:24:10] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:24:10] "GET /healthz HTTP/1.1" 200 -
+[2025-08-25 02:24:41] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:24:41] "GET /healthz HTTP/1.1" 200 -
+[2025-08-25 02:25:11] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:25:11] "GET /healthz HTTP/1.1" 200 -
+[2025-08-25 02:25:41] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:25:41] "GET /healthz HTTP/1.1" 200 -
+[2025-08-25 02:26:10] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:26:10] "GET /healthz HTTP/1.1" 200 -
+[2025-08-25 02:26:16] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:26:16] "GET / HTTP/1.1" 200 -
+[2025-08-25 02:26:16] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:26:16] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:26:16] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:26:16] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:26:16] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:26:16] "[36mGET /static/js/api.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:26:16] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:26:16] "[36mGET /static/js/charts.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:26:16] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:26:16] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 02:26:16] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:26:16] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:26:16] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:26:16] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 02:26:16] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:26:16] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 02:26:58] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 02:27:49] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:27:49] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:27:51] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:27:51] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:35:33] [INFO] werkzeug -  * Detected change in 'D:\\Guizhou_Linescope_Project\\Linescope_Server\\utils\\generate_image_assets.py', reloading
+[2025-08-25 02:35:33] [INFO] werkzeug -  * Detected change in 'D:\\Guizhou_Linescope_Project\\Linescope_Server\\utils\\generate_image_assets.py', reloading
+[2025-08-25 02:35:33] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 02:35:33] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 02:35:33] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 02:35:33] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 02:35:33] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:35:33] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:35:33] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 02:35:33] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 02:35:33] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 02:35:33] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 02:35:33] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:35:33] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 02:35:33] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 02:35:33] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:35:46] [INFO] werkzeug -  * Detected change in 'D:\\Guizhou_Linescope_Project\\Linescope_Server\\utils\\generate_image_assets.py', reloading
+[2025-08-25 02:35:46] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 02:35:46] [INFO] werkzeug -  * Detected change in 'D:\\Guizhou_Linescope_Project\\Linescope_Server\\utils\\generate_image_assets.py', reloading
+[2025-08-25 02:35:46] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 02:35:47] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 02:35:47] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 02:35:47] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:35:47] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:35:47] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 02:35:47] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 02:35:47] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 02:35:47] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 02:35:47] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:35:47] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:35:47] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 02:35:47] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 02:38:30] [INFO] werkzeug -  * Detected change in 'D:\\Guizhou_Linescope_Project\\Linescope_Server\\routes\\main.py', reloading
+[2025-08-25 02:38:30] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 02:38:30] [INFO] werkzeug -  * Detected change in 'D:\\Guizhou_Linescope_Project\\Linescope_Server\\routes\\main.py', reloading
+[2025-08-25 02:38:30] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 02:38:31] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 02:38:31] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 02:38:31] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:38:31] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:38:31] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 02:38:31] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 02:38:31] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 02:38:31] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 02:38:31] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:38:31] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:38:31] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 02:38:31] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 02:38:42] [INFO] werkzeug -  * Detected change in 'D:\\Guizhou_Linescope_Project\\Linescope_Server\\routes\\main.py', reloading
+[2025-08-25 02:38:42] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 02:38:42] [INFO] werkzeug -  * Detected change in 'D:\\Guizhou_Linescope_Project\\Linescope_Server\\routes\\main.py', reloading
+[2025-08-25 02:38:42] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 02:38:43] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 02:38:43] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 02:38:43] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:38:43] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:38:43] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 02:38:43] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 02:38:43] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 02:38:43] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 02:38:43] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:38:43] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:38:43] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 02:38:43] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 02:51:53] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:51:53] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:57:49] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:57:49] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 03:00:11] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 03:00:11] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 03:00:11] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 03:00:11] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 03:00:13] [INFO] werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.29.22.158:5000
+[2025-08-25 03:00:13] [INFO] werkzeug - [33mPress CTRL+C to quit[0m
+[2025-08-25 03:00:13] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 03:00:13] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 03:00:13] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 03:00:13] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 03:00:13] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 03:00:13] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 03:00:13] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 03:00:18] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:18] "GET / HTTP/1.1" 200 -
+[2025-08-25 03:00:18] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:18] "GET /static/css/styles.css HTTP/1.1" 200 -
+[2025-08-25 03:00:18] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:18] "GET /static/images/images.jpg HTTP/1.1" 200 -
+[2025-08-25 03:00:18] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:18] "GET /static/js/app.js HTTP/1.1" 200 -
+[2025-08-25 03:00:18] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:18] "GET /static/js/performance-monitor.js HTTP/1.1" 200 -
+[2025-08-25 03:00:18] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:18] "GET /static/js/api.js HTTP/1.1" 200 -
+[2025-08-25 03:00:18] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:18] "GET /static/js/utils.js HTTP/1.1" 200 -
+[2025-08-25 03:00:18] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:18] "GET /static/js/charts.js HTTP/1.1" 200 -
+[2025-08-25 03:00:18] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:18] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 03:00:18] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:18] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 03:00:37] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:37] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-25 03:00:37] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:37] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 03:00:37] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:37] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:00:37] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:37] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 03:00:37] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:37] "[36mGET /static/js/api.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:00:37] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:37] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:00:37] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:37] "[36mGET /static/js/charts.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:00:43] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:43] "GET /result HTTP/1.1" 200 -
+[2025-08-25 03:00:43] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:43] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 03:00:43] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:43] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 03:00:43] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:43] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-25 03:00:43] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 03:00:43] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:43] "GET /stream.mjpg?t=1756062043345 HTTP/1.1" 200 -
+[2025-08-25 03:00:48] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:48] "GET /healthz HTTP/1.1" 200 -
+[2025-08-25 03:00:55] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:55] "GET / HTTP/1.1" 200 -
+[2025-08-25 03:00:55] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:55] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:00:55] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:55] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 03:00:55] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:55] "[36mGET /static/js/performance-monitor.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:00:55] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:55] "[36mGET /static/js/api.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:00:55] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:55] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:00:55] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:55] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 03:00:55] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:55] "[36mGET /static/js/charts.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:00:55] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:55] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 03:00:55] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:00:55] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 03:00:59] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 03:02:23] [INFO] werkzeug -  * Detected change in 'D:\\Guizhou_Linescope_Project\\Linescope_Server\\app.py', reloading
+[2025-08-25 03:02:23] [INFO] werkzeug -  * Detected change in 'D:\\Guizhou_Linescope_Project\\Linescope_Server\\app.py', reloading
+[2025-08-25 03:02:23] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 03:02:23] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 03:02:24] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 03:02:24] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 03:02:24] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 03:02:24] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 03:02:24] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 03:02:24] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 03:02:24] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 03:02:24] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 03:02:24] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 03:02:24] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 03:02:24] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 03:02:24] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 03:02:26] [INFO] werkzeug -  * Detected change in 'D:\\Guizhou_Linescope_Project\\Linescope_Server\\app.py', reloading
+[2025-08-25 03:02:26] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 03:02:26] [INFO] werkzeug -  * Detected change in 'D:\\Guizhou_Linescope_Project\\Linescope_Server\\app.py', reloading
+[2025-08-25 03:02:26] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 03:02:26] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 03:02:26] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 03:02:26] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 03:02:26] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 03:02:26] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 03:02:26] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 03:02:26] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 03:02:26] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 03:02:26] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 03:02:26] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 03:02:26] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 03:02:26] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 03:02:37] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:02:37] "GET /result HTTP/1.1" 200 -
+[2025-08-25 03:02:37] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:02:37] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 03:02:37] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:02:37] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-25 03:02:37] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:02:37] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 03:02:37] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:02:37] "GET /stream.mjpg?t=1756062157760 HTTP/1.1" 200 -
+[2025-08-25 03:02:38] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 03:02:39] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:02:39] "GET / HTTP/1.1" 200 -
+[2025-08-25 03:02:39] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:02:39] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:02:39] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:02:39] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 03:02:39] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:02:39] "[36mGET /static/js/performance-monitor.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:02:39] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:02:39] "[36mGET /static/js/api.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:02:39] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:02:39] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:02:39] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:02:39] "[36mGET /static/js/charts.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:02:39] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:02:39] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 03:02:39] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:02:39] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 03:03:22] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 03:06:15] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:15] "GET / HTTP/1.1" 200 -
+[2025-08-25 03:06:15] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:15] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:06:15] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:15] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 03:06:15] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:15] "[36mGET /static/js/performance-monitor.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:06:15] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:15] "[36mGET /static/js/api.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:06:15] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:15] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:06:15] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:15] "[36mGET /static/js/charts.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:06:15] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:15] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 03:06:15] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:15] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 03:06:20] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:20] "GET /static/manifest.json HTTP/1.1" 200 -
+[2025-08-25 03:06:20] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:20] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 03:06:45] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:45] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-25 03:06:45] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:45] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 03:06:45] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:45] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:06:45] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:45] "[36mGET /static/js/api.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:06:45] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:45] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:06:45] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:45] "[36mGET /static/js/charts.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:06:48] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:48] "GET / HTTP/1.1" 200 -
+[2025-08-25 03:06:48] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:48] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:06:48] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:48] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 03:06:48] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:48] "[36mGET /static/js/performance-monitor.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:06:48] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:48] "[36mGET /static/js/api.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:06:48] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:48] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:06:48] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:48] "[36mGET /static/js/charts.js HTTP/1.1[0m" 304 -
+[2025-08-25 03:06:48] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:48] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 03:06:48] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 03:06:48] "GET /api/sensors?limit=48 HTTP/1.1" 200 -

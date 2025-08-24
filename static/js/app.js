@@ -1,16 +1,95 @@
 /**
- * 主应用管理模块
+ * 高性能主应用管理模块
  * 协调各个功能模块，管理应用状态
+ * 版本: 2.0.0 - 性能优化版
  */
 
+// 性能优化的模块加载器
+class ModuleLoader {
+  constructor() {
+    this.loadedModules = new Map();
+    this.loadPromises = new Map();
+    this.performance = window.performance || {};
+  }
+
+  /**
+   * 动态导入模块，支持缓存和错误处理
+   */
+  async importModule(path, name) {
+    const startTime = this.performance.now?.() || Date.now();
+    
+    if (this.loadedModules.has(path)) {
+      console.log(`📦 Module cached: ${name}`);
+      return this.loadedModules.get(path);
+    }
+
+    if (this.loadPromises.has(path)) {
+      console.log(`⏳ Module loading: ${name}`);
+      return this.loadPromises.get(path);
+    }
+
+    const loadPromise = import(path)
+      .then(module => {
+        const loadTime = (this.performance.now?.() || Date.now()) - startTime;
+        console.log(`✅ Module loaded: ${name} (${loadTime.toFixed(2)}ms)`);
+        this.loadedModules.set(path, module);
+        this.loadPromises.delete(path);
+        return module;
+      })
+      .catch(error => {
+        console.error(`❌ Module failed: ${name}`, error);
+        this.loadPromises.delete(path);
+        throw error;
+      });
+
+    this.loadPromises.set(path, loadPromise);
+    return loadPromise;
+  }
+
+  /**
+   * 预加载模块（非阻塞）
+   */
+  async preloadModule(path, name) {
+    if (this.loadedModules.has(path) || this.loadPromises.has(path)) {
+      return;
+    }
+
+    console.log(`🔄 Preloading: ${name}`);
+    try {
+      await this.importModule(path, name);
+    } catch (error) {
+      console.warn(`⚠️ Preload failed: ${name}`, error);
+    }
+  }
+}
+
+// 全局模块加载器实例
+const moduleLoader = new ModuleLoader();
+
+// 核心模块静态导入（关键路径）
 import { ApiManager } from './api.js';
-import { ChartManager } from './charts.js';
 import { Utils } from './utils.js';
+
+// 性能监控集成
+const performanceMonitor = window.performanceMonitor;
+
+// 延迟导入 ChartManager（非关键路径）
+let ChartManager = null;
+const loadChartManager = () => {
+  if (!ChartManager) {
+    return moduleLoader.importModule('./charts.js', 'ChartManager')
+      .then(module => {
+        ChartManager = module.ChartManager;
+        return ChartManager;
+      });
+  }
+  return Promise.resolve(ChartManager);
+};
 
 export class LineScopeApp {
   constructor() {
     this.api = new ApiManager();
-    this.chartManager = new ChartManager();
+    this.chartManager = null; // 延迟加载
     
     this.state = {
       currentPage: this.detectCurrentPage(),
@@ -39,14 +118,29 @@ export class LineScopeApp {
   }
 
   /**
+   * 获取 ChartManager 实例（延迟加载）
+   */
+  async getChartManager() {
+    if (!this.chartManager) {
+      const ChartManagerClass = await loadChartManager();
+      this.chartManager = new ChartManagerClass();
+    }
+    return this.chartManager;
+  }
+
+  /**
    * 初始化应用
    */
   async init() {
-    console.log(`🚀 LineScopeApp 初始化开始 - 页面类型: ${this.state.currentPage}`);
+    performanceMonitor?.mark('app-init-start');
+    console.log(`LineScopeApp 初始化开始 - 页面类型: ${this.state.currentPage}`);
     
     try {
       // 初始化页面特定功能
+      performanceMonitor?.mark('page-specific-init-start');
       await this.initPageSpecific();
+      performanceMonitor?.mark('page-specific-init-end');
+      performanceMonitor?.measure('page-specific-init', 'page-specific-init-start', 'page-specific-init-end');
       
       // 设置事件监听器
       this.setupEventListeners();
@@ -54,9 +148,12 @@ export class LineScopeApp {
       // 启动定期更新
       this.startPeriodicUpdates();
       
-      console.log('✅ LineScopeApp 初始化完成');
+      performanceMonitor?.mark('app-init-end');
+      performanceMonitor?.measure('app-init-total', 'app-init-start', 'app-init-end');
+      
+      console.log('LineScopeApp 初始化完成');
     } catch (error) {
-      console.error('❌ LineScopeApp 初始化失败:', error);
+      console.error('LineScopeApp 初始化失败:', error);
     }
   }
 
@@ -158,16 +255,49 @@ export class LineScopeApp {
   }
 
   /**
-   * 加载图表数据（首页用）
+   * 加载图表数据（首页用 - 优化版）
    */
   async loadChartData() {
+    performanceMonitor?.mark('chart-load-start');
+    
     try {
-      const chartData = await this.api.getSensorDataWithLimit(48); // 24小时数据
+      // 只在需要时加载图表数据和管理器
+      const chartElement = document.getElementById('preview-chart');
+      if (!chartElement) {
+        console.log('跳过图表加载：图表容器不存在');
+        return;
+      }
+
+      console.log('开始加载图表数据...');
+      
+      performanceMonitor?.mark('chart-data-fetch-start');
+      const [chartData, chartManager] = await Promise.all([
+        this.api.getSensorDataWithLimit(48), // 24小时数据
+        this.getChartManager()
+      ]);
+      performanceMonitor?.mark('chart-data-fetch-end');
+      performanceMonitor?.measure('chart-data-fetch', 'chart-data-fetch-start', 'chart-data-fetch-end');
+
       if (chartData.length > 0) {
-        await this.chartManager.createPreviewChart('preview-chart', chartData);
+        performanceMonitor?.mark('chart-render-start');
+        await chartManager.createPreviewChart('preview-chart', chartData);
+        performanceMonitor?.mark('chart-render-end');
+        performanceMonitor?.measure('chart-render', 'chart-render-start', 'chart-render-end');
+        
+        console.log('图表数据加载完成');
+      } else {
+        console.warn('没有可用的图表数据');
       }
     } catch (error) {
       console.error('加载图表数据失败:', error);
+      // 提供回退UI
+      const chartElement = document.getElementById('preview-chart');
+      if (chartElement) {
+        chartElement.innerHTML = '<div class="flex items-center justify-center h-full text-white/60">图表加载失败</div>';
+      }
+    } finally {
+      performanceMonitor?.mark('chart-load-end');
+      performanceMonitor?.measure('chart-load-total', 'chart-load-start', 'chart-load-end');
     }
   }
 
@@ -216,19 +346,32 @@ export class LineScopeApp {
   }
 
   /**
-   * 更新仪表盘图表
+   * 更新仪表盘图表（优化版 - 延迟加载）
    */
   async updateDashboardCharts() {
     if (this.state.sensorData.length === 0) return;
 
     try {
+      console.log('开始更新仪表盘图表...');
+      const chartManager = await this.getChartManager();
+      
       await Promise.all([
-        this.chartManager.createEnvironmentalChart('environmental-chart', this.state.sensorData),
-        this.chartManager.createSwayChart('sway-chart', this.state.sensorData),
+        chartManager.createEnvironmentalChart('environmental-chart', this.state.sensorData),
+        chartManager.createSwayChart('sway-chart', this.state.sensorData),
         this.updateMiniCharts()
       ]);
+      
+      console.log('仪表盘图表更新完成');
     } catch (error) {
       console.error('更新仪表盘图表失败:', error);
+      // 提供错误回退
+      const errorMessage = '图表加载失败，请刷新页面重试';
+      ['environmental-chart', 'sway-chart'].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.innerHTML = `<div class="flex items-center justify-center h-full text-white/60">${errorMessage}</div>`;
+        }
+      });
     }
   }
 
@@ -251,7 +394,8 @@ export class LineScopeApp {
       if (!container) continue;
 
       try {
-        const chart = await this.chartManager.createChart(metric.id);
+        const chartManager = await this.getChartManager();
+        const chart = await chartManager.createChart(metric.id);
         if (chart) {
           const values = recentData.map(d => d[metric.key]);
           const times = recentData.map(d => d.timestamp_Beijing);
@@ -459,8 +603,10 @@ export class LineScopeApp {
    */
   setupEventListeners() {
     // 窗口大小调整
-    window.addEventListener('resize', Utils.debounce(() => {
-      this.chartManager.resizeAllCharts();
+    window.addEventListener('resize', Utils.debounce(async () => {
+      if (this.chartManager) {
+        this.chartManager.resizeAllCharts();
+      }
     }, 300));
 
     // 刷新按钮
@@ -595,27 +741,122 @@ export class LineScopeApp {
   }
 
   /**
-   * 清理资源
+   * 清理资源（优化版）
    */
   cleanup() {
     this.pauseUpdates();
-    this.chartManager.disposeAllCharts();
-    console.log('🧹 应用资源已清理');
+    if (this.chartManager) {
+      this.chartManager.disposeAllCharts();
+    }
+    console.log('应用资源已清理');
   }
 }
 
-// 全局初始化
-window.addEventListener('DOMContentLoaded', async () => {
-  // 等待外部库加载
-  await new Promise(resolve => setTimeout(resolve, 100));
-  
-  // 初始化应用
-  window.lineScopeApp = new LineScopeApp();
-});
+// 高性能全局初始化系统
+class AppBootstrap {
+  static async init() {
+    const startTime = performance.now?.() || Date.now();
+    performanceMonitor?.mark('app-bootstrap-start');
+    console.log('应用启动开始...');
 
-// 页面卸载时清理
+    try {
+      // 性能优化：预加载非关键模块
+      performanceMonitor?.mark('module-preload-start');
+      const preloadPromise = moduleLoader.preloadModule('./charts.js', 'ChartManager');
+      
+      // 等待DOM和外部库就绪
+      performanceMonitor?.mark('dependencies-wait-start');
+      await AppBootstrap.waitForDependencies();
+      performanceMonitor?.mark('dependencies-wait-end');
+      performanceMonitor?.measure('dependencies-wait', 'dependencies-wait-start', 'dependencies-wait-end');
+      
+      // 初始化应用
+      performanceMonitor?.mark('app-instance-start');
+      window.lineScopeApp = new LineScopeApp();
+      performanceMonitor?.mark('app-instance-end');
+      performanceMonitor?.measure('app-instance-creation', 'app-instance-start', 'app-instance-end');
+      
+      // 非阻塞预加载完成
+      await preloadPromise;
+      performanceMonitor?.mark('module-preload-end');
+      performanceMonitor?.measure('module-preload', 'module-preload-start', 'module-preload-end');
+      
+      const loadTime = (performance.now?.() || Date.now()) - startTime;
+      performanceMonitor?.mark('app-bootstrap-end');
+      performanceMonitor?.measure('app-bootstrap-total', 'app-bootstrap-start', 'app-bootstrap-end');
+      
+      console.log(`应用启动完成 (${loadTime.toFixed(2)}ms)`);
+      
+      // 性能监控
+      AppBootstrap.reportPerformanceMetrics();
+      
+    } catch (error) {
+      console.error('应用启动失败:', error);
+    }
+  }
+
+  static async waitForDependencies() {
+    const maxWait = 5000; // 最多等待5秒
+    const startTime = Date.now();
+    
+    // 等待关键外部库加载（非阻塞）
+    const checkLibraries = () => {
+      return new Promise(resolve => {
+        const interval = setInterval(() => {
+          const elapsed = Date.now() - startTime;
+          
+          // 超时或库已加载则继续
+          if (elapsed > maxWait || 
+              (typeof window.echarts !== 'undefined' || window.echartsLoadError)) {
+            clearInterval(interval);
+            resolve();
+          }
+        }, 50);
+      });
+    };
+    
+    await checkLibraries();
+  }
+
+  static reportPerformanceMetrics() {
+    if (!window.performance) return;
+    
+    requestIdleCallback(() => {
+      const metrics = {
+        DOMContentLoaded: performance.timing?.domContentLoadedEventEnd - performance.timing?.navigationStart,
+        FirstPaint: performance.getEntriesByType?.('paint')?.[0]?.startTime,
+        FirstContentfulPaint: performance.getEntriesByType?.('paint')?.[1]?.startTime
+      };
+      
+      console.log('性能指标:', metrics);
+    });
+  }
+}
+
+// 基于性能的初始化策略
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', AppBootstrap.init);
+} else {
+  // DOM已加载，立即初始化
+  AppBootstrap.init();
+}
+
+// 智能清理系统
 window.addEventListener('beforeunload', () => {
   if (window.lineScopeApp) {
     window.lineScopeApp.cleanup();
+  }
+});
+
+// 页面可见性变化优化
+document.addEventListener('visibilitychange', () => {
+  if (!window.lineScopeApp) return;
+  
+  if (document.hidden) {
+    console.log('页面隐藏，暂停更新');
+    window.lineScopeApp.pauseUpdates();
+  } else {
+    console.log('页面显示，恢复更新');
+    window.lineScopeApp.resumeUpdates();
   }
 });

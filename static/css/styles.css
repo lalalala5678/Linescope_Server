@@ -1,21 +1,78 @@
-/* ======= 黑白高质感主题（替换原来的 :root 与暗色块） ======= */
+/* ======= CSS性能优化基础 ======= */
+/* 
+ * 高性能CSS架构 - Linescope Server 优化版本
+ * 1. GPU加速优化
+ * 2. 重绘重排最小化  
+ * 3. 现代CSS特性使用
+ * 4. 动画性能优化
+ */
+
+/* CSS Containment API - 性能隔离 */
+.card, .metric-card, .chart-card {
+  contain: layout style paint;
+}
+
+.chart-canvas, .stream-container {
+  contain: layout size style paint;
+}
+
+/* 全局性能优化 */
+*, *::before, *::after {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* GPU加速层提升 */
+.glass-effect, .hover-lift, .animate-slide-in-up {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* 优化滚动性能 */
+* {
+  scroll-behavior: smooth;
+}
+
+@supports (overflow-anchor: auto) {
+  * {
+    overflow-anchor: auto;
+  }
+}
+
+/* ======= 高性能CSS变量系统 ======= */
 :root {
-  /* 单色调（黑/白/灰） */
-  --bg: #0e1117;            /* 页面最底层背景基色（会被背景图覆盖） */
-  --surface: rgba(18,22,30,.72);  /* 卡片玻璃背景 */
+  /* 核心颜色变量 - 使用高性能的色彩值 */
+  --bg: #0e1117;                    /* 页面底色 */
+  --surface: rgba(18,22,30,.72);    /* 卡片玻璃背景 */
   --text: #e6e9ef;
   --muted: #a3aab7;
-  --primary: #dfe3ea;       /* 作为“主色”但保持灰白 */
+  --primary: #dfe3ea;
   --primary-weak: rgba(255,255,255,.06);
-  --accent: #ffffff;        /* 统一用白，做点缀 */
+  --accent: #ffffff;
   --danger: #f06a6a;
   --warning: #f0c674;
   --border: rgba(255,255,255,.08);
-  --shadow: 0 10px 40px rgba(0,0,0,.45);
+  
+  /* 优化的阴影系统 - 使用transform优化 */
+  --shadow-light: 0 2px 10px rgba(0,0,0,.15);
+  --shadow-medium: 0 4px 20px rgba(0,0,0,.25);
+  --shadow-heavy: 0 10px 40px rgba(0,0,0,.45);
+  
+  /* 圆角系统 */
   --radius: 14px;
   --radius-sm: 10px;
   --radius-lg: 20px;
   --container: 1200px;
+  
+  /* 性能优化变量 */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0.0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+  --transition-slow: 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+  
+  /* GPU加速优化 */
+  --gpu-hack: translateZ(0);
 }
 
 /* 统一背景层：图片 + 暗化渐变；不影响内容交互 */
@@ -24,7 +81,8 @@ body {
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC","Microsoft YaHei", Arial, sans-serif;
   color: var(--text);
-  background: transparent;  /* 用伪元素承载背景 */
+  /* 渐进式背景加载：从基色 -> 占位图 -> 高质量图片 */
+  background: var(--bg);  /* 基础色彩，最先显示 */
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -39,10 +97,25 @@ body::after{
   pointer-events: none;
   z-index: -2;
 }
-/* 背景图（黑白化 + 轻对比） */
+/* 背景图（黑白化 + 轻对比） - 优化版本 */
 body::before{
-  background: url("/static/images/images.jpg") center center / cover no-repeat;
+  /* 现代图像格式支持：WebP -> AVIF -> JPEG 降级 */
+  background-image: 
+    image-set(
+      url("/static/images/images.webp") type("image/webp"),
+      url("/static/images/images.avif") type("image/avif"),
+      url("/static/images/images.jpg") type("image/jpeg")
+    );
+  /* 降级支持：老浏览器直接使用JPEG */
+  background-image: url("/static/images/images.jpg");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* 视差效果 */
   filter: grayscale(100%) contrast(105%) brightness(85%);
+  /* GPU加速优化 */
+  will-change: transform;
+  transform: translateZ(0);
 }
 /* 顶层暗化与轻微渐变，让内容更聚焦 */
 body::after{
@@ -83,14 +156,17 @@ body::after{
   color: var(--muted); text-align:center;
 }
 
-/* ======= 卡片玻璃化 ======= */
+/* ======= 高性能卡片玻璃化 ======= */
 .card{
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-medium);
   overflow: hidden;
   backdrop-filter: blur(10px);
+  /* 性能优化 */
+  contain: layout style paint;
+  transform: var(--gpu-hack);
 }
 .card-header{ padding: 14px 18px; border-bottom: 1px solid var(--border); font-weight: 600; }
 .card-body{ padding: 18px; }
@@ -104,18 +180,33 @@ body::after{
   .col-3{ grid-column: span 6; }
 }
 
-/* ======= 按钮（黑白） ======= */
+/* ======= 高性能按钮系统 ======= */
 .btn{
   display:inline-flex; align-items:center; justify-content:center; gap:8px;
   padding:10px 14px; border-radius:12px;
   border: 1px solid var(--border);
   background: rgba(255,255,255,.06);
   color: var(--text); cursor:pointer;
-  transition: transform .05s ease, background .2s, border-color .2s, filter .2s;
+  /* 高性能过渡效果 */
+  transition: transform var(--transition-fast), background var(--transition-normal), 
+              border-color var(--transition-normal), filter var(--transition-normal);
   backdrop-filter: blur(6px);
+  /* GPU加速优化 */
+  transform: var(--gpu-hack);
+  will-change: transform;
 }
-.btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
-.btn:active{ transform: translateY(0); }
+.btn:hover{ 
+  transform: translate3d(0, -1px, 0); 
+  background: rgba(255,255,255,.10);
+  box-shadow: var(--shadow-light);
+}
+.btn:active{ 
+  transform: translate3d(0, 0, 0); 
+  transition-duration: 0.05s;
+}
+.btn:not(:hover):not(:active) {
+  will-change: auto;
+}
 .btn-primary{
   background: linear-gradient(135deg, #f0f0f0, #d7dbe2);
   color: #0f1216; border-color: transparent;
@@ -201,6 +292,54 @@ a:hover{ text-decoration: underline; transform: translateY(-1px); }
   animation: slideInUp 0.6s ease-out;
 }
 
+/* ======= 图像性能优化 ======= */
+/* 懒加载图片占位 */
+.lazy-image {
+  background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+.lazy-image.loaded {
+  opacity: 1;
+}
+
+/* 低质量图像占位符（LQIP）过渡效果 */
+.image-placeholder {
+  background: var(--bg);
+  filter: blur(5px) brightness(0.8);
+  transition: filter 0.4s ease, opacity 0.4s ease;
+}
+.image-placeholder.high-res-loaded {
+  filter: none;
+  opacity: 1;
+}
+
+/* 背景图片预加载优化 */
+@media (hover: hover) {
+  /* 仅在鼠标设备上预加载，节省移动设备流量 */
+  body.preload-bg::before {
+    background-image: url("/static/images/images-thumbnail.jpg"); /* 缩略图 */
+  }
+}
+
+/* 网络连接感知优化 */
+@media (prefers-reduced-data: reduce) {
+  /* 节省数据模式：仅显示纯色背景 */
+  body::before {
+    background-image: none !important;
+    background: linear-gradient(145deg, var(--bg), rgba(255,255,255,0.02));
+  }
+}
+
+/* 现代图像格式降级支持 */
+@supports not (background-image: image-set(url("test.webp") type("image/webp"))) {
+  /* 老旧浏览器降级：直接使用JPEG，关闭视差效果避免性能问题 */
+  body::before {
+    background-attachment: scroll;
+    background-image: url("/static/images/images.jpg");
+  }
+}
+
 /* ======= 响应式设计 ======= */
 /* Mobile First Approach */
 @media (max-width: 576px) {
@@ -217,6 +356,17 @@ a:hover{ text-decoration: underline; transform: translateY(-1px); }
   .table { min-width: 600px; }
   .chart-card { height: 280px; }
   .stream-toolbar { left: 8px; right: 8px; top: 8px; }
+  
+  /* 移动端背景图优化：使用小尺寸图片 */
+  body::before {
+    background-image: 
+      image-set(
+        url("/static/images/images-mobile.webp") type("image/webp"),
+        url("/static/images/images-mobile.jpg") type("image/jpeg")
+      );
+    background-image: url("/static/images/images-mobile.jpg"); /* 降级支持 */
+    background-attachment: scroll; /* 移动端关闭视差效果 */
+  }
 }
 
 @media (max-width: 768px) {
@@ -282,48 +432,51 @@ a:hover{ text-decoration: underline; transform: translateY(-1px); }
   }
 }
 
-/* ======= 现代动画效果 ======= */
+/* ======= 高性能动画系统 ======= */
+/* 使用GPU加速的transform属性和合成层优化 */
+
+/* 基础动画 - 优化版本 */
 @keyframes slideInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translate3d(0, 30px, 0);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes slideInDown {
   from {
     opacity: 0;
-    transform: translateY(-30px);
+    transform: translate3d(0, -30px, 0);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes slideInLeft {
   from {
     opacity: 0;
-    transform: translateX(-30px);
+    transform: translate3d(-30px, 0, 0);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes slideInRight {
   from {
     opacity: 0;
-    transform: translateX(30px);
+    transform: translate3d(30px, 0, 0);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -335,35 +488,33 @@ a:hover{ text-decoration: underline; transform: translateY(-1px); }
 @keyframes fadeInScale {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale3d(0.95, 0.95, 1);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: scale3d(1, 1, 1);
   }
 }
 
+/* 高性能弹跳动画 */
 @keyframes bounceIn {
-  0%, 20%, 40%, 60%, 80% {
-    transform: translateY(0);
-    animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
-  }
   0% {
     opacity: 0;
-    transform: scale3d(0.3, 0.3, 0.3);
+    transform: scale3d(0.3, 0.3, 1);
+    animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
   }
   20% {
-    transform: scale3d(1.1, 1.1, 1.1);
+    transform: scale3d(1.1, 1.1, 1);
   }
   40% {
-    transform: scale3d(0.9, 0.9, 0.9);
+    transform: scale3d(0.9, 0.9, 1);
   }
   60% {
     opacity: 1;
-    transform: scale3d(1.03, 1.03, 1.03);
+    transform: scale3d(1.03, 1.03, 1);
   }
   80% {
-    transform: scale3d(0.97, 0.97, 0.97);
+    transform: scale3d(0.97, 0.97, 1);
   }
   100% {
     opacity: 1;
@@ -371,53 +522,110 @@ a:hover{ text-decoration: underline; transform: translateY(-1px); }
   }
 }
 
+/* 优化的发光效果 - 使用filter避免layout */
 @keyframes glow {
   0%, 100% {
-    box-shadow: 0 0 5px rgba(255,255,255,0.2);
+    filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
   }
   50% {
-    box-shadow: 0 0 20px rgba(255,255,255,0.4);
+    filter: drop-shadow(0 0 20px rgba(255,255,255,0.4));
   }
 }
 
-/* 动画类 */
-.animate-slide-in-up { animation: slideInUp 0.6s ease-out; }
-.animate-slide-in-down { animation: slideInDown 0.6s ease-out; }
-.animate-slide-in-left { animation: slideInLeft 0.6s ease-out; }
-.animate-slide-in-right { animation: slideInRight 0.6s ease-out; }
-.animate-fade-in { animation: fadeIn 0.4s ease-out; }
-.animate-fade-in-scale { animation: fadeInScale 0.5s ease-out; }
-.animate-bounce-in { animation: bounceIn 0.8s ease-out; }
-.animate-glow { animation: glow 2s ease-in-out infinite; }
+/* 脉冲动画 - 高性能版本 */
+@keyframes pulse-efficient {
+  0%, 100% {
+    transform: scale3d(1, 1, 1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale3d(1.05, 1.05, 1);
+    opacity: 0.8;
+  }
+}
 
-/* 延迟动画 */
+/* 高性能动画类 - 使用CSS变量和GPU加速 */
+.animate-slide-in-up { 
+  animation: slideInUp var(--transition-slow) cubic-bezier(0.4, 0.0, 0.2, 1);
+  transform: var(--gpu-hack);
+}
+.animate-slide-in-down { 
+  animation: slideInDown var(--transition-slow) cubic-bezier(0.4, 0.0, 0.2, 1);
+  transform: var(--gpu-hack);
+}
+.animate-slide-in-left { 
+  animation: slideInLeft var(--transition-slow) cubic-bezier(0.4, 0.0, 0.2, 1);
+  transform: var(--gpu-hack);
+}
+.animate-slide-in-right { 
+  animation: slideInRight var(--transition-slow) cubic-bezier(0.4, 0.0, 0.2, 1);
+  transform: var(--gpu-hack);
+}
+.animate-fade-in { 
+  animation: fadeIn var(--transition-normal) ease-out;
+}
+.animate-fade-in-scale { 
+  animation: fadeInScale var(--transition-slow) ease-out;
+  transform: var(--gpu-hack);
+}
+.animate-bounce-in { 
+  animation: bounceIn 0.8s ease-out;
+  transform: var(--gpu-hack);
+}
+.animate-glow { 
+  animation: glow 2s ease-in-out infinite;
+  will-change: filter;
+}
+.animate-pulse { 
+  animation: pulse-efficient 1.5s ease-in-out infinite;
+  transform: var(--gpu-hack);
+}
+
+/* 延迟动画 - 优化版本 */
 .animate-delay-100 { animation-delay: 0.1s; }
 .animate-delay-200 { animation-delay: 0.2s; }
 .animate-delay-300 { animation-delay: 0.3s; }
 .animate-delay-400 { animation-delay: 0.4s; }
 .animate-delay-500 { animation-delay: 0.5s; }
 
-/* 悬停效果增强 */
+/* 高性能悬停效果 - 使用will-change和transform */
 .hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform var(--transition-normal), filter var(--transition-normal);
+  will-change: transform, filter;
+  transform: var(--gpu-hack);
 }
 .hover-lift:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+  transform: translate3d(0, -5px, 0);
+  filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));
 }
 
 .hover-glow {
-  transition: filter 0.3s ease;
+  transition: filter var(--transition-normal);
+  will-change: filter;
 }
 .hover-glow:hover {
-  filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+  filter: drop-shadow(0 0 15px rgba(255,255,255,0.3));
 }
 
 .hover-scale {
-  transition: transform 0.2s ease;
+  transition: transform var(--transition-fast);
+  will-change: transform;
+  transform: var(--gpu-hack);
 }
 .hover-scale:hover {
-  transform: scale(1.05);
+  transform: scale3d(1.05, 1.05, 1);
+}
+
+/* 交互状态优化 */
+.hover-lift, .hover-glow, .hover-scale {
+  cursor: pointer;
+}
+
+/* 移除will-change以避免内存问题 */
+.hover-lift:not(:hover),
+.hover-glow:not(:hover),
+.hover-scale:not(:hover) {
+  will-change: auto;
 }
 
 /* 加载状态 */
@@ -477,4 +685,87 @@ a:hover{ text-decoration: underline; transform: translateY(-1px); }
 html {
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.2) rgba(255,255,255,0.05);
+}
+
+/* ======= 性能监控和调试工具 ======= */
+/* 开发环境下的性能调试助手 */
+@media screen and (min-width: 1px) {
+  /* 强制GPU加速的元素标记（开发用） */
+  .debug .gpu-accelerated {
+    outline: 1px solid lime !important;
+  }
+  
+  /* 动画性能警告（开发用） */
+  .debug [class*="animate-"]:not([class*="transform"]):not([class*="opacity"]) {
+    outline: 2px solid red !important;
+  }
+}
+
+/* 高性能工具类 */
+.gpu-accelerate {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.optimize-repaint {
+  contain: layout style paint;
+}
+
+.optimize-scroll {
+  overflow-anchor: auto;
+  overscroll-behavior: contain;
+}
+
+.optimize-animation {
+  will-change: transform, opacity;
+}
+
+.optimize-animation.finished {
+  will-change: auto;
+}
+
+/* 关键渲染路径优化 */
+.above-fold {
+  content-visibility: visible;
+}
+
+.below-fold {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 200px;
+}
+
+/* 内存优化 */
+.memory-efficient {
+  contain: strict;
+  content-visibility: auto;
+}
+
+/* 响应式优化断点 */
+@media (max-width: 576px) {
+  /* 移动端性能优化：减少动画复杂度 */
+  .animate-glow,
+  .hover-glow {
+    animation: none;
+    filter: none;
+  }
+  
+  /* 减少阴影复杂度 */
+  .card,
+  .btn:hover {
+    box-shadow: var(--shadow-light);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* 无障碍访问：减少动画 */
+  .animate-pulse {
+    animation: none;
+  }
+  
+  .hover-lift,
+  .hover-scale {
+    transform: none !important;
+    transition: none !important;
+  }
 }
