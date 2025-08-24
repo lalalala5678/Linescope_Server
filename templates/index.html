@@ -3,155 +3,345 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Linescope_Server · 首页</title>
-  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <title>Linescope Server · 智能线缆监测平台</title>
+  <meta name="description" content="基于STM32与Python的智能线缆监测系统">
+  
+  <!-- Modern CSS Framework - Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+  
+  <!-- Modern Chart Library - Apache ECharts -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  
+  <!-- Modern Icons - Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  
+  <!-- Custom Animations -->
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  
   <style>
-    :root{
-      --bg:#0b1020;--panel:#121a2a;--text:#e8eefc;--muted:#a9b4ce;--accent:#5aa9ff;--ok:#28c76f;--warn:#ff9f43;--err:#ea5455;--shadow:0 10px 30px rgba(0,0,0,.35)
+    * { 
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;background:radial-gradient(1200px 800px at 20% -10%, #1c2b4d 0%, var(--bg) 55%);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"PingFang SC","Helvetica Neue",Arial,"Noto Sans","Microsoft Yahei",sans-serif}
-    a{color:var(--accent);text-decoration:none}
-    header{position:sticky;top:0;z-index:10;backdrop-filter:blur(6px);background:linear-gradient(180deg, rgba(18,26,42,.9), rgba(18,26,42,.6));border-bottom:1px solid rgba(255,255,255,.08)}
-    .container{max-width:1200px;margin:0 auto;padding:18px 16px}
-    .row{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
-    .brand{grid-column:span 12;display:flex;justify-content:space-between;align-items:center}
-    .brand h1{font-size:18px;margin:0;letter-spacing:.5px;font-weight:700}
-    .brand .sub{font-size:12px;color:var(--muted)}
-    .btn{height:36px;padding:0 14px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:var(--text);cursor:pointer}
-    .btn.primary{background:linear-gradient(135deg,#4ea1ff,#5a8bff);border:none;color:#fff}
-    .grid{padding:16px}
-    .panel{grid-column:span 12;background:var(--panel);border-radius:16px;box-shadow:var(--shadow);padding:16px}
-    .panel h2{font-size:14px;color:var(--muted);margin:0 0 8px}
-    .kpis{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
-    .kpi{grid-column:span 12;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px}
-    .kpi .title{font-size:12px;color:var(--muted)}
-    .kpi .value{font-size:22px;font-weight:800;letter-spacing:.3px}
-    .kpi .desc{font-size:12px;color:var(--muted)}
-    @media(min-width:768px){.kpi{grid-column:span 6}}
-    @media(min-width:1024px){.kpi{grid-column:span 4}}
-    .status{color:var(--muted);font-size:12px}
-    .cta{display:flex;gap:10px}
-    .chart{width:100%;height:260px}
-    footer{color:var(--muted);font-size:12px;padding:24px;text-align:center;opacity:.9}
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    
+    /* Enhanced glass morphism */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    .glass-effect {
+      backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .hover-lift {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .hover-lift:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+    
+    .pulse-dot {
+      animation: pulse-dot 2s infinite;
+    }
+    
+    @keyframes pulse-dot {
+      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
+    
+    .metric-card {
+      background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .metric-card:hover {
+      background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.1));
+      transform: translateY(-2px);
+    }
+    
+    .gradient-text {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .chart-container {
+      height: 300px;
+      position: relative;
+    }
   </style>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#667eea',
+            secondary: '#764ba2',
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body>
-  <header>
-    <div class="container row">
-      <div class="brand">
-        <div>
-          <h1>Linescope_Server · 首页</h1>
-          <div class="sub">MPU9250 / BME280 / TSL2561 · Flask 服务</div>
+<body class="min-h-screen gradient-bg">
+  <!-- Navigation -->
+  <nav class="glass-effect border-b border-white/20 sticky top-0 z-50" data-aos="fade-down">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-white/20 to-white/10 rounded-xl flex items-center justify-center">
+            <i data-lucide="activity" class="w-6 h-6 text-white"></i>
+          </div>
+          <div>
+            <h1 class="text-xl font-bold text-white">Linescope Server</h1>
+            <p class="text-sm text-white/70">智能线缆监测平台</p>
+          </div>
         </div>
-        <div class="cta">
-          <a class="btn" href="/result">识别结果</a>
-          <a class="btn primary" href="/dashboard">进入仪表盘</a>
+        
+        <div class="flex items-center space-x-2">
+          <a href="/dashboard" class="px-6 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-white font-medium transition-all duration-300 flex items-center space-x-2">
+            <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+            <span>数据仪表盘</span>
+          </a>
+          <a href="/result" class="px-6 py-2 bg-white hover:bg-white/90 rounded-lg text-gray-800 font-medium transition-all duration-300 flex items-center space-x-2">
+            <i data-lucide="video" class="w-4 h-4"></i>
+            <span>视频监控</span>
+          </a>
         </div>
       </div>
     </div>
-  </header>
+  </nav>
 
-  <main class="container grid">
-    <section class="panel">
-      <h2>最新数据</h2>
-      <div class="kpis">
-        <div class="kpi"><div class="title">时间戳（北京）</div><div id="ts" class="value">—</div><div class="desc">最后一次上报时间</div></div>
-        <div class="kpi"><div class="title">晃动速度 (°/s)</div><div id="sway" class="value">—</div><div class="desc">MPU9250 陀螺仪</div></div>
-        <div class="kpi"><div class="title">温度 (°C)</div><div id="temp" class="value">—</div><div class="desc">BME280</div></div>
-        <div class="kpi"><div class="title">湿度 (%RH)</div><div id="hum" class="value">—</div><div class="desc">BME280</div></div>
-        <div class="kpi"><div class="title">气压 (hPa)</div><div id="press" class="value">—</div><div class="desc">BME280</div></div>
-        <div class="kpi"><div class="title">光照 (Lux)</div><div id="lux" class="value">—</div><div class="desc">TSL2561</div></div>
+  <!-- Hero Section -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <section class="text-center mb-16" data-aos="fade-up">
+      <div class="mb-6">
+        <div class="inline-flex items-center px-4 py-2 glass-effect rounded-full mb-6">
+          <div class="w-2 h-2 bg-green-500 rounded-full pulse-dot mr-2"></div>
+          <span class="text-white/90 text-sm font-medium">系统运行中</span>
+        </div>
       </div>
-      <!-- <div style="margin-top:12px" class="status" id="status">demo版，不代表最终品质</div> -->
+      
+      <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+        智能<span class="gradient-text">线缆监测</span><br>
+        新一代解决方案
+      </h1>
+      <p class="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+        基于STM32微控制器、多传感器融合技术，实现电力线缆的智能化监测与预警，
+        确保电网安全稳定运行。
+      </p>
     </section>
 
-    <!-- <section class="panel">
-      <h2>近 24 小时 · 快速预览</h2>
-      <div id="miniChart" class="chart"></div>
-    </section> -->
+    <!-- Real-time Metrics -->
+    <section class="mb-16" data-aos="fade-up" data-aos-delay="200">
+      <h2 class="text-3xl font-bold text-white mb-8 text-center">实时监测数据</h2>
+      
+      <div class="stats-grid mb-8">
+        <div class="metric-card rounded-2xl p-6 hover-lift">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+              <i data-lucide="thermometer" class="w-6 h-6 text-blue-400"></i>
+            </div>
+            <div class="text-right">
+              <div class="text-2xl font-bold text-white" id="temp-value">--°C</div>
+              <div class="text-sm text-white/60">温度</div>
+            </div>
+          </div>
+          <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-1000" 
+                 id="temp-progress" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div class="metric-card rounded-2xl p-6 hover-lift">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+              <i data-lucide="droplets" class="w-6 h-6 text-green-400"></i>
+            </div>
+            <div class="text-right">
+              <div class="text-2xl font-bold text-white" id="humidity-value">--%</div>
+              <div class="text-sm text-white/60">湿度</div>
+            </div>
+          </div>
+          <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full transition-all duration-1000" 
+                 id="humidity-progress" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div class="metric-card rounded-2xl p-6 hover-lift">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+              <i data-lucide="gauge" class="w-6 h-6 text-purple-400"></i>
+            </div>
+            <div class="text-right">
+              <div class="text-2xl font-bold text-white" id="pressure-value">-- hPa</div>
+              <div class="text-sm text-white/60">气压</div>
+            </div>
+          </div>
+          <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-purple-400 to-purple-600 rounded-full transition-all duration-1000" 
+                 id="pressure-progress" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div class="metric-card rounded-2xl p-6 hover-lift">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">
+              <i data-lucide="sun" class="w-6 h-6 text-yellow-400"></i>
+            </div>
+            <div class="text-right">
+              <div class="text-2xl font-bold text-white" id="lux-value">-- Lux</div>
+              <div class="text-sm text-white/60">光照</div>
+            </div>
+          </div>
+          <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full transition-all duration-1000" 
+                 id="lux-progress" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div class="metric-card rounded-2xl p-6 hover-lift">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center">
+              <i data-lucide="move" class="w-6 h-6 text-red-400"></i>
+            </div>
+            <div class="text-right">
+              <div class="text-2xl font-bold text-white" id="sway-value">-- °/s</div>
+              <div class="text-sm text-white/60">晃动速度</div>
+            </div>
+          </div>
+          <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-red-400 to-red-600 rounded-full transition-all duration-1000" 
+                 id="sway-progress" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div class="metric-card rounded-2xl p-6 hover-lift">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center">
+              <i data-lucide="clock" class="w-6 h-6 text-indigo-400"></i>
+            </div>
+            <div class="text-right">
+              <div class="text-lg font-bold text-white" id="timestamp-value">--:--</div>
+              <div class="text-sm text-white/60">最后更新</div>
+            </div>
+          </div>
+          <div class="text-xs text-white/50" id="status-text">正在获取数据...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Preview Chart -->
+    <section class="mb-16" data-aos="fade-up" data-aos-delay="400">
+      <div class="glass-effect rounded-3xl p-8">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-2xl font-bold text-white">24小时数据趋势</h3>
+          <div class="flex items-center space-x-2 text-white/70 text-sm">
+            <i data-lucide="trending-up" class="w-4 h-4"></i>
+            <span>实时更新</span>
+          </div>
+        </div>
+        <div class="chart-container">
+          <div id="preview-chart" style="width: 100%; height: 300px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16" data-aos="fade-up" data-aos-delay="600">
+      <div class="glass-effect rounded-2xl p-6 hover-lift">
+        <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mb-4">
+          <i data-lucide="shield-check" class="w-6 h-6 text-blue-400"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-white mb-2">智能预警</h3>
+        <p class="text-white/70">基于机器学习算法，实时分析传感器数据，提前预警潜在故障。</p>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-6 hover-lift">
+        <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center mb-4">
+          <i data-lucide="wifi" class="w-6 h-6 text-green-400"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-white mb-2">远程监控</h3>
+        <p class="text-white/70">支持远程访问，随时随地查看线缆运行状态和历史数据。</p>
+      </div>
+
+      <div class="glass-effect rounded-2xl p-6 hover-lift">
+        <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mb-4">
+          <i data-lucide="database" class="w-6 h-6 text-purple-400"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-white mb-2">数据存储</h3>
+        <p class="text-white/70">长期存储监测数据，支持历史查询和趋势分析。</p>
+      </div>
+    </section>
   </main>
 
-  <footer>
-    数据来源：/api/sensors & /api/sensors/latest · 由 utils/data/data.txt 间接提供
+  <!-- Footer -->
+  <footer class="glass-effect border-t border-white/20 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <p class="text-white/60">© 2025 Linescope Server · 贵州线缆监测项目</p>
+        <p class="text-white/40 text-sm mt-2">基于STM32 + Python Flask 构建</p>
+      </div>
+    </div>
   </footer>
 
-  <script>
-    const $ = (s)=>document.querySelector(s);
-    const fmt = (n, d=2)=> (n==null||isNaN(n))?"—":Number(n).toFixed(d);
-
-    async function fetchLatest(){
-      const r = await fetch('/api/sensors/latest');
-      if(!r.ok) throw new Error('latest fetch failed');
-      return await r.json();
-    }
-
-    async function fetchRecent24h(){
-      // 先取全部，再在前端截 24h；或直接调用 /api/sensors?limit=96
-      const r = await fetch('/api/sensors?limit=96'); // 30 分钟一次，24h = 48；保守取 96
-      if(!r.ok) throw new Error('series fetch failed');
-      const j = await r.json();
-      return j.rows || [];
-    }
-
-    function renderLatest(x){
-      $('#ts').textContent = x.timestamp_Beijing || '—';
-      $('#sway').textContent = fmt(x.sway_speed_dps);
-      $('#temp').textContent = fmt(x.temperature_C);
-      $('#hum').textContent  = fmt(x.humidity_RH);
-      $('#press').textContent= fmt(x.pressure_hPa);
-      $('#lux').textContent  = fmt(x.lux, 0);
-      $('#status').innerHTML = '最新数据时间：<strong>'+(x.timestamp_Beijing||'—')+'</strong>';
-    }
-
-    function renderMini(rows){
-      const ec = echarts.init(document.getElementById('miniChart'));
-      const parse = (s)=> s.replace(' ', 'T');
-      const last = rows.length? new Date(rows[rows.length-1].dt.replace(' ','T')).getTime(): Date.now();
-      const start = last - 24*3600*1000;
-      const list = rows.filter(r=>{
-        const t = new Date(parse(r.dt)).getTime();
-        return t>=start && t<=last;
-      });
-      const x = list.map(r=>parse(r.dt));
-      const sway = list.map(r=>r.sway_speed_dps);
-      const temp = list.map(r=>r.temperature_C);
-
-      ec.setOption({
-        backgroundColor:'transparent',
-        tooltip:{trigger:'axis'},
-        grid:{left:45,right:20,top:20,bottom:40},
-        dataZoom:[{type:'inside'},{type:'slider',bottom:10}],
-        xAxis:{type:'time',axisLabel:{color:'#c9d4ef'},splitLine:{lineStyle:{color:'rgba(255,255,255,.08)'}}},
-        yAxis:[
-          {type:'value',name:'°/s',axisLabel:{color:'#c9d4ef'},splitLine:{lineStyle:{color:'rgba(255,255,255,.08)'}}},
-          {type:'value',name:'°C',axisLabel:{color:'#c9d4ef'}}
-        ],
-        series:[
-          {name:'晃动速度',type:'line',showSymbol:false,areaStyle:{opacity:.05},data:x.map((t,i)=>[t,sway[i]])},
-          {name:'温度',type:'line',yAxisIndex:1,showSymbol:false,data:x.map((t,i)=>[t,temp[i]])}
-        ]
-      });
-      window.addEventListener('resize',()=>ec.resize());
-    }
-
-    async function boot(){
-      try{
-        const [latest, series] = await Promise.all([fetchLatest(), fetchRecent24h()]);
-        renderLatest(latest);
-        renderMini(series);
-      }catch(err){
-        document.getElementById('status').innerHTML = '<span style="color:var(--err)">加载失败</span>';
-        console.error(err);
+  <!-- 现代化模块化JavaScript -->
+  <script type="module">
+    // 初始化外部库
+    document.addEventListener('DOMContentLoaded', () => {
+      // 初始化Lucide图标
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
       }
-      // 每 60 秒刷新最新
-      setInterval(async ()=>{
-        try{ const latest = await fetchLatest(); renderLatest(latest);}catch(e){}
-      }, 60*1000);
-    }
-
-    boot();
+      
+      // 初始化AOS动画
+      if (typeof AOS !== 'undefined') {
+        AOS.init({
+          duration: 1000,
+          once: true,
+          offset: 100
+        });
+      }
+    });
   </script>
+  
+  <!-- 主应用模块 -->
+  <script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>

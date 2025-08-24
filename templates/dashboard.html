@@ -1,155 +1,481 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Linescope · 传感器数据仪表盘</title>
-  <link rel="stylesheet" href="/static/css/styles.css">
-  <!-- 可选：若你希望使用更丰富的图表，请启用 Chart.js（没有也会自动降级为 Canvas 绘制） -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>数据仪表盘 · Linescope Server</title>
+  <meta name="description" content="实时传感器数据分析与可视化仪表盘">
+  
+  <!-- Modern CSS Framework - Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+  
+  <!-- Advanced Chart Library - Apache ECharts -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  
+  <!-- Modern Icons - Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  
+  <!-- Advanced Animations -->
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  
+  <!-- Data Grid Library -->
+  <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@30.2.0/dist/ag-grid-community.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@30.2.0/styles/ag-grid.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@30.2.0/styles/ag-theme-alpine-dark.css">
+  
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  
+  <style>
+    * { 
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      min-height: 100vh;
+      color: #f8fafc;
+    }
+    
+    .glass-effect {
+      backdrop-filter: blur(20px);
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+    }
+    
+    .data-card {
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .data-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(148, 163, 184, 0.2);
+    }
+    
+    .chart-container {
+      height: 400px;
+      position: relative;
+    }
+    
+    .metric-big {
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+    
+    .status-indicator {
+      animation: pulse-status 2s infinite;
+    }
+    
+    @keyframes pulse-status {
+      0% { opacity: 1; }
+      50% { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+    
+    .grid-container {
+      height: 600px;
+      width: 100%;
+    }
+    
+    .ag-theme-alpine-dark {
+      --ag-background-color: rgba(30, 41, 59, 0.8);
+      --ag-header-background-color: rgba(15, 23, 42, 0.9);
+      --ag-odd-row-background-color: rgba(30, 41, 59, 0.3);
+      --ag-border-color: rgba(148, 163, 184, 0.1);
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .trend-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .trend-up {
+      background: rgba(34, 197, 94, 0.1);
+      color: #22c55e;
+    }
+    
+    .trend-down {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+    }
+    
+    .trend-stable {
+      background: rgba(156, 163, 175, 0.1);
+      color: #9ca3af;
+    }
+    
+    .mini-chart {
+      height: 60px;
+      width: 100%;
+    }
+    
+    .alert-high {
+      animation: alert-flash 1s infinite;
+    }
+    
+    @keyframes alert-flash {
+      0%, 100% { background-color: rgba(239, 68, 68, 0.1); }
+      50% { background-color: rgba(239, 68, 68, 0.2); }
+    }
+  </style>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3b82f6',
+            secondary: '#8b5cf6',
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body>
-  <header class="header">
-    <nav class="nav container">
-      <div class="brand">
-        <span class="brand-badge"></span>
-        <span>Linescope Server</span>
-      </div>
-      <div class="nav-links">
-        <a href="/">首页</a>
-        <a href="/dashboard" class="active">仪表盘</a>
-        <a href="/result">图像流</a>
-      </div>
-    </nav>
-  </header>
-
-  <main class="container" id="dashboard-root">
-    <section class="hero">
-      <h1 class="m-0">传感器数据仪表盘</h1>
-      <p class="text-muted mt-1">展示来自 STM32 集群的历史数据与统计。</p>
-    </section>
-
-    <!-- 顶部工具条 -->
-    <section class="card chart-card">
-      <div class="card-header">趋势概览</div>
-      <div class="card-body">
-        <div class="chart-toolbar">
-          <div class="text-muted text-sm">
-            <span id="last-updated">Loading...</span>
+<body class="min-h-screen gradient-bg text-white">
+  <!-- Navigation -->
+  <nav class="glass-effect border-b border-gray-600/20 sticky top-0 z-50" data-aos="fade-down">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+            <i data-lucide="bar-chart-3" class="w-6 h-6 text-white"></i>
           </div>
-          <div class="flex gap-2">
-            <button class="btn btn-outline" id="btn-reset">重置表格滚动</button>
-            <button class="btn" id="btn-refresh">刷新数据</button>
-            <button class="btn btn-primary" id="btn-download">下载 CSV</button>
+          <div>
+            <h1 class="text-xl font-bold text-white">数据仪表盘</h1>
+            <p class="text-sm text-gray-300">实时传感器数据分析</p>
           </div>
         </div>
+        
+        <div class="flex items-center space-x-2">
+          <div class="flex items-center space-x-2 px-4 py-2 glass-effect rounded-lg">
+            <div class="w-2 h-2 bg-green-500 rounded-full status-indicator"></div>
+            <span class="text-sm text-gray-300">实时连接</span>
+          </div>
+          <a href="/" class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-all duration-300 flex items-center space-x-2">
+            <i data-lucide="home" class="w-4 h-4"></i>
+            <span>首页</span>
+          </a>
+          <a href="/result" class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-all duration-300 flex items-center space-x-2">
+            <i data-lucide="video" class="w-4 h-4"></i>
+            <span>视频</span>
+          </a>
+        </div>
       </div>
-    </section>
+    </div>
+  </nav>
 
-    <!-- 五个单独图表 -->
-    <section class="grid mt-3">
-      <div class="card col-6 chart-card">
-        <div class="card-header">晃动速度 (°/s)</div>
-        <div class="card-body">
-          <div class="chart-canvas"><canvas id="chart-sway"></canvas></div>
+  <!-- Main Dashboard -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Header Section -->
+    <section class="mb-8" data-aos="fade-up">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 class="text-4xl font-bold text-white mb-2">传感器监控中心</h1>
+          <p class="text-lg text-gray-300">实时监测电力线缆运行状态与环境参数</p>
         </div>
-      </div>
-      <div class="card col-6 chart-card">
-        <div class="card-header">温度 (°C)</div>
-        <div class="card-body">
-          <div class="chart-canvas"><canvas id="chart-temp"></canvas></div>
-        </div>
-      </div>
-      <div class="card col-6 chart-card">
-        <div class="card-header">湿度 (%RH)</div>
-        <div class="card-body">
-          <div class="chart-canvas"><canvas id="chart-humid"></canvas></div>
-        </div>
-      </div>
-      <div class="card col-6 chart-card">
-        <div class="card-header">气压 (hPa)</div>
-        <div class="card-body">
-          <div class="chart-canvas"><canvas id="chart-press"></canvas></div>
-        </div>
-      </div>
-      <div class="card col-12 chart-card">
-        <div class="card-header">光照 (Lux)</div>
-        <div class="card-body">
-          <div class="chart-canvas"><canvas id="chart-lux"></canvas></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 统计卡片 -->
-    <section class="grid mt-3">
-      <div class="card col-3">
-        <div class="card-header">晃动速度 (°/s)</div>
-        <div class="card-body">
-          <div>最小值：<strong id="stats-sway-min">-</strong></div>
-          <div>最大值：<strong id="stats-sway-max">-</strong></div>
-          <div>平均值：<strong id="stats-sway-avg">-</strong></div>
-          <div>最近值：<strong id="stats-sway-latest">-</strong></div>
-        </div>
-      </div>
-      <div class="card col-3">
-        <div class="card-header">温度 (°C)</div>
-        <div class="card-body">
-          <div>最小值：<strong id="stats-temp-min">-</strong></div>
-          <div>最大值：<strong id="stats-temp-max">-</strong></div>
-          <div>平均值：<strong id="stats-temp-avg">-</strong></div>
-          <div>最近值：<strong id="stats-temp-latest">-</strong></div>
-        </div>
-      </div>
-      <div class="card col-3">
-        <div class="card-header">相对湿度 (%RH)</div>
-        <div class="card-body">
-          <div>平均值：<strong id="stats-humid-avg">-</strong></div>
-        </div>
-      </div>
-      <div class="card col-3">
-        <div class="card-header">气压 / 光照</div>
-        <div class="card-body">
-          <div>气压平均 (hPa)：<strong id="stats-press-avg">-</strong></div>
-          <div>光照平均 (Lux)：<strong id="stats-lux-avg">-</strong></div>
+        <div class="mt-4 md:mt-0 flex items-center space-x-4">
+          <div class="text-right">
+            <div class="text-sm text-gray-400">最后更新</div>
+            <div class="text-lg font-semibold text-white" id="last-update">--:--:--</div>
+          </div>
+          <button id="refresh-btn" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium transition-all duration-300 flex items-center space-x-2">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+            <span>刷新数据</span>
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- 表格卡片 -->
-    <section class="card mt-3">
-      <div class="card-header">历史记录</div>
-      <div class="card-body">
-        <div class="table-wrap">
-          <table class="table" id="sensor-table" aria-label="传感器历史数据">
-            <thead>
-              <tr>
-                <th>时间戳（北京）</th>
-                <th class="text-right">晃动速度 (°/s)</th>
-                <th class="text-right">温度 (°C)</th>
-                <th class="text-right">湿度 (%RH)</th>
-                <th class="text-right">气压 (hPa)</th>
-                <th class="text-right">光照 (Lux)</th>
-              </tr>
-            </thead>
-            <tbody id="sensor-tbody">
-              <!-- 由 script.js 渲染 -->
-              <tr><td colspan="6"><div class="skeleton" style="height:18px;"></div></td></tr>
-              <tr><td colspan="6"><div class="skeleton" style="height:18px;"></div></td></tr>
-              <tr><td colspan="6"><div class="skeleton" style="height:18px;"></div></td></tr>
-            </tbody>
-          </table>
+    <!-- KPI Cards -->
+    <section class="mb-8" data-aos="fade-up" data-aos-delay="100">
+      <div class="stats-grid">
+        <!-- Temperature -->
+        <div class="data-card rounded-2xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-3">
+              <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="thermometer" class="w-6 h-6 text-blue-400"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-white">温度</h3>
+                <p class="text-sm text-gray-400">环境温度监测</p>
+              </div>
+            </div>
+            <div class="trend-indicator trend-stable" id="temp-trend">
+              <i data-lucide="minus" class="w-3 h-3"></i>
+              <span>0.0%</span>
+            </div>
+          </div>
+          <div class="mb-4">
+            <div class="metric-big text-blue-400" id="temp-current">--°C</div>
+            <div class="text-sm text-gray-400">
+              范围: <span id="temp-range">-- ~ --°C</span>
+            </div>
+          </div>
+          <div class="mini-chart">
+            <div id="temp-mini-chart" style="width: 100%; height: 60px;"></div>
+          </div>
         </div>
-        <p class="text-muted text-sm mt-2">
-          提示：当晃动速度超过阈值（示例：&gt; 60 °/s）时，表格行会以淡红色高亮。
-        </p>
+
+        <!-- Humidity -->
+        <div class="data-card rounded-2xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-3">
+              <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="droplets" class="w-6 h-6 text-green-400"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-white">湿度</h3>
+                <p class="text-sm text-gray-400">相对湿度监测</p>
+              </div>
+            </div>
+            <div class="trend-indicator trend-stable" id="humidity-trend">
+              <i data-lucide="minus" class="w-3 h-3"></i>
+              <span>0.0%</span>
+            </div>
+          </div>
+          <div class="mb-4">
+            <div class="metric-big text-green-400" id="humidity-current">--%</div>
+            <div class="text-sm text-gray-400">
+              范围: <span id="humidity-range">-- ~ --%</span>
+            </div>
+          </div>
+          <div class="mini-chart">
+            <div id="humidity-mini-chart" style="width: 100%; height: 60px;"></div>
+          </div>
+        </div>
+
+        <!-- Pressure -->
+        <div class="data-card rounded-2xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-3">
+              <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="gauge" class="w-6 h-6 text-purple-400"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-white">气压</h3>
+                <p class="text-sm text-gray-400">大气压力监测</p>
+              </div>
+            </div>
+            <div class="trend-indicator trend-stable" id="pressure-trend">
+              <i data-lucide="minus" class="w-3 h-3"></i>
+              <span>0.0%</span>
+            </div>
+          </div>
+          <div class="mb-4">
+            <div class="metric-big text-purple-400" id="pressure-current">-- hPa</div>
+            <div class="text-sm text-gray-400">
+              范围: <span id="pressure-range">-- ~ -- hPa</span>
+            </div>
+          </div>
+          <div class="mini-chart">
+            <div id="pressure-mini-chart" style="width: 100%; height: 60px;"></div>
+          </div>
+        </div>
+
+        <!-- Light -->
+        <div class="data-card rounded-2xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-3">
+              <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="sun" class="w-6 h-6 text-yellow-400"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-white">光照</h3>
+                <p class="text-sm text-gray-400">环境光照强度</p>
+              </div>
+            </div>
+            <div class="trend-indicator trend-stable" id="lux-trend">
+              <i data-lucide="minus" class="w-3 h-3"></i>
+              <span>0.0%</span>
+            </div>
+          </div>
+          <div class="mb-4">
+            <div class="metric-big text-yellow-400" id="lux-current">-- Lux</div>
+            <div class="text-sm text-gray-400">
+              范围: <span id="lux-range">-- ~ -- Lux</span>
+            </div>
+          </div>
+          <div class="mini-chart">
+            <div id="lux-mini-chart" style="width: 100%; height: 60px;"></div>
+          </div>
+        </div>
+
+        <!-- Sway Speed -->
+        <div class="data-card rounded-2xl p-6" id="sway-card">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-3">
+              <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="move" class="w-6 h-6 text-red-400"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-white">晃动速度</h3>
+                <p class="text-sm text-gray-400">线缆摆动监测</p>
+              </div>
+            </div>
+            <div class="trend-indicator trend-stable" id="sway-trend">
+              <i data-lucide="minus" class="w-3 h-3"></i>
+              <span>0.0%</span>
+            </div>
+          </div>
+          <div class="mb-4">
+            <div class="metric-big text-red-400" id="sway-current">-- °/s</div>
+            <div class="text-sm text-gray-400">
+              范围: <span id="sway-range">-- ~ -- °/s</span>
+            </div>
+          </div>
+          <div class="mini-chart">
+            <div id="sway-mini-chart" style="width: 100%; height: 60px;"></div>
+          </div>
+        </div>
+
+        <!-- System Status -->
+        <div class="data-card rounded-2xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-3">
+              <div class="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="activity" class="w-6 h-6 text-indigo-400"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-white">系统状态</h3>
+                <p class="text-sm text-gray-400">监测系统运行状态</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-300">数据点总数</span>
+              <span class="text-white font-semibold" id="total-records">--</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-300">数据采集频率</span>
+              <span class="text-white font-semibold">30分钟/次</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-300">系统运行时间</span>
+              <span class="text-white font-semibold" id="uptime">计算中...</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-300">连接状态</span>
+              <div class="flex items-center space-x-2">
+                <div class="w-2 h-2 bg-green-500 rounded-full status-indicator"></div>
+                <span class="text-green-400 font-semibold">正常</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Charts Section -->
+    <section class="grid lg:grid-cols-2 gap-8 mb-8" data-aos="fade-up" data-aos-delay="200">
+      <!-- Combined Environmental Chart -->
+      <div class="data-card rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold text-white">环境参数趋势</h3>
+          <div class="flex items-center space-x-2 text-sm text-gray-400">
+            <i data-lucide="trending-up" class="w-4 h-4"></i>
+            <span>24小时趋势</span>
+          </div>
+        </div>
+        <div class="chart-container">
+          <div id="environmental-chart" style="width: 100%; height: 400px;"></div>
+        </div>
+      </div>
+
+      <!-- Sway Analysis Chart -->
+      <div class="data-card rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold text-white">晃动分析</h3>
+          <div class="flex items-center space-x-2 text-sm text-gray-400">
+            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+            <span>异常检测</span>
+          </div>
+        </div>
+        <div class="chart-container">
+          <div id="sway-chart" style="width: 100%; height: 400px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Data Grid -->
+    <section class="mb-8" data-aos="fade-up" data-aos-delay="300">
+      <div class="data-card rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold text-white">历史数据记录</h3>
+          <div class="flex items-center space-x-4">
+            <button id="export-csv" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-white text-sm font-medium transition-all duration-300 flex items-center space-x-2">
+              <i data-lucide="download" class="w-4 h-4"></i>
+              <span>导出CSV</span>
+            </button>
+            <div class="text-sm text-gray-400">
+              共 <span id="total-rows" class="text-white font-semibold">--</span> 条记录
+            </div>
+          </div>
+        </div>
+        <div class="grid-container ag-theme-alpine-dark">
+          <div id="data-grid"></div>
+        </div>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div>© 2025 Linescope Server · 吉林电网项目</div>
-  </footer>
-
-  <script src="/static/js/script.js"></script>
+  <!-- 传递服务端数据到前端 -->
+  {% if data_json %}
+  <script>
+    // 设置服务端数据供新的模块化系统使用
+    window.initialData = {{ data_json|safe }};
+  </script>
+  {% endif %}
+  
+  <!-- 现代化模块化JavaScript -->
+  <script type="module">
+    // 初始化外部库
+    document.addEventListener('DOMContentLoaded', () => {
+      // 初始化Lucide图标
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+      
+      // 初始化AOS动画
+      if (typeof AOS !== 'undefined') {
+        AOS.init({
+          duration: 800,
+          once: true,
+          offset: 100
+        });
+      }
+    });
+  </script>
+  
+  <!-- 主应用模块 -->
+  <script type="module" src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>

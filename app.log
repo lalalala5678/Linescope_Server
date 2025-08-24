@@ -1092,3 +1092,546 @@ NameError: name 'jsonify' is not defined
 [2025-08-24 23:01:05] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
 [2025-08-24 23:01:05] [INFO] core.factory - Running DataStore.main() ...
 [2025-08-24 23:01:05] [INFO] core.factory - DataStore.main() finished.
+[2025-08-24 23:02:32] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-24 23:02:32] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-24 23:02:32] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-24 23:02:32] [INFO] core.factory - DataStore.main() finished.
+[2025-08-24 23:02:34] [INFO] werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.29.22.158:5000
+[2025-08-24 23:02:34] [INFO] werkzeug - [33mPress CTRL+C to quit[0m
+[2025-08-24 23:02:34] [INFO] werkzeug -  * Restarting with stat
+[2025-08-24 23:02:34] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-24 23:02:34] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-24 23:02:34] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-24 23:02:34] [INFO] core.factory - DataStore.main() finished.
+[2025-08-24 23:02:34] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-24 23:02:34] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-24 23:02:38] [INFO] werkzeug - 127.0.0.1 - - [24/Aug/2025 23:02:38] "GET / HTTP/1.1" 200 -
+[2025-08-24 23:02:38] [INFO] werkzeug - 127.0.0.1 - - [24/Aug/2025 23:02:38] "GET /api/sensors?limit=96 HTTP/1.1" 200 -
+[2025-08-24 23:02:38] [INFO] werkzeug - 127.0.0.1 - - [24/Aug/2025 23:02:38] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-24 23:02:38] [INFO] werkzeug - 127.0.0.1 - - [24/Aug/2025 23:02:38] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+[2025-08-24 23:02:42] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:42] "GET / HTTP/1.1" 200 -
+[2025-08-24 23:02:42] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:42] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-24 23:02:42] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:42] "GET /api/sensors?limit=96 HTTP/1.1" 200 -
+[2025-08-24 23:02:42] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:42] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+[2025-08-24 23:02:44] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:44] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-24 23:02:44] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:44] "GET /static/css/styles.css HTTP/1.1" 200 -
+[2025-08-24 23:02:44] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:44] "GET /static/js/script.js HTTP/1.1" 200 -
+[2025-08-24 23:02:44] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:44] "GET /static/images/images.jpg HTTP/1.1" 200 -
+[2025-08-24 23:02:44] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:44] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-24 23:02:45] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:45] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-24 23:02:45] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:45] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-24 23:02:45] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:45] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+[2025-08-24 23:02:45] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:45] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-24 23:02:45] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:45] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-24 23:02:46] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:46] "GET /result HTTP/1.1" 200 -
+[2025-08-24 23:02:46] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:46] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-24 23:02:46] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:46] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+[2025-08-24 23:02:46] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:46] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-24 23:02:46] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:46] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-24 23:02:47] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:47] "GET / HTTP/1.1" 200 -
+[2025-08-24 23:02:47] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:47] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-24 23:02:47] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:02:47] "GET /api/sensors?limit=96 HTTP/1.1" 200 -
+[2025-08-24 23:03:30] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:24:22] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-24 23:24:22] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-24 23:24:22] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-24 23:24:22] [INFO] core.factory - DataStore.main() finished.
+[2025-08-24 23:24:23] [INFO] werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.29.22.158:5000
+[2025-08-24 23:24:23] [INFO] werkzeug - [33mPress CTRL+C to quit[0m
+[2025-08-24 23:24:23] [INFO] werkzeug -  * Restarting with stat
+[2025-08-24 23:24:24] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-24 23:24:24] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-24 23:24:24] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-24 23:24:24] [INFO] core.factory - DataStore.main() finished.
+[2025-08-24 23:24:24] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-24 23:24:24] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-24 23:24:36] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:24:36] "GET / HTTP/1.1" 200 -
+[2025-08-24 23:24:38] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:24:38] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-24 23:24:38] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:24:38] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-24 23:24:52] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:24:52] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-24 23:24:53] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:24:53] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-24 23:25:06] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:25:06] "GET / HTTP/1.1" 200 -
+[2025-08-24 23:25:06] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:25:06] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-24 23:25:06] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:25:06] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-24 23:25:08] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:25:08] "GET /result HTTP/1.1" 200 -
+[2025-08-24 23:25:08] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:25:08] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-24 23:25:08] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:25:08] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:25:08] "GET /stream.mjpg?t=1756049108203 HTTP/1.1" 200 -
+[2025-08-24 23:25:17] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:25:17] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:25:20] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:25:20] "GET /stream.mjpg?t=1756049119987&clear=1 HTTP/1.1" 200 -
+[2025-08-24 23:25:20] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:25:24] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:25:24] "GET /stream.mjpg?t=1756049124072 HTTP/1.1" 200 -
+[2025-08-24 23:25:25] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:25:30] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:25:30] "GET /stream.mjpg?t=1756049130784 HTTP/1.1" 200 -
+[2025-08-24 23:25:31] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:25:32] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:25:32] "GET / HTTP/1.1" 200 -
+[2025-08-24 23:25:32] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:25:32] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-24 23:25:32] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:25:32] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-24 23:25:34] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:25:34] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-24 23:25:34] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:25:34] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-24 23:26:15] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:27:05] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:27:05] "GET / HTTP/1.1" 200 -
+[2025-08-24 23:27:05] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:27:05] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-24 23:27:05] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:27:05] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-24 23:27:35] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:27:35] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-24 23:27:40] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:27:40] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-24 23:27:41] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:27:41] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-24 23:28:50] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:28:50] "GET / HTTP/1.1" 200 -
+[2025-08-24 23:28:51] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:28:51] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-24 23:28:51] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:28:51] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-24 23:28:52] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:28:52] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-24 23:28:53] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:28:53] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-24 23:28:55] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:28:55] "GET /result HTTP/1.1" 200 -
+[2025-08-24 23:28:55] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:28:55] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-24 23:28:55] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:28:55] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:28:55] "GET /stream.mjpg?t=1756049335493 HTTP/1.1" 200 -
+[2025-08-24 23:29:26] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:29:26] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:29:56] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:29:56] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:30:26] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:30:26] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:30:56] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:30:56] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:31:26] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:31:26] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:31:56] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:31:56] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:32:38] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:32:38] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:33:38] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:33:38] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:33:52] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-24 23:33:52] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-24 23:33:52] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-24 23:33:52] [INFO] core.factory - DataStore.main() finished.
+[2025-08-24 23:33:54] [INFO] werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.29.22.158:5000
+[2025-08-24 23:33:54] [INFO] werkzeug - [33mPress CTRL+C to quit[0m
+[2025-08-24 23:33:54] [INFO] werkzeug -  * Restarting with stat
+[2025-08-24 23:33:54] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-24 23:33:54] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-24 23:33:54] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-24 23:33:54] [INFO] core.factory - DataStore.main() finished.
+[2025-08-24 23:33:54] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-24 23:33:54] [INFO] werkzeug -  * Debugger PIN: 733-937-217
+[2025-08-24 23:34:01] [INFO] werkzeug - 127.0.0.1 - - [24/Aug/2025 23:34:01] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-24 23:34:07] [INFO] werkzeug - 127.0.0.1 - - [24/Aug/2025 23:34:07] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-24 23:34:13] [INFO] werkzeug - 127.0.0.1 - - [24/Aug/2025 23:34:13] "GET / HTTP/1.1" 200 -
+[2025-08-24 23:34:18] [INFO] werkzeug - 127.0.0.1 - - [24/Aug/2025 23:34:18] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-24 23:34:24] [INFO] werkzeug - 127.0.0.1 - - [24/Aug/2025 23:34:24] "GET /result HTTP/1.1" 200 -
+[2025-08-24 23:34:38] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:34:38] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:35:21] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-24 23:35:21] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-24 23:35:21] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-24 23:35:21] [INFO] core.factory - DataStore.main() finished.
+[2025-08-24 23:35:22] [INFO] werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.29.22.158:5000
+[2025-08-24 23:35:22] [INFO] werkzeug - [33mPress CTRL+C to quit[0m
+[2025-08-24 23:35:22] [INFO] werkzeug -  * Restarting with stat
+[2025-08-24 23:35:22] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-24 23:35:22] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-24 23:35:22] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-24 23:35:22] [INFO] core.factory - DataStore.main() finished.
+[2025-08-24 23:35:22] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-24 23:35:22] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-24 23:35:24] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:35:24] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:35:26] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:35:26] "GET /result HTTP/1.1" 200 -
+[2025-08-24 23:35:26] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:35:26] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-24 23:35:27] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:35:27] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:35:27] "GET /stream.mjpg?t=1756049727338 HTTP/1.1" 200 -
+[2025-08-24 23:35:30] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:35:30] "GET /result HTTP/1.1" 200 -
+[2025-08-24 23:35:30] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:35:31] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:35:31] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-24 23:35:31] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:35:31] "GET /stream.mjpg?t=1756049731137 HTTP/1.1" 200 -
+[2025-08-24 23:35:31] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:35:43] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:35:48] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:35:48] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-24 23:35:48] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:35:48] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-24 23:35:52] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:35:52] "GET / HTTP/1.1" 200 -
+[2025-08-24 23:35:52] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:35:52] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-24 23:35:52] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:35:52] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-24 23:35:56] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:35:56] "GET /result HTTP/1.1" 200 -
+[2025-08-24 23:35:57] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:35:57] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-24 23:35:57] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:35:57] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:35:57] "GET /stream.mjpg?t=1756049757110 HTTP/1.1" 200 -
+[2025-08-24 23:36:01] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:36:01] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-24 23:36:01] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:36:01] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-24 23:36:16] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:36:16] "GET / HTTP/1.1" 200 -
+[2025-08-24 23:36:16] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:36:16] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-24 23:36:16] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:36:16] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-24 23:36:19] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:36:19] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-24 23:36:20] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:36:20] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-24 23:36:22] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:36:22] "GET /result HTTP/1.1" 200 -
+[2025-08-24 23:36:23] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:36:23] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-24 23:36:23] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:36:23] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:36:23] "GET /stream.mjpg?t=1756049782951 HTTP/1.1" 200 -
+[2025-08-24 23:36:44] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:36:52] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:36:52] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:37:22] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:37:22] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:37:27] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:37:27] "GET / HTTP/1.1" 200 -
+[2025-08-24 23:37:27] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:37:27] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-24 23:37:27] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:37:27] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-24 23:37:29] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:37:29] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-24 23:37:29] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:37:29] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-24 23:37:32] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:37:32] "GET /result HTTP/1.1" 200 -
+[2025-08-24 23:37:32] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:37:32] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-24 23:37:32] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:37:32] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:37:32] "GET /stream.mjpg?t=1756049852307 HTTP/1.1" 200 -
+[2025-08-24 23:38:02] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:38:02] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:38:10] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:38:32] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:38:32] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:39:02] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:39:02] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:39:32] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:39:32] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:40:02] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:40:02] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:40:10] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-24 23:40:10] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-24 23:40:10] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-24 23:40:10] [INFO] core.factory - DataStore.main() finished.
+[2025-08-24 23:40:11] [INFO] werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.29.22.158:5000
+[2025-08-24 23:40:11] [INFO] werkzeug - [33mPress CTRL+C to quit[0m
+[2025-08-24 23:40:11] [INFO] werkzeug -  * Restarting with stat
+[2025-08-24 23:40:12] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-24 23:40:12] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-24 23:40:12] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-24 23:40:12] [INFO] core.factory - DataStore.main() finished.
+[2025-08-24 23:40:12] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-24 23:40:12] [INFO] werkzeug -  * Debugger PIN: 733-937-217
+[2025-08-24 23:40:19] [INFO] werkzeug - 127.0.0.1 - - [24/Aug/2025 23:40:19] "GET /static/css/styles.css HTTP/1.1" 200 -
+[2025-08-24 23:40:26] [INFO] werkzeug - 127.0.0.1 - - [24/Aug/2025 23:40:26] "GET / HTTP/1.1" 200 -
+[2025-08-24 23:40:32] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:40:32] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:41:02] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:41:02] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:41:32] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:41:32] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:42:02] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:42:02] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:42:32] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:42:32] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:42:45] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:42:45] "GET /result HTTP/1.1" 200 -
+[2025-08-24 23:42:45] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:42:45] "GET /static/css/styles.css HTTP/1.1" 200 -
+[2025-08-24 23:42:46] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:42:46] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-24 23:42:46] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:42:46] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:42:46] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-24 23:42:47] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:42:47] "GET /stream.mjpg?t=1756050166989 HTTP/1.1" 200 -
+[2025-08-24 23:42:47] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:42:56] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:42:56] "GET /healthz HTTP/1.1" 200 -
+[2025-08-24 23:42:59] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:42:59] "GET / HTTP/1.1" 200 -
+[2025-08-24 23:42:59] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:42:59] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-24 23:43:00] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:00] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-24 23:43:00] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:00] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-24 23:43:00] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:00] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-24 23:43:04] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:04] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-24 23:43:04] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:04] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-24 23:43:04] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:04] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-24 23:43:04] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:04] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-24 23:43:23] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:23] "GET / HTTP/1.1" 200 -
+[2025-08-24 23:43:23] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:23] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-24 23:43:23] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:23] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-24 23:43:23] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:23] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-24 23:43:23] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:23] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-24 23:43:26] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:26] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-24 23:43:26] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:26] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-24 23:43:27] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:27] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-24 23:43:27] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:27] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-24 23:43:31] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:31] "GET /result HTTP/1.1" 200 -
+[2025-08-24 23:43:31] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:31] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-24 23:43:31] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:31] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-24 23:43:31] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:31] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-24 23:43:32] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:32] "GET /stream.mjpg?t=1756050212015 HTTP/1.1" 200 -
+[2025-08-24 23:43:32] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:43:40] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:40] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-24 23:43:40] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:40] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-24 23:43:40] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:40] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-24 23:43:41] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:43:41] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-24 23:43:42] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:44:23] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-24 23:48:41] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:48:41] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-24 23:53:41] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:53:41] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-24 23:58:41] [INFO] werkzeug - 10.29.22.158 - - [24/Aug/2025 23:58:41] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-25 00:04:44] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 00:04:44] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-25 00:04:44] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 00:04:44] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 00:04:45] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 00:04:45] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 00:04:46] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 00:04:46] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-25 00:05:21] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 00:05:21] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 00:05:22] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 00:05:22] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 00:05:45] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 00:05:45] "GET / HTTP/1.1" 200 -
+[2025-08-25 00:05:45] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 00:05:45] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 00:05:45] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 00:05:45] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 00:05:45] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 00:05:45] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 00:05:45] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 00:05:45] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 00:06:15] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 00:06:15] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 00:06:45] [INFO] werkzeug - 10.29.22.158 - - [25/Aug/2025 00:06:45] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 00:35:21] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 00:35:21] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 00:35:22] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 00:35:22] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 01:05:21] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 01:05:21] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 01:05:22] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 01:05:22] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 01:35:21] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 01:35:21] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 01:35:22] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 01:35:22] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 01:36:15] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:36:15] "GET / HTTP/1.1" 200 -
+[2025-08-25 01:36:15] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:36:15] "GET /static/css/styles.css HTTP/1.1" 200 -
+[2025-08-25 01:36:16] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:36:16] "GET /static/images/images.jpg HTTP/1.1" 200 -
+[2025-08-25 01:36:17] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:36:17] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 01:36:17] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:36:17] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 01:36:17] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:36:17] "GET / HTTP/1.1" 200 -
+[2025-08-25 01:36:17] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:36:17] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 01:36:18] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:36:18] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 01:36:18] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:36:18] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 01:36:18] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:36:18] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 01:36:49] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:36:49] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 01:37:18] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:37:18] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 01:37:20] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:37:20] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-25 01:37:20] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:37:20] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 01:37:21] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:37:21] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 01:37:21] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:37:21] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-25 01:40:47] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:47] "GET / HTTP/1.1" 200 -
+[2025-08-25 01:40:47] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:47] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 01:40:48] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:48] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 01:40:48] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:48] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 01:40:48] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:48] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 01:40:49] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:49] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 01:40:49] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:49] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+[2025-08-25 01:40:52] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:52] "GET / HTTP/1.1" 200 -
+[2025-08-25 01:40:52] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:52] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 01:40:52] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:52] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+[2025-08-25 01:40:52] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:52] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 01:40:52] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:52] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 01:40:52] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:52] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 01:40:54] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:54] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-25 01:40:54] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:54] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 01:40:54] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:54] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+[2025-08-25 01:40:54] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:54] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 01:40:54] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:54] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-25 01:40:55] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:55] "GET /result HTTP/1.1" 200 -
+[2025-08-25 01:40:56] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:56] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 01:40:56] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:56] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+[2025-08-25 01:40:56] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:56] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-25 01:40:56] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:56] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 01:40:56] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:40:56] "GET /stream.mjpg?t=1756057256386 HTTP/1.1" 200 -
+[2025-08-25 01:41:06] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 01:41:26] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:41:26] "GET /healthz HTTP/1.1" 200 -
+[2025-08-25 01:41:57] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:41:57] "GET /healthz HTTP/1.1" 200 -
+[2025-08-25 01:42:19] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:42:19] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-25 01:42:20] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:42:20] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 01:42:27] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:42:27] "GET /healthz HTTP/1.1" 200 -
+[2025-08-25 01:42:57] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:42:57] "GET /healthz HTTP/1.1" 200 -
+[2025-08-25 01:43:27] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:43:27] "GET /healthz HTTP/1.1" 200 -
+[2025-08-25 01:43:57] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:43:57] "GET /healthz HTTP/1.1" 200 -
+[2025-08-25 01:44:06] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 01:44:06] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 01:44:06] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 01:44:06] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 01:44:07] [INFO] werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.29.22.158:5000
+[2025-08-25 01:44:07] [INFO] werkzeug - [33mPress CTRL+C to quit[0m
+[2025-08-25 01:44:07] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 01:44:08] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 01:44:08] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 01:44:08] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 01:44:08] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 01:44:08] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 01:44:08] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 01:44:38] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:44:38] "GET /healthz HTTP/1.1" 200 -
+[2025-08-25 01:45:03] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 01:45:03] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 01:45:03] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 01:45:03] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 01:45:04] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:04] "GET /healthz HTTP/1.1" 200 -
+[2025-08-25 01:45:04] [INFO] werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.29.22.158:5000
+[2025-08-25 01:45:04] [INFO] werkzeug - [33mPress CTRL+C to quit[0m
+[2025-08-25 01:45:04] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 01:45:05] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 01:45:05] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 01:45:05] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 01:45:05] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 01:45:05] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 01:45:05] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 01:45:07] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:07] "GET /result HTTP/1.1" 200 -
+[2025-08-25 01:45:07] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:07] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+[2025-08-25 01:45:07] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:07] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 01:45:07] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:07] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-25 01:45:08] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:08] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 01:45:08] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:08] "GET /stream.mjpg?t=1756057508635 HTTP/1.1" 200 -
+[2025-08-25 01:45:09] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 01:45:13] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:13] "GET / HTTP/1.1" 200 -
+[2025-08-25 01:45:13] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:13] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 01:45:13] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:13] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+[2025-08-25 01:45:14] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:14] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 01:45:14] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:14] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 01:45:14] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:14] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 01:45:18] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:18] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-25 01:45:18] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:18] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 01:45:18] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:18] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+[2025-08-25 01:45:19] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:19] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-25 01:45:29] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:29] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-25 01:45:29] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:29] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 01:45:29] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:29] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 01:45:30] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:30] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-25 01:45:33] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 01:45:42] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 01:45:42] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 01:45:42] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 01:45:42] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 01:45:43] [INFO] werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.29.22.158:5000
+[2025-08-25 01:45:43] [INFO] werkzeug - [33mPress CTRL+C to quit[0m
+[2025-08-25 01:45:43] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 01:45:44] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 01:45:44] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 01:45:44] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 01:45:44] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 01:45:44] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 01:45:44] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 01:45:45] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:45] "GET / HTTP/1.1" 200 -
+[2025-08-25 01:45:45] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:45] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 01:45:46] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:46] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 01:45:46] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:46] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 01:45:46] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:46] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 01:45:50] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:50] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-25 01:45:50] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:50] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 01:45:51] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:51] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 01:45:51] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:51] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-25 01:45:57] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:57] "GET / HTTP/1.1" 200 -
+[2025-08-25 01:45:57] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:57] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 01:45:58] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:58] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 01:45:58] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:58] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 01:45:58] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:58] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 01:45:58] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:45:58] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+[2025-08-25 01:46:02] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:46:02] "GET /result HTTP/1.1" 200 -
+[2025-08-25 01:46:02] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:46:02] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 01:46:02] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:46:02] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+[2025-08-25 01:46:02] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:46:02] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-25 01:46:02] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:46:02] "GET /stream.mjpg?t=1756057562478 HTTP/1.1" 200 -
+[2025-08-25 01:46:04] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:46:04] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-25 01:46:04] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:46:04] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 01:46:04] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:46:04] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+[2025-08-25 01:46:05] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:46:05] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-25 01:46:12] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 01:46:45] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:46:45] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-25 01:46:47] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 01:51:05] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:51:05] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-25 01:56:05] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:56:05] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-25 01:57:49] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 01:57:49] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 01:57:49] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 01:57:49] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 01:57:50] [INFO] werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.29.22.158:5000
+[2025-08-25 01:57:50] [INFO] werkzeug - [33mPress CTRL+C to quit[0m
+[2025-08-25 01:57:50] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 01:57:51] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 01:57:51] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 01:57:51] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 01:57:51] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 01:57:51] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 01:57:51] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 01:58:00] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:58:00] "GET /static/js/app.js HTTP/1.1" 200 -
+[2025-08-25 01:58:08] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:58:08] "GET / HTTP/1.1" 200 -
+[2025-08-25 01:58:15] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:58:15] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-25 01:58:37] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:58:37] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 01:58:43] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:58:43] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 01:58:49] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:58:49] "GET /api/sensors?limit=5 HTTP/1.1" 200 -
+[2025-08-25 01:58:55] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 01:58:55] "GET /healthz HTTP/1.1" 200 -
+[2025-08-25 02:01:05] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:01:05] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-25 02:06:05] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:06:05] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-25 02:11:05] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:11:05] "GET /api/sensor-data HTTP/1.1" 200 -
+[2025-08-25 02:11:57] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 02:11:57] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 02:11:57] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:11:57] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:11:58] [INFO] werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.29.22.158:5000
+[2025-08-25 02:11:58] [INFO] werkzeug - [33mPress CTRL+C to quit[0m
+[2025-08-25 02:11:58] [INFO] werkzeug -  * Restarting with stat
+[2025-08-25 02:11:59] [INFO] core.jobs - [DataStoreJob] started; interval=1800s
+[2025-08-25 02:11:59] [INFO] core.factory - Background job started: DataStore.main() every 30 minutes
+[2025-08-25 02:11:59] [INFO] core.factory - Running DataStore.main() ...
+[2025-08-25 02:11:59] [WARNING] werkzeug -  * Debugger is active!
+[2025-08-25 02:11:59] [INFO] core.factory - DataStore.main() finished.
+[2025-08-25 02:11:59] [INFO] werkzeug -  * Debugger PIN: 123-402-261
+[2025-08-25 02:12:01] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:01] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-25 02:12:01] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:01] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+[2025-08-25 02:12:01] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:01] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:12:01] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:01] "GET /static/js/app.js HTTP/1.1" 200 -
+[2025-08-25 02:12:03] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:03] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 02:12:03] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:03] "GET /static/js/api.js HTTP/1.1" 200 -
+[2025-08-25 02:12:03] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:03] "GET /static/js/charts.js HTTP/1.1" 200 -
+[2025-08-25 02:12:03] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:03] "GET /static/js/utils.js HTTP/1.1" 200 -
+[2025-08-25 02:12:12] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:12] "GET / HTTP/1.1" 200 -
+[2025-08-25 02:12:12] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:12] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:12:12] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:12] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:12:13] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:13] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 02:12:13] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:13] "[36mGET /static/js/api.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:12:13] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:13] "[36mGET /static/js/charts.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:12:13] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:13] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:12:13] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:13] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 02:12:13] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:13] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 02:12:36] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:36] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-25 02:12:36] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:36] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:12:36] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:36] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:12:36] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:36] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 02:12:36] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:36] "[36mGET /static/js/api.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:12:36] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:36] "[36mGET /static/js/charts.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:12:36] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:12:36] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:14:45] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:45] "GET / HTTP/1.1" 200 -
+[2025-08-25 02:14:45] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:45] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:14:45] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:45] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:14:45] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:45] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:14:45] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:45] "[36mGET /static/images/images.jpg HTTP/1.1[0m" 304 -
+[2025-08-25 02:14:45] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:45] "[36mGET /static/js/api.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:14:45] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:45] "[36mGET /static/js/charts.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:14:45] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:45] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 02:14:45] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:45] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 02:14:51] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:51] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-25 02:14:51] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:51] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:14:51] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:51] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:14:51] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:51] "[36mGET /static/js/api.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:14:51] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:51] "[36mGET /static/js/charts.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:14:51] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:51] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:14:53] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:53] "GET / HTTP/1.1" 200 -
+[2025-08-25 02:14:53] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:53] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:14:53] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:53] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:14:53] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:53] "[36mGET /static/js/api.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:14:53] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:53] "[36mGET /static/js/charts.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:14:53] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:53] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:14:53] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:53] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 02:14:53] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:53] "GET /api/sensors?limit=48 HTTP/1.1" 200 -
+[2025-08-25 02:14:59] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:59] "GET /dashboard HTTP/1.1" 200 -
+[2025-08-25 02:14:59] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:59] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:14:59] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:14:59] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:15:00] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:15:00] "[36mGET /static/js/api.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:15:00] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:15:00] "[36mGET /static/js/charts.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:15:00] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:15:00] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:15:02] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:15:02] "GET /result HTTP/1.1" 200 -
+[2025-08-25 02:15:02] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:15:02] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:15:02] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:15:02] "GET /stream.mjpg HTTP/1.1" 200 -
+[2025-08-25 02:15:02] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:15:02] "GET /stream.mjpg?t=1756059302627 HTTP/1.1" 200 -
+[2025-08-25 02:15:03] [INFO] core.streaming - Client disconnected from MJPEG stream.
+[2025-08-25 02:15:16] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:15:16] "GET / HTTP/1.1" 200 -
+[2025-08-25 02:15:16] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:15:16] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+[2025-08-25 02:15:16] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:15:16] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:15:16] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:15:16] "[36mGET /static/js/api.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:15:16] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:15:16] "[36mGET /static/js/charts.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:15:16] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:15:16] "[36mGET /static/js/utils.js HTTP/1.1[0m" 304 -
+[2025-08-25 02:15:17] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:15:17] "GET /api/sensors/latest HTTP/1.1" 200 -
+[2025-08-25 02:15:17] [INFO] werkzeug - 127.0.0.1 - - [25/Aug/2025 02:15:17] "GET /api/sensors?limit=48 HTTP/1.1" 200 -

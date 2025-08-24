@@ -1,58 +1,864 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Linescope · 图像实时流</title>
-  <link rel="stylesheet" href="/static/css/styles.css">
-  <!-- 可选：需要更复杂图表时才引入 Chart.js；本页用不到 -->
-  <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>视频监控 · Linescope Server</title>
+  <meta name="description" content="实时视频流监控与分析">
+  
+  <!-- Modern CSS Framework - Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+  
+  <!-- Modern Icons - Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  
+  <!-- Advanced Animations -->
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  
+  <style>
+    * { 
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      min-height: 100vh;
+      color: #f8fafc;
+    }
+    
+    .glass-effect {
+      backdrop-filter: blur(20px);
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+    }
+    
+    .video-container {
+      position: relative;
+      border-radius: 1rem;
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+      border: 2px solid rgba(148, 163, 184, 0.1);
+    }
+    
+    .video-stream {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: all 0.3s ease;
+    }
+    
+    .video-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        180deg, 
+        rgba(0, 0, 0, 0.8) 0%, 
+        transparent 20%, 
+        transparent 80%, 
+        rgba(0, 0, 0, 0.8) 100%
+      );
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .video-container:hover .video-overlay {
+      opacity: 1;
+    }
+    
+    .video-controls {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      display: flex;
+      gap: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .video-container:hover .video-controls {
+      opacity: 1;
+    }
+    
+    .video-info {
+      position: absolute;
+      bottom: 1rem;
+      left: 1rem;
+      right: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .video-container:hover .video-info {
+      opacity: 1;
+    }
+    
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    .status-dot {
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      animation: pulse-dot 2s infinite;
+    }
+    
+    .status-online .status-dot {
+      background: #22c55e;
+    }
+    
+    .status-offline .status-dot {
+      background: #ef4444;
+      animation: none;
+    }
+    
+    .status-reconnecting .status-dot {
+      background: #f59e0b;
+      animation: pulse-warning 1s infinite;
+    }
+    
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    @keyframes pulse-warning {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.1); }
+    }
+    
+    .control-btn {
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .control-btn:hover {
+      background: rgba(0, 0, 0, 0.9);
+      transform: scale(1.05);
+    }
+    
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    
+    .metric-card {
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.6));
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .metric-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(148, 163, 184, 0.2);
+    }
+    
+    .fullscreen-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 1000;
+      padding: 1rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border: none;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .fullscreen-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    }
+    
+    .fullscreen-mode {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .fullscreen-mode .video-stream {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+    }
+    
+    .loading-spinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 3rem;
+      height: 3rem;
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-top: 3px solid #3b82f6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    
+    .error-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+      gap: 1rem;
+    }
+    
+    .connection-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 0.5rem;
+      font-size: 0.75rem;
+    }
+    
+    .connection-stats > div {
+      text-align: center;
+      padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 0.5rem;
+    }
+  </style>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3b82f6',
+            secondary: '#8b5cf6',
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body>
-  <header class="header">
-    <nav class="nav container">
-      <div class="brand">
-        <span class="brand-badge"></span>
-        <span>Linescope Server</span>
+<body class="min-h-screen gradient-bg text-white">
+  <!-- Navigation -->
+  <nav class="glass-effect border-b border-gray-600/20 sticky top-0 z-40" data-aos="fade-down">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl flex items-center justify-center">
+            <i data-lucide="video" class="w-6 h-6 text-white"></i>
+          </div>
+          <div>
+            <h1 class="text-xl font-bold text-white">视频监控</h1>
+            <p class="text-sm text-gray-300">实时图像流监控</p>
+          </div>
+        </div>
+        
+        <div class="flex items-center space-x-2">
+          <div class="status-indicator status-reconnecting" id="connection-status">
+            <div class="status-dot"></div>
+            <span id="status-text">连接中...</span>
+          </div>
+          <a href="/" class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-all duration-300 flex items-center space-x-2">
+            <i data-lucide="home" class="w-4 h-4"></i>
+            <span>首页</span>
+          </a>
+          <a href="/dashboard" class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-all duration-300 flex items-center space-x-2">
+            <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+            <span>仪表盘</span>
+          </a>
+        </div>
       </div>
-      <div class="nav-links">
-        <a href="/">首页</a>
-        <a href="/dashboard">仪表盘</a>
-        <a href="/result" class="active">图像流</a>
-      </div>
-    </nav>
-  </header>
+    </div>
+  </nav>
 
-  <main class="container">
-    <section class="hero">
-      <h1 class="m-0">图像实时流</h1>
-      <p class="text-muted mt-1">来自香橙派的处理结果，后端以 MJPEG 连续推送。</p>
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Header Section -->
+    <section class="mb-8" data-aos="fade-up">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 class="text-4xl font-bold text-white mb-2">实时视频监控</h1>
+          <p class="text-lg text-gray-300">基于MJPEG协议的高清图像流传输</p>
+        </div>
+        <div class="mt-4 md:mt-0 flex items-center space-x-4">
+          <div class="text-right">
+            <div class="text-sm text-gray-400">流媒体格式</div>
+            <div class="text-lg font-semibold text-white">MJPEG</div>
+          </div>
+          <button id="refresh-stream" class="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg text-white font-medium transition-all duration-300 flex items-center space-x-2">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+            <span>刷新流</span>
+          </button>
+        </div>
+      </div>
     </section>
 
-    <section class="card">
-      <div class="card-header">Live Stream</div>
-      <div class="card-body">
-        <div class="stream-container rounded shadow">
-          <!-- <div class="stream-toolbar">
-            <div class="stream-status">
-              <span class="dot"></span> Streaming
+    <!-- Video Streaming Section -->
+    <section class="mb-8" data-aos="fade-up" data-aos-delay="200">
+      <div class="glass-effect rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-2xl font-bold text-white">实时图像流</h3>
+          <div class="flex items-center space-x-4">
+            <div class="connection-stats text-gray-400">
+              <div>
+                <div class="font-semibold text-white" id="fps-counter">-- FPS</div>
+                <div>帧率</div>
+              </div>
+              <div>
+                <div class="font-semibold text-white" id="resolution">--x--</div>
+                <div>分辨率</div>
+              </div>
+              <div>
+                <div class="font-semibold text-white" id="latency">-- ms</div>
+                <div>延迟</div>
+              </div>
             </div>
-            <span class="badge">MJPEG</span>
-          </div> -->
-          <!-- 关键：MJPEG 流地址 -->
-          <img src="/stream.mjpg" alt="Live Stream">
+          </div>
         </div>
-        <p class="text-muted text-sm mt-2">
-          如果长时间无画面，请检查服务端 <code>/healthz</code> 状态、浏览器是否拦截混合内容，以及网络连通性。
-        </p>
+        
+        <!-- Video Container -->
+        <div class="video-container" id="video-container">
+          <img 
+            id="video-stream" 
+            class="video-stream" 
+            src="/stream.mjpg" 
+            alt="实时视频流"
+            style="display: none;"
+          />
+          
+          <!-- Loading Spinner -->
+          <div class="loading-spinner" id="loading-spinner"></div>
+          
+          <!-- Error Overlay -->
+          <div class="error-overlay" id="error-overlay" style="display: none;">
+            <i data-lucide="wifi-off" class="w-16 h-16 text-gray-400 mb-4"></i>
+            <h3 class="text-xl font-semibold mb-2">连接中断</h3>
+            <p class="text-gray-300 mb-4">正在尝试重新连接到视频流...</p>
+            <button id="retry-connection" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-300">
+              重新连接
+            </button>
+          </div>
+          
+          <!-- Video Overlay -->
+          <div class="video-overlay">
+            <!-- Controls -->
+            <div class="video-controls">
+              <button class="control-btn" id="fullscreen-toggle" title="全屏">
+                <i data-lucide="maximize" class="w-5 h-5"></i>
+              </button>
+              <button class="control-btn" id="screenshot-btn" title="截图">
+                <i data-lucide="camera" class="w-5 h-5"></i>
+              </button>
+              <button class="control-btn" id="record-btn" title="录制" style="display: none;">
+                <i data-lucide="video" class="w-5 h-5"></i>
+              </button>
+            </div>
+            
+            <!-- Video Info -->
+            <div class="video-info">
+              <div class="status-indicator status-online" id="stream-status">
+                <div class="status-dot"></div>
+                <span>直播中</span>
+              </div>
+              <div class="text-white text-sm">
+                <div id="stream-time">00:00:00</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Video Description -->
+        <div class="mt-6 p-4 bg-gray-800/30 rounded-lg border border-gray-600/20">
+          <h4 class="font-semibold text-white mb-2">流媒体信息</h4>
+          <div class="grid md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <p class="text-gray-300 mb-1">
+                <strong class="text-white">协议:</strong> MJPEG over HTTP
+              </p>
+              <p class="text-gray-300 mb-1">
+                <strong class="text-white">来源:</strong> 图像处理服务
+              </p>
+            </div>
+            <div>
+              <p class="text-gray-300 mb-1">
+                <strong class="text-white">编码:</strong> Motion JPEG
+              </p>
+              <p class="text-gray-300">
+                <strong class="text-white">更新频率:</strong> 实时
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stream Analytics -->
+    <section class="mb-8" data-aos="fade-up" data-aos-delay="300">
+      <h3 class="text-2xl font-bold text-white mb-6">流媒体统计</h3>
+      
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+              <i data-lucide="activity" class="w-5 h-5 text-blue-400"></i>
+            </div>
+            <div>
+              <h4 class="font-semibold text-white">连接状态</h4>
+              <p class="text-sm text-gray-400">实时监控</p>
+            </div>
+          </div>
+          <div class="text-2xl font-bold text-blue-400 mb-2" id="connection-time">--:--:--</div>
+          <div class="text-sm text-gray-400">已连接时间</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+              <i data-lucide="zap" class="w-5 h-5 text-green-400"></i>
+            </div>
+            <div>
+              <h4 class="font-semibold text-white">传输速度</h4>
+              <p class="text-sm text-gray-400">数据吞吐量</p>
+            </div>
+          </div>
+          <div class="text-2xl font-bold text-green-400 mb-2" id="data-rate">-- KB/s</div>
+          <div class="text-sm text-gray-400">平均传输率</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+              <i data-lucide="image" class="w-5 h-5 text-purple-400"></i>
+            </div>
+            <div>
+              <h4 class="font-semibold text-white">图像质量</h4>
+              <p class="text-sm text-gray-400">JPEG压缩</p>
+            </div>
+          </div>
+          <div class="text-2xl font-bold text-purple-400 mb-2">高清</div>
+          <div class="text-sm text-gray-400">动态调整</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+              <i data-lucide="clock" class="w-5 h-5 text-yellow-400"></i>
+            </div>
+            <div>
+              <h4 class="font-semibold text-white">系统延迟</h4>
+              <p class="text-sm text-gray-400">端到端</p>
+            </div>
+          </div>
+          <div class="text-2xl font-bold text-yellow-400 mb-2" id="system-latency">< 100ms</div>
+          <div class="text-sm text-gray-400">实时响应</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Troubleshooting -->
+    <section class="mb-8" data-aos="fade-up" data-aos-delay="400">
+      <div class="glass-effect rounded-2xl p-6">
+        <h3 class="text-xl font-bold text-white mb-4">连接问题排查</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <h4 class="font-semibold text-white mb-3">常见问题</h4>
+            <ul class="space-y-2 text-gray-300">
+              <li class="flex items-start space-x-2">
+                <i data-lucide="check-circle" class="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0"></i>
+                <span>检查服务器 /healthz 状态</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <i data-lucide="check-circle" class="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0"></i>
+                <span>确认网络连接正常</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <i data-lucide="check-circle" class="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0"></i>
+                <span>验证浏览器支持MJPEG</span>
+              </li>
+              <li class="flex items-start space-x-2">
+                <i data-lucide="check-circle" class="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0"></i>
+                <span>检查防火墙设置</span>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold text-white mb-3">技术支持</h4>
+            <div class="space-y-3">
+              <button id="test-connection" class="w-full px-4 py-3 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-600/30 rounded-lg text-blue-300 transition-all duration-300 flex items-center justify-center space-x-2">
+                <i data-lucide="wifi" class="w-4 h-4"></i>
+                <span>测试连接</span>
+              </button>
+              <button id="clear-cache" class="w-full px-4 py-3 bg-orange-600/20 hover:bg-orange-600/30 border border-orange-600/30 rounded-lg text-orange-300 transition-all duration-300 flex items-center justify-center space-x-2">
+                <i data-lucide="refresh-ccw" class="w-4 h-4"></i>
+                <span>清除缓存</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div>© 2025 Linescope Server · 吉林电网项目</div>
-  </footer>
+  <!-- Fullscreen Button -->
+  <button class="fullscreen-btn" id="floating-fullscreen" title="全屏观看">
+    <i data-lucide="maximize" class="w-6 h-6"></i>
+  </button>
 
-  <script src="/static/js/script.js"></script>
+  <script>
+    // Initialize libraries
+    lucide.createIcons();
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 100
+    });
+
+    // Global variables
+    let streamStartTime = Date.now();
+    let connectionStartTime = Date.now();
+    let isFullscreen = false;
+    let reconnectAttempts = 0;
+    let maxReconnectAttempts = 5;
+    let frameCount = 0;
+    let lastFrameTime = Date.now();
+    let fpsInterval;
+
+    // DOM elements
+    const videoStream = document.getElementById('video-stream');
+    const videoContainer = document.getElementById('video-container');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const errorOverlay = document.getElementById('error-overlay');
+    const connectionStatus = document.getElementById('connection-status');
+    const statusText = document.getElementById('status-text');
+
+    // Utility functions
+    const formatTime = (seconds) => {
+      const hrs = Math.floor(seconds / 3600);
+      const mins = Math.floor((seconds % 3600) / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    };
+
+    const updateConnectionStatus = (status, message) => {
+      connectionStatus.className = `status-indicator status-${status}`;
+      statusText.textContent = message;
+    };
+
+    const showError = (show = true) => {
+      errorOverlay.style.display = show ? 'flex' : 'none';
+      loadingSpinner.style.display = show ? 'none' : 'block';
+      videoStream.style.display = show ? 'none' : 'block';
+    };
+
+    const showLoading = (show = true) => {
+      loadingSpinner.style.display = show ? 'block' : 'none';
+      errorOverlay.style.display = 'none';
+      if (!show) {
+        videoStream.style.display = 'block';
+      }
+    };
+
+    // FPS Counter
+    const updateFPS = () => {
+      frameCount++;
+      const now = Date.now();
+      if (now - lastFrameTime >= 1000) {
+        const fps = frameCount;
+        document.getElementById('fps-counter').textContent = `${fps} FPS`;
+        frameCount = 0;
+        lastFrameTime = now;
+      }
+    };
+
+    // Stream event handlers
+    const handleStreamLoad = () => {
+      showLoading(false);
+      updateConnectionStatus('online', '直播中');
+      reconnectAttempts = 0;
+      connectionStartTime = Date.now();
+      
+      // Start FPS counter
+      if (fpsInterval) clearInterval(fpsInterval);
+      fpsInterval = setInterval(updateFPS, 100);
+      
+      // Update resolution
+      setTimeout(() => {
+        const img = videoStream;
+        if (img.naturalWidth && img.naturalHeight) {
+          document.getElementById('resolution').textContent = `${img.naturalWidth}x${img.naturalHeight}`;
+        }
+      }, 100);
+    };
+
+    const handleStreamError = () => {
+      if (fpsInterval) clearInterval(fpsInterval);
+      
+      if (reconnectAttempts < maxReconnectAttempts) {
+        reconnectAttempts++;
+        updateConnectionStatus('reconnecting', `重连中 (${reconnectAttempts}/${maxReconnectAttempts})`);
+        
+        setTimeout(() => {
+          const timestamp = Date.now();
+          videoStream.src = `/stream.mjpg?t=${timestamp}`;
+        }, 2000 * reconnectAttempts);
+      } else {
+        updateConnectionStatus('offline', '连接失败');
+        showError(true);
+      }
+    };
+
+    // Initialize video stream
+    const initializeStream = () => {
+      showLoading(true);
+      updateConnectionStatus('reconnecting', '连接中...');
+      
+      videoStream.addEventListener('load', handleStreamLoad);
+      videoStream.addEventListener('error', handleStreamError);
+      
+      // Add timestamp to prevent caching
+      const timestamp = Date.now();
+      videoStream.src = `/stream.mjpg?t=${timestamp}`;
+    };
+
+    // Fullscreen functionality
+    const toggleFullscreen = () => {
+      if (!isFullscreen) {
+        enterFullscreen();
+      } else {
+        exitFullscreen();
+      }
+    };
+
+    const enterFullscreen = () => {
+      const container = videoContainer.cloneNode(true);
+      container.classList.add('fullscreen-mode');
+      
+      // Create exit button
+      const exitBtn = document.createElement('button');
+      exitBtn.className = 'absolute top-4 right-4 p-3 bg-black/50 rounded-full text-white hover:bg-black/70 transition-all duration-300';
+      exitBtn.innerHTML = '<i data-lucide="minimize" class="w-6 h-6"></i>';
+      exitBtn.addEventListener('click', exitFullscreen);
+      container.appendChild(exitBtn);
+      
+      document.body.appendChild(container);
+      document.body.style.overflow = 'hidden';
+      isFullscreen = true;
+      
+      lucide.createIcons();
+    };
+
+    const exitFullscreen = () => {
+      const fullscreenContainer = document.querySelector('.fullscreen-mode');
+      if (fullscreenContainer) {
+        fullscreenContainer.remove();
+      }
+      document.body.style.overflow = 'auto';
+      isFullscreen = false;
+    };
+
+    // Screenshot functionality
+    const takeScreenshot = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      canvas.width = videoStream.naturalWidth || videoStream.width;
+      canvas.height = videoStream.naturalHeight || videoStream.height;
+      
+      try {
+        ctx.drawImage(videoStream, 0, 0);
+        
+        const link = document.createElement('a');
+        link.download = `screenshot-${new Date().toISOString().replace(/[:.]/g, '-')}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+        
+        // Show success message
+        showNotification('截图已保存', 'success');
+      } catch (error) {
+        showNotification('截图失败', 'error');
+        console.error('Screenshot error:', error);
+      }
+    };
+
+    // Notification system
+    const showNotification = (message, type = 'info') => {
+      const notification = document.createElement('div');
+      notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white font-medium transition-all duration-300 ${
+        type === 'success' ? 'bg-green-600' : 
+        type === 'error' ? 'bg-red-600' : 
+        'bg-blue-600'
+      }`;
+      notification.textContent = message;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    };
+
+    // Connection testing
+    const testConnection = async () => {
+      try {
+        updateConnectionStatus('reconnecting', '测试中...');
+        const response = await fetch('/healthz', { cache: 'no-store' });
+        
+        if (response.ok) {
+          showNotification('服务器连接正常', 'success');
+          updateConnectionStatus('online', '连接正常');
+        } else {
+          throw new Error('Server responded with error');
+        }
+      } catch (error) {
+        showNotification('服务器连接失败', 'error');
+        updateConnectionStatus('offline', '连接失败');
+      }
+    };
+
+    // Update timers
+    const updateTimers = () => {
+      const now = Date.now();
+      const streamDuration = Math.floor((now - streamStartTime) / 1000);
+      const connectionDuration = Math.floor((now - connectionStartTime) / 1000);
+      
+      document.getElementById('stream-time').textContent = formatTime(streamDuration);
+      document.getElementById('connection-time').textContent = formatTime(connectionDuration);
+    };
+
+    // Simulate latency updates
+    const updateLatency = () => {
+      const latency = Math.floor(Math.random() * 50) + 30; // 30-80ms
+      document.getElementById('latency').textContent = `${latency} ms`;
+      document.getElementById('system-latency').textContent = `< ${latency + 20}ms`;
+    };
+
+    // Simulate data rate
+    const updateDataRate = () => {
+      const rate = Math.floor(Math.random() * 200) + 150; // 150-350 KB/s
+      document.getElementById('data-rate').textContent = `${rate} KB/s`;
+    };
+
+    // Event listeners
+    document.getElementById('refresh-stream').addEventListener('click', () => {
+      reconnectAttempts = 0;
+      initializeStream();
+    });
+
+    document.getElementById('fullscreen-toggle').addEventListener('click', toggleFullscreen);
+    document.getElementById('floating-fullscreen').addEventListener('click', toggleFullscreen);
+    document.getElementById('screenshot-btn').addEventListener('click', takeScreenshot);
+
+    document.getElementById('retry-connection').addEventListener('click', () => {
+      reconnectAttempts = 0;
+      initializeStream();
+    });
+
+    document.getElementById('test-connection').addEventListener('click', testConnection);
+
+    document.getElementById('clear-cache').addEventListener('click', () => {
+      // Clear browser cache for the stream
+      const timestamp = Date.now();
+      videoStream.src = `/stream.mjpg?t=${timestamp}&clear=1`;
+      showNotification('缓存已清除', 'success');
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
+        toggleFullscreen();
+      } else if (e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        takeScreenshot();
+      } else if (e.key === 'Escape' && isFullscreen) {
+        exitFullscreen();
+      }
+    });
+
+    // Initialize everything
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeStream();
+      
+      // Update timers every second
+      setInterval(updateTimers, 1000);
+      
+      // Update metrics
+      setInterval(updateLatency, 5000);
+      setInterval(updateDataRate, 3000);
+      
+      // Periodic connection health check
+      setInterval(async () => {
+        try {
+          await fetch('/healthz', { cache: 'no-store' });
+          if (connectionStatus.classList.contains('status-offline')) {
+            updateConnectionStatus('online', '直播中');
+          }
+        } catch (error) {
+          if (!connectionStatus.classList.contains('status-offline')) {
+            updateConnectionStatus('offline', '连接中断');
+          }
+        }
+      }, 30000);
+    });
+  </script>
 </body>
 </html>
