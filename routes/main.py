@@ -71,3 +71,4 @@ def register_main_routes(app: Flask) -> None:
         PWA Manifest 文件路由
         """
         return send_from_directory('static', 'manifest.json', mimetype='application/json')
+    

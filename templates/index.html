@@ -12,7 +12,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Linescope">
-  <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/icon-192.png') }}">
+  <!-- Favicon and Icons -->
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='icon-32x32.ico') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='icon-32x32.ico') }}">
   
   <!-- DNS预解析和预连接优化 -->
   <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">

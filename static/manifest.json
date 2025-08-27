@@ -27,52 +27,16 @@
   ],
   "icons": [
     {
-      "src": "/static/images/icon-72.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "src": "/static/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon",
+      "purpose": "any"
     },
     {
-      "src": "/static/images/icon-96.png", 
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/static/images/icon-128.png",
-      "sizes": "128x128", 
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/static/images/icon-144.png",
-      "sizes": "144x144",
-      "type": "image/png", 
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/static/images/icon-152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/static/images/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/static/images/icon-384.png",
-      "sizes": "384x384", 
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/static/images/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "src": "/static/icon-32x32.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon",
+      "purpose": "any"
     }
   ],
   "shortcuts": [
@@ -80,27 +44,13 @@
       "name": "数据仪表盘",
       "short_name": "仪表盘",
       "description": "查看详细的传感器数据和分析图表",
-      "url": "/dashboard",
-      "icons": [
-        {
-          "src": "/static/images/shortcut-dashboard.png",
-          "sizes": "96x96",
-          "type": "image/png"
-        }
-      ]
+      "url": "/dashboard"
     },
     {
       "name": "视频监控",
       "short_name": "监控",
       "description": "实时查看摄像头监控画面",
-      "url": "/result",
-      "icons": [
-        {
-          "src": "/static/images/shortcut-video.png",
-          "sizes": "96x96", 
-          "type": "image/png"
-        }
-      ]
+      "url": "/result"
     }
   ],
   "related_applications": [],
