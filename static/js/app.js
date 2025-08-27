@@ -70,6 +70,31 @@ const moduleLoader = new ModuleLoader();
 import { ApiManager } from './api.js';
 import { Utils } from './utils.js';
 
+// 全局辅助函数 (用于AG-Grid等需要全局访问的地方)
+function formatNumber(num, precision = 2) {
+  if (num === null || num === undefined || isNaN(num)) return '--';
+  return Number(num).toFixed(precision);
+}
+
+function calculateTrend(current, previous) {
+  if (!previous || previous === 0) return { percentage: 0, direction: 'stable' };
+  const change = ((current - previous) / previous) * 100;
+  const direction = Math.abs(change) < 1 ? 'stable' : change > 0 ? 'up' : 'down';
+  return { percentage: Math.abs(change), direction };
+}
+
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
 // 性能监控集成
 const performanceMonitor = window.performanceMonitor;
 
@@ -105,6 +130,14 @@ export class LineScopeApp {
 
     this.intervals = [];
     this.init();
+  }
+
+  /**
+   * 格式化数字 (本地方法，避免Utils依赖问题)
+   */
+  formatNumber(num, precision = 2) {
+    if (num === null || num === undefined || isNaN(num)) return '--';
+    return Number(num).toFixed(precision);
   }
 
   /**
@@ -197,20 +230,42 @@ export class LineScopeApp {
     
     // 尝试使用服务端数据
     if (typeof window.initialData !== 'undefined' && window.initialData) {
-      this.state.sensorData = window.initialData;
-      console.log(`使用服务端数据: ${this.state.sensorData.length} 条记录`);
+      console.log('发现服务端数据:', window.initialData);
+      if (Array.isArray(window.initialData) && window.initialData.length > 0) {
+        this.state.sensorData = window.initialData;
+        console.log(`使用服务端数据: ${this.state.sensorData.length} 条记录`);
+        console.log('数据示例:', this.state.sensorData[0]);
+      } else {
+        console.warn('服务端数据格式不正确或为空');
+      }
+    } else {
+      console.log('未找到服务端数据，将从API加载');
     }
     
     // 如果没有数据，从API加载
     if (this.state.sensorData.length === 0) {
+      console.log('开始从API加载数据...');
       await this.loadSensorData();
     }
     
     // 更新UI
     if (this.state.sensorData.length > 0) {
+      console.log('开始更新仪表盘UI...');
       this.updateKPIs();
       await this.updateDashboardCharts();
       this.updateDataGrid();
+      console.log('仪表盘初始化完成');
+    } else {
+      console.error('没有可用的数据，仪表盘无法初始化');
+      // 显示无数据提示
+      const gridDiv = document.querySelector('#data-grid');
+      if (gridDiv) {
+        gridDiv.innerHTML = `
+          <div class="flex flex-col items-center justify-center h-full text-yellow-400">
+            <div class="text-lg font-semibold mb-2">📊 暂无数据</div>
+            <div class="text-sm text-gray-400">请检查数据源或稍后重试</div>
+          </div>`;
+      }
     }
   }
 
@@ -319,7 +374,7 @@ export class LineScopeApp {
     metrics.forEach(metric => {
       const element = document.getElementById(metric.id);
       if (element) {
-        element.textContent = Utils.formatNumber(metric.value) + metric.unit;
+        element.textContent = formatNumber(metric.value) + metric.unit;
       }
 
       // 更新进度条
@@ -445,11 +500,11 @@ export class LineScopeApp {
       // 更新当前值
       const currentElement = document.getElementById(`${metric.id}-current`);
       if (currentElement) {
-        currentElement.textContent = Utils.formatNumber(current) + metric.unit;
+        currentElement.textContent = formatNumber(current) + metric.unit;
       }
 
       // 更新趋势
-      const trend = Utils.calculateTrend(current, prev);
+      const trend = calculateTrend(current, prev);
       this.updateTrendIndicator(`${metric.id}-trend`, trend);
 
       // 计算范围
@@ -459,7 +514,7 @@ export class LineScopeApp {
         const max = Math.max(...values);
         const rangeElement = document.getElementById(`${metric.id}-range`);
         if (rangeElement) {
-          rangeElement.textContent = `${Utils.formatNumber(min)} ~ ${Utils.formatNumber(max)}${metric.unit}`;
+          rangeElement.textContent = `${formatNumber(min)} ~ ${formatNumber(max)}${metric.unit}`;
         }
       }
     });
@@ -512,11 +567,26 @@ export class LineScopeApp {
   updateDataGrid() {
     if (typeof agGrid === 'undefined') {
       console.warn('AG-Grid 未加载，跳过表格更新');
+      const gridDiv = document.querySelector('#data-grid');
+      if (gridDiv) {
+        gridDiv.innerHTML = '<div class="flex items-center justify-center h-full text-white/60">AG-Grid 库未加载</div>';
+      }
       return;
     }
 
     const gridDiv = document.querySelector('#data-grid');
-    if (!gridDiv) return;
+    if (!gridDiv) {
+      console.error('数据表格容器未找到');
+      return;
+    }
+
+    // 检查数据
+    if (!this.state.sensorData || this.state.sensorData.length === 0) {
+      gridDiv.innerHTML = '<div class="flex items-center justify-center h-full text-white/60">暂无数据</div>';
+      return;
+    }
+
+    console.log(`正在创建数据表格，数据条数: ${this.state.sensorData.length}`);
 
     const columnDefs = [
       { 
@@ -524,77 +594,113 @@ export class LineScopeApp {
         headerName: '时间戳', 
         width: 180,
         pinned: 'left',
-        cellRenderer: (params) => `<code>${params.value}</code>`
+        cellStyle: { color: '#e2e8f0', fontFamily: 'monospace' }
       },
       { 
         field: 'sway_speed_dps', 
         headerName: '晃动速度 (°/s)', 
         width: 140,
         type: 'numericColumn',
-        cellRenderer: (params) => {
+        cellStyle: (params) => {
           const isAlert = params.value > 60;
-          const className = isAlert ? 'text-red-400 font-bold' : 'text-white';
-          return `<span class="${className}">${Utils.formatNumber(params.value)}</span>`;
-        }
+          return {
+            color: isAlert ? '#f87171' : '#e2e8f0',
+            fontWeight: isAlert ? 'bold' : 'normal'
+          };
+        },
+        valueFormatter: (params) => formatNumber(params.value)
       },
       { 
         field: 'temperature_C', 
         headerName: '温度 (°C)', 
         width: 120,
         type: 'numericColumn',
-        cellRenderer: (params) => Utils.formatNumber(params.value)
+        cellStyle: { color: '#60a5fa' },
+        valueFormatter: (params) => formatNumber(params.value)
       },
       { 
         field: 'humidity_RH', 
         headerName: '湿度 (%)', 
         width: 120,
         type: 'numericColumn',
-        cellRenderer: (params) => Utils.formatNumber(params.value)
+        cellStyle: { color: '#34d399' },
+        valueFormatter: (params) => formatNumber(params.value)
       },
       { 
         field: 'pressure_hPa', 
         headerName: '气压 (hPa)', 
         width: 130,
         type: 'numericColumn',
-        cellRenderer: (params) => Utils.formatNumber(params.value)
+        cellStyle: { color: '#a78bfa' },
+        valueFormatter: (params) => formatNumber(params.value)
       },
       { 
         field: 'lux', 
         headerName: '光照 (Lux)', 
         width: 120,
         type: 'numericColumn',
-        cellRenderer: (params) => Utils.formatNumber(params.value, 0)
+        cellStyle: { color: '#fbbf24' },
+        valueFormatter: (params) => formatNumber(params.value, 0)
       }
     ];
 
     const gridOptions = {
       columnDefs: columnDefs,
-      rowData: this.state.sensorData.slice().reverse(),
+      rowData: this.state.sensorData.slice().reverse(), // 最新数据在前
       defaultColDef: {
         sortable: true,
         filter: true,
-        resizable: true
+        resizable: true,
+        cellStyle: { color: '#e2e8f0' }
       },
       pagination: true,
       paginationPageSize: 20,
+      paginationPageSizeSelector: [10, 20, 50, 100],
       animateRows: true,
+      rowHeight: 40,
+      headerHeight: 45,
       getRowStyle: (params) => {
         if (params.data.sway_speed_dps > 60) {
-          return { backgroundColor: 'rgba(239, 68, 68, 0.1)' };
+          return { 
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            borderLeft: '3px solid #f87171'
+          };
         }
         return null;
+      },
+      onGridReady: (params) => {
+        console.log('AG-Grid 就绪，自动调整列宽');
+        params.api.sizeColumnsToFit();
+      },
+      onFirstDataRendered: (params) => {
+        console.log('AG-Grid 首次数据渲染完成');
       }
     };
 
     try {
-      new agGrid.Grid(gridDiv, gridOptions);
+      // 销毁之前的Grid实例（如果存在）
+      if (this.gridApi && typeof this.gridApi.destroy === 'function') {
+        this.gridApi.destroy();
+      }
       
+      // 清空容器
+      gridDiv.innerHTML = '';
+      
+      // 创建新的Grid实例 (使用新版本AG-Grid API)
+      this.gridApi = new agGrid.Grid(gridDiv, gridOptions);
+      
+      // 更新总行数显示
       const totalRowsElement = document.getElementById('total-rows');
       if (totalRowsElement) {
         totalRowsElement.textContent = this.state.sensorData.length;
       }
+      
+      console.log('数据表格创建成功');
     } catch (error) {
       console.error('更新数据表格失败:', error);
+      gridDiv.innerHTML = `<div class="flex items-center justify-center h-full text-red-400">
+        表格加载失败: ${error.message}
+      </div>`;
     }
   }
 
@@ -603,7 +709,7 @@ export class LineScopeApp {
    */
   setupEventListeners() {
     // 窗口大小调整
-    window.addEventListener('resize', Utils.debounce(async () => {
+    window.addEventListener('resize', debounce(async () => {
       if (this.chartManager) {
         this.chartManager.resizeAllCharts();
       }
@@ -680,11 +786,11 @@ export class LineScopeApp {
       headers.join(','),
       ...this.state.sensorData.map(row => [
         row.timestamp_Beijing,
-        Utils.formatNumber(row.sway_speed_dps),
-        Utils.formatNumber(row.temperature_C),
-        Utils.formatNumber(row.humidity_RH),
-        Utils.formatNumber(row.pressure_hPa),
-        Utils.formatNumber(row.lux, 0)
+        formatNumber(row.sway_speed_dps),
+        formatNumber(row.temperature_C),
+        formatNumber(row.humidity_RH),
+        formatNumber(row.pressure_hPa),
+        formatNumber(row.lux, 0)
       ].join(','))
     ].join('\n');
 
@@ -747,6 +853,10 @@ export class LineScopeApp {
     this.pauseUpdates();
     if (this.chartManager) {
       this.chartManager.disposeAllCharts();
+    }
+    if (this.gridApi && typeof this.gridApi.destroy === 'function') {
+      this.gridApi.destroy();
+      this.gridApi = null;
     }
     console.log('应用资源已清理');
   }

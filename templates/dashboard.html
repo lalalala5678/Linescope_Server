@@ -89,13 +89,27 @@
     .grid-container {
       height: 600px;
       width: 100%;
+      overflow: hidden;
     }
     
     .ag-theme-alpine-dark {
-      --ag-background-color: rgba(30, 41, 59, 0.8);
-      --ag-header-background-color: rgba(15, 23, 42, 0.9);
-      --ag-odd-row-background-color: rgba(30, 41, 59, 0.3);
-      --ag-border-color: rgba(148, 163, 184, 0.1);
+      --ag-background-color: rgba(30, 41, 59, 0.9);
+      --ag-header-background-color: rgba(15, 23, 42, 0.95);
+      --ag-odd-row-background-color: rgba(30, 41, 59, 0.4);
+      --ag-even-row-background-color: rgba(30, 41, 59, 0.2);
+      --ag-border-color: rgba(148, 163, 184, 0.2);
+      --ag-header-foreground-color: #f1f5f9;
+      --ag-foreground-color: #e2e8f0;
+      --ag-selected-row-background-color: rgba(59, 130, 246, 0.1);
+      --ag-row-hover-color: rgba(148, 163, 184, 0.1);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    
+    /* 确保AG-Grid容器有明确的尺寸 */
+    #data-grid {
+      height: 600px !important;
+      width: 100% !important;
+      min-height: 400px;
     }
     
     .stats-grid {
@@ -440,9 +454,7 @@
             </div>
           </div>
         </div>
-        <div class="grid-container ag-theme-alpine-dark">
-          <div id="data-grid"></div>
-        </div>
+        <div id="data-grid" class="grid-container ag-theme-alpine-dark"></div>
       </div>
     </section>
   </main>
@@ -451,7 +463,13 @@
   {% if data_json %}
   <script>
     // 设置服务端数据供新的模块化系统使用
-    window.initialData = {{ data_json|safe }};
+    try {
+      window.initialData = JSON.parse({{ data_json|tojson }});
+      console.log('服务端数据加载成功，数据条数:', window.initialData ? window.initialData.length : 0);
+    } catch (error) {
+      console.error('服务端数据解析失败:', error);
+      window.initialData = [];
+    }
   </script>
   {% endif %}
   
@@ -471,6 +489,137 @@
           once: true,
           offset: 100
         });
+      }
+      
+      // AG-Grid依赖检查和调试信息
+      if (typeof agGrid === 'undefined') {
+        console.warn('AG-Grid 库未成功加载');
+        const gridContainer = document.getElementById('data-grid');
+        if (gridContainer) {
+          gridContainer.innerHTML = `
+            <div class="flex flex-col items-center justify-center h-full text-yellow-400">
+              <div class="text-lg font-semibold mb-2">⚠️ AG-Grid 库加载失败</div>
+              <div class="text-sm text-gray-400">请检查网络连接或刷新页面重试</div>
+            </div>`;
+        }
+      } else {
+        console.log('AG-Grid 库加载成功', agGrid);
+      }
+      
+      // 检查数据传输状态
+      if (typeof window.initialData !== 'undefined' && window.initialData) {
+        console.log('初始数据检查:', {
+          dataType: typeof window.initialData,
+          isArray: Array.isArray(window.initialData),
+          dataLength: window.initialData.length || 'N/A',
+          firstItem: window.initialData[0] || null
+        });
+      } else {
+        console.warn('未找到初始数据 window.initialData');
+      }
+      
+      // 直接初始化AG-Grid (不依赖模块)
+      console.log('AG-Grid检查:', {
+        agGridLoaded: typeof agGrid !== 'undefined',
+        initialDataExists: typeof window.initialData !== 'undefined',
+        initialDataIsArray: Array.isArray(window.initialData),
+        dataLength: window.initialData ? window.initialData.length : 'N/A'
+      });
+      
+      if (typeof agGrid !== 'undefined' && window.initialData && Array.isArray(window.initialData)) {
+        console.log('✅ 开始初始化AG-Grid...，数据行数:', window.initialData.length);
+        
+        const formatNumber = (num, precision = 2) => {
+          if (num === null || num === undefined || isNaN(num)) return '--';
+          return Number(num).toFixed(precision);
+        };
+        
+        const columnDefs = [
+          { field: 'timestamp_Beijing', headerName: '时间戳', width: 180, sortable: true },
+          { field: 'sway_speed_dps', headerName: '晃动速度 (°/s)', width: 140, valueFormatter: params => formatNumber(params.value), sortable: true },
+          { field: 'temperature_C', headerName: '温度 (°C)', width: 130, valueFormatter: params => formatNumber(params.value), sortable: true },
+          { field: 'humidity_RH', headerName: '湿度 (%)', width: 120, valueFormatter: params => formatNumber(params.value), sortable: true },
+          { field: 'pressure_hPa', headerName: '气压 (hPa)', width: 130, valueFormatter: params => formatNumber(params.value), sortable: true },
+          { field: 'lux', headerName: '光照 (lx)', width: 120, valueFormatter: params => formatNumber(params.value, 0), sortable: true }
+        ];
+        
+        const gridOptions = {
+          columnDefs: columnDefs,
+          rowData: window.initialData,
+          animateRows: true,
+          enableSorting: true,
+          enableFilter: true,
+          enableColResize: true,
+          pagination: true,
+          paginationPageSize: 20,
+          theme: 'alpine-dark',
+          onGridReady: (params) => {
+            console.log('AG-Grid 初始化成功');
+            params.api.sizeColumnsToFit();
+            
+            // 更新总行数显示
+            const totalRowsElement = document.getElementById('total-rows');
+            if (totalRowsElement) {
+              totalRowsElement.textContent = window.initialData.length;
+            }
+          },
+          onFirstDataRendered: (params) => {
+            console.log('AG-Grid 数据渲染完成，行数:', window.initialData.length);
+          }
+        };
+        
+        const gridDiv = document.getElementById('data-grid');
+        if (gridDiv) {
+          console.log('Grid容器找到:', gridDiv);
+          console.log('容器尺寸:', {
+            width: gridDiv.offsetWidth,
+            height: gridDiv.offsetHeight,
+            clientWidth: gridDiv.clientWidth,
+            clientHeight: gridDiv.clientHeight
+          });
+          try {
+            const gridInstance = new agGrid.Grid(gridDiv, gridOptions);
+            console.log('✅ AG-Grid 创建成功, 实例:', gridInstance);
+            
+            // 检查grid是否真的渲染了
+            setTimeout(() => {
+              const agHeaders = gridDiv.querySelectorAll('.ag-header');
+              const agRows = gridDiv.querySelectorAll('.ag-row');
+              console.log('AG-Grid渲染检查:', {
+                headers: agHeaders.length,
+                rows: agRows.length,
+                totalElements: gridDiv.children.length
+              });
+            }, 1000);
+            
+          } catch (error) {
+            console.error('❌ AG-Grid 创建失败:', error);
+            gridDiv.innerHTML = '<div class="flex items-center justify-center h-full text-red-400">表格创建失败: ' + error.message + '</div>';
+          }
+        } else {
+          console.error('❌ 未找到AG-Grid容器 #data-grid');
+        }
+      } else {
+        console.warn('❌ AG-Grid初始化条件不满足');
+        const gridDiv = document.getElementById('data-grid');
+        if (gridDiv) {
+          let errorMsg = 'AG-Grid初始化失败：';
+          if (typeof agGrid === 'undefined') {
+            errorMsg += ' AG-Grid库未加载';
+          }
+          if (!window.initialData) {
+            errorMsg += ' 数据未加载';
+          }
+          if (!Array.isArray(window.initialData)) {
+            errorMsg += ' 数据格式错误';
+          }
+          gridDiv.innerHTML = `<div class="flex items-center justify-center h-full text-yellow-400 text-center p-4">
+            <div>
+              <div class="text-lg font-semibold mb-2">⚠️ 数据表格加载失败</div>
+              <div class="text-sm">${errorMsg}</div>
+            </div>
+          </div>`;
+        }
       }
     });
   </script>

@@ -4,56 +4,122 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Linescope_Server is a Flask-based server for the Jilin project that receives and displays sensor data and image recognition results from an Orange Pi device. The system is part of a 4-component pipeline: STM32 sensor clusters → 4G monitoring → Orange Pi (image recognition) → Server (display).
+Linescope_Server 是一个高性能现代化的智能线缆监测系统，基于Flask框架构建。该系统集成了实时数据采集、图像识别、智能预警和可视化展示功能，为电力线缆监测提供全面的解决方案。
 
-## Recent Code Improvements (2025-08-24)
+### 系统架构
+整个系统采用分布式架构，由四个核心组件协同工作：
+- **STM32传感器集群**: 温度、湿度、晃动、气压、光照传感器数据采集
+- **4G监控模块**: 数据远程传输和图像获取
+- **香橙派处理器**: 图像识别和数据处理
+- **Flask服务器端**: Web界面展示、API接口服务、实时可视化
 
-### Major Architectural Improvements
+### 核心特性
+- 现代化玻璃拟态UI设计，深色主题视觉效果
+- 模块化Flask架构，采用工厂模式和蓝图路由
+- 高性能前端优化：Service Worker缓存、GPU加速、模块化JavaScript
+- 智能缓存系统：文件修改时间缓存、内存缓存策略
+- 实时视频流：MJPEG流传输，支持多并发连接
+- RESTful API设计：完善的错误处理和响应格式
+- 生产环境部署：Docker容器化、Kubernetes支持
 
-**1. Modular Flask Application Structure**
-- Refactored from single `app.py` to modular architecture in `core/factory.py`
-- Separated routes into `routes/main.py` and `routes/api.py`
-- Enhanced error handling with global 404/500 handlers
-- Fixed Flask template/static folder path configuration
+## 架构重构与优化成果 (2025-08-24)
 
-**2. Frontend Complete Modernization**
-- **HTML Templates**: Complete redesign with modern glassmorphism UI
-  - `templates/index.html`: Interactive dashboard with real-time metrics
-  - `templates/dashboard.html`: Advanced data visualization with AG-Grid
-  - `templates/result.html`: Professional video streaming interface
-- **CSS Framework**: Tailwind CSS + custom glassmorphism theme
-- **JavaScript**: ES6+ class-based architecture with modern APIs
-- **Libraries**: ECharts, AG-Grid, Lucide Icons, AOS animations
+### 核心架构改进
 
-**3. Performance & Reliability Enhancements**
-- Added file modification time caching in `DataRead.py`
-- Progressive enhancement: WebSocket → SSE → Polling fallbacks
-- Error resilience with retry mechanisms and graceful degradation
-- Modern browser API integration (Performance Observer, Intersection Observer)
+**1. 模块化Flask应用结构**
+- 从单一 `app.py` 重构为 `core/factory.py` 的模块化架构
+- 路由分离: `routes/main.py` (页面路由) 和 `routes/api.py` (API路由)
+- 增强错误处理：全局404/500错误处理器
+- 修复Flask模板/静态文件夹路径配置问题
+- 实现应用工厂模式，支持多环境配置
 
-## Architecture
+**2. 前端现代化重构**
+- **HTML模板系统**: 完全重新设计的现代化玻璃拟态UI
+  - `templates/index.html`: 交互式仪表盘，实时度量显示
+  - `templates/dashboard.html`: 高级数据可视化，集成AG-Grid
+  - `templates/result.html`: 专业视频流监控界面
+- **CSS框架**: Tailwind CSS + 自定义玻璃拟态主题
+- **JavaScript架构**: ES6+基于类的模块化架构，现代API集成
+- **组件库**: ECharts图表、AG-Grid表格、Lucide图标、AOS动画
 
-**Core Application** (`core/factory.py`):
-- Flask application factory pattern
-- Background job scheduler running DataStore operations every 30 minutes
-- Global error handlers and logging configuration
-- Modular route registration
+**3. 性能与可靠性优化**
+- `DataRead.py` 增加文件修改时间缓存机制
+- 渐进式增强策略: WebSocket → SSE → Polling 降级方案
+- 错误恢复能力：重试机制和优雅降级处理
+- 现代浏览器API集成：Performance Observer、Intersection Observer
+- Service Worker 离线支持和智能缓存
+- GPU加速CSS动画和渲染优化
 
-**Routes Structure**:
-- `routes/main.py`: Page rendering routes (/, /dashboard, /result, /stream.mjpg)
-- `routes/api.py`: RESTful API endpoints with comprehensive error handling
+## 项目架构详解
 
-**Utils Module Structure**:
-- `DataRead.py`: Enhanced with memory caching and file modification tracking
-- `DataStore.py`: Rolling data storage with 30-minute intervals
-- `GetImage.py`: Real-time image processing with frame counter
-- `GetSensorData.py`: Test data generation utilities
+### 核心应用模块 (`core/`)
+**`core/factory.py`** - Flask应用工厂
+- 实现Flask应用工厂模式，支持多环境配置
+- 后台任务调度器：每30分钟执行DataStore数据存储操作
+- 全局错误处理器和结构化日志配置
+- 模块化路由注册系统
 
-**Frontend Architecture**:
-- Modern ES6+ class-based JavaScript (`static/js/script.js`)
-- Glassmorphism design system (`static/css/styles.css`)
-- Responsive design with mobile-first approach
-- Progressive Web App features (Service Worker ready)
+**`core/jobs.py`** - 后台任务管理
+- 周期性任务调度，支持异步处理
+- 任务状态监控和错误处理
+
+**`core/streaming.py`** - 高性能视频流处理
+- MJPEG流生成和优化
+- 多并发连接支持
+
+### 路由系统 (`routes/`)
+**`routes/main.py`** - 页面渲染路由
+- `/`: 现代化响应式首页
+- `/dashboard`: 数据可视化仪表盘
+- `/result`: 实时视频监控页面
+- `/stream.mjpg`: MJPEG视频流端点
+- PWA支持：Service Worker和Manifest路由
+
+**`routes/api.py`** - RESTful API端点
+- `/api/sensor-data`: 获取所有传感器数据
+- `/api/sensors`: 分页查询传感器数据
+- `/api/sensors/latest`: 获取最新数据记录
+- `/healthz`: 应用健康检查端点
+- 完善的错误处理和JSON响应格式
+
+### 工具模块 (`utils/`)
+**`DataRead.py`** - 高性能数据读取
+- 增强内存缓存和文件修改时间跟踪
+- CSV数据解析和类型转换优化
+- 缓存机制减少磁盘I/O操作
+
+**`DataStore.py`** - 智能数据存储管理
+- 滚动窗口数据存储，30分钟间隔更新
+- 自动时间戳生成和数据补齐机制
+- 支持北京时区的时间处理
+
+**`GetImage.py`** - 实时图像处理
+- OpenCV图像处理和帧计数器
+- 图像增强：数字叠加、半透明效果
+- JPEG编码优化和二进制输出
+
+**`GetSensorData.py`** - 传感器数据生成
+- 智能随机数据生成器
+- 支持昼夜节律的真实数据模拟
+- 时区兼容性处理（ZoneInfo/timezone降级）
+
+### 前端架构 (`static/`)
+**JavaScript模块化系统**:
+- `static/js/app.js`: 主应用管理模块 (361行)
+- `static/js/api.js`: API管理模块 (91行)
+- `static/js/charts.js`: 图表管理模块 (245行)
+- `static/js/utils.js`: 工具函数模块 (67行)
+- `static/js/performance-monitor.js`: 性能监控系统
+
+**样式系统**:
+- `static/css/styles.css`: 高性能CSS，GPU加速优化
+- CSS Containment API性能隔离
+- 现代CSS变量系统和玻璃拟态效果
+
+**PWA支持**:
+- `static/sw.js`: Service Worker离线缓存
+- `static/manifest.json`: PWA应用清单
+- 响应式设计，移动优先方法
 
 ## Technology Stack
 
@@ -75,36 +141,59 @@ Linescope_Server is a Flask-based server for the Jilin project that receives and
 - **Browser DevTools**: Performance monitoring and debugging
 - **Modern JavaScript**: ES6+ features, async/await, modules
 
-## Development Commands
+## 开发命令
 
-**Start the server (new modular structure)**:
+### 服务器启动
+**推荐启动方式 (模块化架构)**:
 ```bash
+# 开发环境启动（支持热重载和调试）
 python -m flask --app core/factory.py run --debug --host=0.0.0.0 --port=5000
+
+# 生产环境启动
+gunicorn --bind 0.0.0.0:5000 --workers 4 --worker-class gthread --threads 2 'core.factory:create_app()'
 ```
 
-**Alternative legacy start**:
+**兼容性启动方式**:
 ```bash
-python app.py
+python app.py  # 传统单文件入口
 ```
 
-**Install dependencies**:
+### 依赖管理
 ```bash
+# 开发环境依赖安装
 pip install -r requirements.txt
+
+# 生产环境依赖安装
+pip install -r requirements-production.txt
+
+# 虚拟环境创建
+python -m venv venv
+source venv/bin/activate  # Linux/macOS
+venv\Scripts\activate     # Windows
 ```
 
-**Test individual modules**:
+### 模块测试
 ```bash
-python utils/DataRead.py        # Test sensor data reading with caching
-python utils/GetImage.py        # Test image processing
-python utils/DataStore.py       # Test data storage operations
-python utils/GetSensorData.py   # Generate test sensor data
+# 传感器数据读取测试（缓存功能）
+python utils/DataRead.py
+
+# 图像处理功能测试
+python utils/GetImage.py
+
+# 数据存储操作测试
+python utils/DataStore.py
+
+# 测试传感器数据生成
+python utils/GetSensorData.py
 ```
 
-**Frontend development**:
-- Live reload enabled in debug mode
-- Browser DevTools for JavaScript debugging
-- Network tab for API endpoint testing
-- Console for error monitoring
+### 前端开发
+- **实时重载**: Debug模式下自动启用
+- **调试工具**: 浏览器DevTools JavaScript调试
+- **API测试**: Network选项卡监控API端点
+- **错误监控**: Console错误日志跟踪
+- **性能分析**: Performance Monitor集成
+- **缓存管理**: Service Worker缓存状态监控
 
 ## Key Endpoints
 
@@ -120,39 +209,65 @@ python utils/GetSensorData.py   # Generate test sensor data
 - `/api/sensors/latest` - Get most recent sensor reading
 - `/healthz` - Health check endpoint
 
-## Data Formats
+## 数据格式规范
 
-**Sensor Data Structure** (Enhanced):
+### 传感器数据结构 (增强版)
 ```python
 {
-    "timestamp_Beijing": "2025-08-24 23:30",  # Beijing timezone
-    "sway_speed_dps": 30.87,                  # Degrees per second (float)
-    "temperature_C": 22.79,                   # Celsius (float)
-    "humidity_RH": 71.19,                     # Relative humidity % (float)
-    "pressure_hPa": 1014.81,                  # Hectopascals (float)
-    "lux": 8603.65                            # Light intensity (float)
+    "timestamp_Beijing": "2025-08-24 23:30",  # 北京时区时间戳
+    "sway_speed_dps": 30.87,                  # 晃动速度（度/秒）
+    "temperature_C": 22.79,                   # 温度（摄氏度）
+    "humidity_RH": 71.19,                     # 相对湿度（%）
+    "pressure_hPa": 1014.81,                  # 气压（百帕）
+    "lux": 8603.65                            # 光照强度（勒克斯）
 }
 ```
 
-**API Response Formats**:
-```python
-# Single record
+### API响应格式标准
+**单条记录响应**:
+```json
 {
     "timestamp_Beijing": "2025-08-24 23:30",
     "sway_speed_dps": 30.87,
-    # ... other fields
+    "temperature_C": 22.79,
+    "humidity_RH": 71.19,
+    "pressure_hPa": 1014.81,
+    "lux": 8603.65
 }
+```
 
-# Multiple records
+**多条记录响应**:
+```json
 {
-    "rows": [...],      # Array of sensor records
-    "count": 672        # Total count
+    "rows": [                    // 传感器数据数组
+        { /* sensor record 1 */ },
+        { /* sensor record 2 */ }
+    ],
+    "count": 672,                // 总记录数
+    "cache_hit": true,          // 缓存命中状态（可选）
+    "response_time": "15ms"     // 响应时间（可选）
 }
+```
 
-# Error response
+**错误响应格式**:
+```json
 {
-    "error": "Error message"
+    "error": "具体错误信息",     // 错误描述
+    "code": "DATA_NOT_FOUND",   // 错误代码（可选）
+    "timestamp": "2025-08-24 23:30:00"  // 错误时间戳（可选）
 }
+```
+
+### 数据文件格式
+**CSV数据文件** (`utils/data/data.txt`):
+```csv
+timestamp_Beijing,sway_speed_dps,temperature_C,humidity_RH,pressure_hPa,lux
+2025-08-24 23:30,30.87,22.79,71.19,1014.81,8603.65
+```
+
+**图像计数文件** (`utils/data/TestImageNumber.txt`):
+```
+42  # 当前帧计数值（0-99循环）
 ```
 
 ## Configuration
@@ -291,15 +406,37 @@ python utils/GetSensorData.py   # Generate test sensor data
 - Usage analytics and reporting
 - System health monitoring
 
-## Important Notes
+## 重要开发注意事项
 
-- Use virtual environment (venv) to manage dependencies
-- Test all changes in development mode before production
-- Monitor browser console for JavaScript errors
-- Keep dependencies updated for security
-- Follow Python PEP 8 style guidelines
-- Use modern JavaScript ES6+ features
-- Implement proper error handling in all new code
-- Test responsiveness across different screen sizes
-- Validate data formats and API responses
-- Use structured logging for debugging
+### 开发环境管理
+- 使用虚拟环境 (venv) 管理项目依赖
+- 生产部署前在开发模式下充分测试
+- 定期更新依赖包确保安全性
+- 保持开发和生产环境的一致性
+
+### 代码质量标准
+- 遵循 Python PEP 8 代码规范
+- 使用现代 JavaScript ES6+ 特性
+- 实现完善的错误处理机制
+- 编写结构化日志便于调试分析
+- 验证数据格式和 API 响应的正确性
+
+### 前端开发规范
+- 监控浏览器控制台 JavaScript 错误
+- 测试不同屏幕尺寸的响应式效果
+- 优化 Core Web Vitals 性能指标
+- 确保跨浏览器兼容性
+
+---
+
+## 项目协作指南
+
+### Claude Code 使用规范
+- **精确执行**: 严格按照用户需求执行，不多不少
+- **文件管理**: 除非绝对必要，避免创建新文件
+- **编辑优先**: 优先编辑现有文件而非创建新文件
+- **文档策略**: 仅在用户明确要求时创建文档文件
+
+**项目维护者**: Linescope Team  
+**最后更新**: 2025-08-27  
+**文档版本**: v2.1.0
