@@ -3,6 +3,8 @@ tzdata>=2024.1
 Flask
 # 数值与图像数组
 numpy
+# Redis 缓存支持
+redis>=4.5.0
 # Linux 生产部署常用的 WSGI 服务器
 # gunicorn
 
