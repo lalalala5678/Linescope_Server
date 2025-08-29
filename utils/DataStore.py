@@ -148,8 +148,8 @@ def update_data_file() -> int:
     """
     lines = _read_all_lines()
     header = lines[0].strip()
-    if header.split(",")[:6] != COLUMNS:
-        # 容忍列顺序一致的判断（严格对齐前 6 列）
+    if header.split(",") != COLUMNS:
+        # 严格检查所有列顺序一致
         raise ValueError("表头与预期不一致，请检查列名顺序：\n" + ",".join(COLUMNS))
 
     latest_pos, oldest_pos = get_positions()
