@@ -166,7 +166,7 @@ def update_data_file() -> int:
     for i in range(1, needed + 1):
         ts = last_dt + i * INTERVAL
         ts_str = _format_ts(ts)
-        sway, temp, hum, press, lux, wire_obj = generate_random_sample()
+        sway, temp, hum, press, lux, wire_obj = generate_random_sample(ts)
         to_append.append(f"{ts_str},{sway:.2f},{temp:.2f},{hum:.2f},{press:.2f},{lux:.2f},{wire_obj}")
 
     # 旧数据行（不含表头）

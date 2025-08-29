@@ -1124,6 +1124,17 @@
       });
     };
 
+    // CSV字段转义函数
+    const escapeCsvField = (field) => {
+      if (field === null || field === undefined) return '';
+      const str = String(field);
+      // 如果包含逗号、引号、换行符，则用引号包围并转义内部引号
+      if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
+        return '"' + str.replace(/"/g, '""') + '"';
+      }
+      return str;
+    };
+
     const exportDetectionReport = () => {
       if (detectionData.length === 0) {
         showNotification('暂无数据可导出', 'error');
@@ -1131,18 +1142,22 @@
       }
 
       const headers = ['日期时间', '异物检测状态', '温度(°C)', '湿度(%)', '气压(hPa)', '光照(Lux)', '晃动速度(°/s)'];
-      const csvContent = [
-        headers.join(','),
+      const csvRows = [
+        headers.map(header => escapeCsvField(header)).join(','),
         ...detectionData.map(row => [
-          row.timestamp_Beijing,
-          row.wire_foreign_object === 1 ? '发现异物' : '正常',
-          (row.temperature_C || '--').toString(),
-          (row.humidity_RH || '--').toString(),
-          (row.pressure_hPa || '--').toString(),
-          (row.lux || '--').toString(),
-          (row.sway_speed_dps || '--').toString()
+          escapeCsvField(row.timestamp_Beijing),
+          escapeCsvField(row.wire_foreign_object === 1 ? '发现异物' : '正常'),
+          escapeCsvField(row.temperature_C || '--'),
+          escapeCsvField(row.humidity_RH || '--'),
+          escapeCsvField(row.pressure_hPa || '--'),
+          escapeCsvField(row.lux || '--'),
+          escapeCsvField(row.sway_speed_dps || '--')
         ].join(','))
-      ].join('\\n');
+      ];
+
+      // 添加UTF-8 BOM以确保Excel正确识别编码
+      const BOM = '\uFEFF';
+      const csvContent = BOM + csvRows.join('\n');
 
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
@@ -1155,7 +1170,7 @@
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
       
-      showNotification('检测报告已导出', 'success');
+      showNotification('检测报告已导出成功', 'success');
     };
 
     // Event listeners
