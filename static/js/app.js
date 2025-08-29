@@ -887,19 +887,34 @@ export class LineScopeApp {
       return;
     }
 
+    // CSV字段转义函数，处理包含逗号、引号或换行符的字段
+    const escapeCsvField = (field) => {
+      if (field === null || field === undefined) return '';
+      const str = String(field);
+      if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
+        return '"' + str.replace(/"/g, '""') + '"';
+      }
+      return str;
+    };
+
     const headers = ['时间戳', '晃动速度(°/s)', '温度(°C)', '湿度(%)', '气压(hPa)', '光照(Lux)', '异物检测'];
-    const csvContent = [
-      headers.join(','),
+    
+    // 添加UTF-8 BOM以确保Excel正确显示中文字符
+    const BOM = '\uFEFF';
+    const csvRows = [
+      headers.map(header => escapeCsvField(header)).join(','),
       ...this.state.sensorData.map(row => [
-        row.timestamp_Beijing,
-        formatNumber(row.sway_speed_dps),
-        formatNumber(row.temperature_C),
-        formatNumber(row.humidity_RH),
-        formatNumber(row.pressure_hPa),
-        formatNumber(row.lux, 0),
-        (row.wire_foreign_object === 1 ? '有异物' : '正常')
+        escapeCsvField(row.timestamp_Beijing),
+        escapeCsvField(formatNumber(row.sway_speed_dps)),
+        escapeCsvField(formatNumber(row.temperature_C)),
+        escapeCsvField(formatNumber(row.humidity_RH)),
+        escapeCsvField(formatNumber(row.pressure_hPa)),
+        escapeCsvField(formatNumber(row.lux, 0)),
+        escapeCsvField(row.wire_foreign_object === 1 ? '有异物' : '正常')
       ].join(','))
-    ].join('\n');
+    ];
+    
+    const csvContent = BOM + csvRows.join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
