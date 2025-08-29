@@ -375,6 +375,48 @@
           </div>
         </div>
 
+        <!-- Foreign Object Detection -->
+        <div class="data-card rounded-2xl p-6" id="foreign-object-card">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-3">
+              <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="alert-triangle" class="w-6 h-6 text-orange-400"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-white">异物检测</h3>
+                <p class="text-sm text-gray-400">电线异物监测状态</p>
+              </div>
+            </div>
+            <div class="trend-indicator trend-stable" id="foreign-object-trend">
+              <i data-lucide="search" class="w-3 h-3"></i>
+              <span id="detection-rate">0.0%</span>
+            </div>
+          </div>
+          <div class="mb-4">
+            <div class="metric-big" id="foreign-object-status">检测中...</div>
+            <div class="text-sm text-gray-400">
+              检测率: <span id="foreign-object-rate">--</span>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-300">总检测次数</span>
+              <span class="text-white font-semibold" id="total-detections">--</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-300">异物发现次数</span>
+              <span class="text-orange-400 font-semibold" id="foreign-object-count">--</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-300">最新状态</span>
+              <div class="flex items-center space-x-2">
+                <div class="w-2 h-2 rounded-full" id="foreign-object-indicator"></div>
+                <span class="font-semibold" id="foreign-object-latest">--</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- System Status -->
         <div class="data-card rounded-2xl p-6">
           <div class="flex items-center justify-between mb-4">
@@ -545,7 +587,18 @@
           { field: 'temperature_C', headerName: '温度 (°C)', width: 130, valueFormatter: params => formatNumber(params.value), sortable: true },
           { field: 'humidity_RH', headerName: '湿度 (%)', width: 120, valueFormatter: params => formatNumber(params.value), sortable: true },
           { field: 'pressure_hPa', headerName: '气压 (hPa)', width: 130, valueFormatter: params => formatNumber(params.value), sortable: true },
-          { field: 'lux', headerName: '光照 (lx)', width: 120, valueFormatter: params => formatNumber(params.value, 0), sortable: true }
+          { field: 'lux', headerName: '光照 (lx)', width: 120, valueFormatter: params => formatNumber(params.value, 0), sortable: true },
+          { 
+            field: 'wire_foreign_object', 
+            headerName: '异物检测', 
+            width: 100, 
+            valueFormatter: params => params.value === 1 ? '有异物' : '正常',
+            cellStyle: params => ({
+              color: params.value === 1 ? '#f87171' : '#34d399',
+              fontWeight: params.value === 1 ? 'bold' : 'normal'
+            }),
+            sortable: true 
+          }
         ];
         
         const gridOptions = {

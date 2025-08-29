@@ -17,6 +17,9 @@
   <!-- Modern Icons - Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   
+  <!-- Advanced Chart Library - Apache ECharts -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  
   <!-- Advanced Animations -->
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
@@ -359,98 +362,176 @@
     <!-- Video Streaming Section -->
     <section class="mb-8" data-aos="fade-up" data-aos-delay="200">
       <div class="glass-effect rounded-2xl p-6">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-2xl font-bold text-white">实时图像流</h3>
-          <div class="flex items-center space-x-4">
-            <div class="connection-stats text-gray-400">
-              <div>
-                <div class="font-semibold text-white" id="fps-counter">-- FPS</div>
-                <div>帧率</div>
-              </div>
-              <div>
-                <div class="font-semibold text-white" id="resolution">--x--</div>
-                <div>分辨率</div>
-              </div>
-              <div>
-                <div class="font-semibold text-white" id="latency">-- ms</div>
-                <div>延迟</div>
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-2xl font-bold text-white">实时图像流</h3>
+            <div class="flex items-center space-x-4">
+              <div class="connection-stats text-gray-400">
+                <div>
+                  <div class="font-semibold text-white" id="fps-counter">-- FPS</div>
+                  <div>帧率</div>
+                </div>
+                <div>
+                  <div class="font-semibold text-white" id="resolution">--x--</div>
+                  <div>分辨率</div>
+                </div>
+                <div>
+                  <div class="font-semibold text-white" id="latency">-- ms</div>
+                  <div>延迟</div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        
-        <!-- Video Container -->
-        <div class="video-container" id="video-container">
-          <img 
-            id="video-stream" 
-            class="video-stream" 
-            src="/stream.mjpg" 
-            alt="实时视频流"
-            style="display: none;"
-          />
           
-          <!-- Loading Spinner -->
-          <div class="loading-spinner" id="loading-spinner"></div>
-          
-          <!-- Error Overlay -->
-          <div class="error-overlay" id="error-overlay" style="display: none;">
-            <i data-lucide="wifi-off" class="w-16 h-16 text-gray-400 mb-4"></i>
-            <h3 class="text-xl font-semibold mb-2">连接中断</h3>
-            <p class="text-gray-300 mb-4">正在尝试重新连接到视频流...</p>
-            <button id="retry-connection" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-300">
-              重新连接
-            </button>
-          </div>
-          
-          <!-- Video Overlay -->
-          <div class="video-overlay">
-            <!-- Controls -->
-            <div class="video-controls">
-              <button class="control-btn" id="fullscreen-toggle" title="全屏">
-                <i data-lucide="maximize" class="w-5 h-5"></i>
-              </button>
-              <button class="control-btn" id="screenshot-btn" title="截图">
-                <i data-lucide="camera" class="w-5 h-5"></i>
-              </button>
-              <button class="control-btn" id="record-btn" title="录制" style="display: none;">
-                <i data-lucide="video" class="w-5 h-5"></i>
+          <!-- Video Container -->
+          <div class="video-container" id="video-container">
+            <img 
+              id="video-stream" 
+              class="video-stream" 
+              src="/stream.mjpg" 
+              alt="实时视频流"
+              style="display: none;"
+            />
+            
+            <!-- Loading Spinner -->
+            <div class="loading-spinner" id="loading-spinner"></div>
+            
+            <!-- Error Overlay -->
+            <div class="error-overlay" id="error-overlay" style="display: none;">
+              <i data-lucide="wifi-off" class="w-16 h-16 text-gray-400 mb-4"></i>
+              <h3 class="text-xl font-semibold mb-2">连接中断</h3>
+              <p class="text-gray-300 mb-4">正在尝试重新连接到视频流...</p>
+              <button id="retry-connection" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-300">
+                重新连接
               </button>
             </div>
             
-            <!-- Video Info -->
-            <div class="video-info">
-              <div class="status-indicator status-online" id="stream-status">
-                <div class="status-dot"></div>
-                <span>直播中</span>
+            <!-- Video Overlay -->
+            <div class="video-overlay">
+              <!-- Controls -->
+              <div class="video-controls">
+                <button class="control-btn" id="fullscreen-toggle" title="全屏">
+                  <i data-lucide="maximize" class="w-5 h-5"></i>
+                </button>
+                <button class="control-btn" id="screenshot-btn" title="截图">
+                  <i data-lucide="camera" class="w-5 h-5"></i>
+                </button>
+                <button class="control-btn" id="record-btn" title="录制" style="display: none;">
+                  <i data-lucide="video" class="w-5 h-5"></i>
+                </button>
               </div>
-              <div class="text-white text-sm">
-                <div id="stream-time">00:00:00</div>
+              
+              <!-- Video Info -->
+              <div class="video-info">
+                <div class="status-indicator status-online" id="stream-status">
+                  <div class="status-dot"></div>
+                  <span>直播中</span>
+                </div>
+                <div class="text-white text-sm">
+                  <div id="stream-time">00:00:00</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Video Description -->
+          <div class="mt-6 p-4 bg-gray-800/30 rounded-lg border border-gray-600/20">
+            <h4 class="font-semibold text-white mb-2">流媒体信息</h4>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <p class="text-gray-300 mb-1">
+                  <strong class="text-white">协议:</strong> MJPEG over HTTP
+                </p>
+                <p class="text-gray-300 mb-1">
+                  <strong class="text-white">来源:</strong> 图像处理服务
+                </p>
+              </div>
+              <div>
+                <p class="text-gray-300 mb-1">
+                  <strong class="text-white">编码:</strong> Motion JPEG
+                </p>
+                <p class="text-gray-300">
+                  <strong class="text-white">更新频率:</strong> 实时
+                </p>
               </div>
             </div>
           </div>
         </div>
-        
-        <!-- Video Description -->
-        <div class="mt-6 p-4 bg-gray-800/30 rounded-lg border border-gray-600/20">
-          <h4 class="font-semibold text-white mb-2">流媒体信息</h4>
-          <div class="grid md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <p class="text-gray-300 mb-1">
-                <strong class="text-white">协议:</strong> MJPEG over HTTP
-              </p>
-              <p class="text-gray-300 mb-1">
-                <strong class="text-white">来源:</strong> 图像处理服务
-              </p>
+    </section>
+
+    <!-- Foreign Object Detection Section -->
+    <section class="mb-8" data-aos="fade-up" data-aos-delay="300">
+      <div class="glass-effect rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center">
+              <i data-lucide="alert-triangle" class="w-6 h-6 text-white"></i>
             </div>
             <div>
-              <p class="text-gray-300 mb-1">
-                <strong class="text-white">编码:</strong> Motion JPEG
-              </p>
-              <p class="text-gray-300">
-                <strong class="text-white">更新频率:</strong> 实时
-              </p>
+              <h3 class="text-2xl font-bold text-white">异物检测监控</h3>
+              <p class="text-sm text-gray-400">过去7天检测趋势分析</p>
             </div>
           </div>
+          
+          <!-- Quick Actions -->
+          <div class="flex items-center space-x-3">
+            <button id="refresh-detection-data" class="px-4 py-2 bg-orange-600/20 hover:bg-orange-600/30 border border-orange-600/30 rounded-lg text-orange-300 text-sm transition-all duration-300 flex items-center space-x-2">
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              <span>刷新数据</span>
+            </button>
+            <button id="export-detection-report" class="px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-600/30 rounded-lg text-blue-300 text-sm transition-all duration-300 flex items-center space-x-2">
+              <i data-lucide="download" class="w-4 h-4"></i>
+              <span>导出报告</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Detection Status Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div class="bg-gray-800/30 rounded-lg p-4 border border-gray-600/20 text-center">
+            <div class="text-sm text-gray-400 mb-2">当前状态</div>
+            <div class="text-xl font-bold" id="current-detection-status">检测中...</div>
+            <div class="w-3 h-3 rounded-full mx-auto mt-2" id="current-status-indicator"></div>
+          </div>
+          <div class="bg-gray-800/30 rounded-lg p-4 border border-gray-600/20 text-center">
+            <div class="text-sm text-gray-400 mb-2">7天检测率</div>
+            <div class="text-xl font-bold text-orange-400" id="weekly-detection-rate">--.--%</div>
+            <div class="text-xs text-gray-500 mt-1">平均检出率</div>
+          </div>
+          <div class="bg-gray-800/30 rounded-lg p-4 border border-gray-600/20 text-center">
+            <div class="text-sm text-gray-400 mb-2">总检测次数</div>
+            <div class="text-xl font-bold text-blue-400" id="total-weekly-checks">--</div>
+            <div class="text-xs text-gray-500 mt-1">数据点数</div>
+          </div>
+          <div class="bg-gray-800/30 rounded-lg p-4 border border-gray-600/20 text-center">
+            <div class="text-sm text-gray-400 mb-2">异物发现</div>
+            <div class="text-xl font-bold text-red-400" id="total-weekly-detections">--</div>
+            <div class="text-xs text-gray-500 mt-1">警报次数</div>
+          </div>
+        </div>
+
+        <!-- Chart Container -->
+        <div class="bg-gray-900/50 rounded-lg p-6 border border-gray-700/30">
+          <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+            <div>
+              <h4 class="text-lg font-semibold text-white mb-1">检测时间轴分析</h4>
+              <p class="text-sm text-gray-400">显示过去7天的每日检测率和异物发现次数</p>
+            </div>
+            <div class="flex items-center space-x-4 mt-4 md:mt-0">
+              <div class="flex items-center space-x-2 text-sm text-gray-400">
+                <div class="w-3 h-3 bg-orange-500 rounded-full"></div>
+                <span>检测率(%)</span>
+              </div>
+              <div class="flex items-center space-x-2 text-sm text-gray-400">
+                <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                <span>异物发现</span>
+              </div>
+              <div class="flex items-center space-x-2 text-sm text-gray-400">
+                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                <span>正常检测</span>
+              </div>
+            </div>
+          </div>
+          <div id="foreign-object-chart" style="width: 100%; height: 450px;"></div>
         </div>
       </div>
     </section>
@@ -585,6 +666,8 @@
     let frameCount = 0;
     let lastFrameTime = Date.now();
     let fpsInterval;
+    let foreignObjectChart = null;
+    let detectionData = [];
 
     // DOM elements
     const videoStream = document.getElementById('video-stream');
@@ -802,6 +885,279 @@
       document.getElementById('data-rate').textContent = `${rate} KB/s`;
     };
 
+    // Foreign Object Detection Functions
+    const fetchDetectionData = async () => {
+      try {
+        // Fetch data from the past 7 days
+        const response = await fetch('/api/sensor-data', { cache: 'no-store' });
+        const data = await response.json();
+        
+        if (Array.isArray(data)) {
+          // Filter data from the past 7 days
+          const sevenDaysAgo = new Date();
+          sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+          
+          detectionData = data.filter(item => {
+            const itemDate = new Date(item.timestamp_Beijing);
+            return itemDate >= sevenDaysAgo;
+          }).sort((a, b) => new Date(a.timestamp_Beijing) - new Date(b.timestamp_Beijing));
+          
+          updateDetectionStats();
+          createForeignObjectChart();
+        }
+      } catch (error) {
+        console.error('Failed to fetch detection data:', error);
+        showNotification('获取检测数据失败', 'error');
+      }
+    };
+
+    const updateDetectionStats = () => {
+      if (detectionData.length === 0) return;
+
+      const latest = detectionData[detectionData.length - 1];
+      const totalDetections = detectionData.reduce((sum, item) => sum + (item.wire_foreign_object || 0), 0);
+      const detectionRate = (totalDetections / detectionData.length * 100).toFixed(1);
+
+      // Update current status
+      const currentStatusElement = document.getElementById('current-detection-status');
+      const currentStatusIndicator = document.getElementById('current-status-indicator');
+      if (currentStatusElement) {
+        if (latest.wire_foreign_object === 1) {
+          currentStatusElement.textContent = '发现异物';
+          currentStatusElement.className = 'text-xl font-bold text-red-400';
+          if (currentStatusIndicator) {
+            currentStatusIndicator.className = 'w-3 h-3 rounded-full mx-auto mt-2 bg-red-500 status-indicator';
+          }
+        } else {
+          currentStatusElement.textContent = '状态正常';
+          currentStatusElement.className = 'text-xl font-bold text-green-400';
+          if (currentStatusIndicator) {
+            currentStatusIndicator.className = 'w-3 h-3 rounded-full mx-auto mt-2 bg-green-500';
+          }
+        }
+      }
+
+      // Update statistics
+      const weeklyRateElement = document.getElementById('weekly-detection-rate');
+      if (weeklyRateElement) {
+        weeklyRateElement.textContent = `${detectionRate}%`;
+      }
+
+      const totalChecksElement = document.getElementById('total-weekly-checks');
+      if (totalChecksElement) {
+        totalChecksElement.textContent = detectionData.length;
+      }
+
+      const totalDetectionsElement = document.getElementById('total-weekly-detections');
+      if (totalDetectionsElement) {
+        totalDetectionsElement.textContent = totalDetections;
+      }
+    };
+
+    const createForeignObjectChart = () => {
+      const chartContainer = document.getElementById('foreign-object-chart');
+      if (!chartContainer || !window.echarts) {
+        console.warn('Chart container or ECharts library not found');
+        return;
+      }
+
+      // Dispose existing chart
+      if (foreignObjectChart) {
+        foreignObjectChart.dispose();
+      }
+
+      // Initialize new chart
+      foreignObjectChart = echarts.init(chartContainer, 'dark');
+
+      // Process data by day for better visualization
+      const dailyData = {};
+      detectionData.forEach(item => {
+        const date = item.timestamp_Beijing.split(' ')[0]; // Get date part
+        if (!dailyData[date]) {
+          dailyData[date] = { date, total: 0, detections: 0 };
+        }
+        dailyData[date].total++;
+        if (item.wire_foreign_object === 1) {
+          dailyData[date].detections++;
+        }
+      });
+
+      const dailyArray = Object.values(dailyData);
+      const dates = dailyArray.map(d => d.date);
+      const detectionRates = dailyArray.map(d => d.total > 0 ? (d.detections / d.total * 100).toFixed(1) : 0);
+      const detectionCounts = dailyArray.map(d => d.detections);
+
+      const option = {
+        backgroundColor: 'transparent',
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: 'rgba(17, 25, 40, 0.95)',
+          borderColor: 'rgba(148, 163, 184, 0.2)',
+          textStyle: { color: '#e2e8f0' },
+          formatter: function(params) {
+            const date = params[0].axisValue;
+            const rate = params[0].value;
+            const count = params[1] ? params[1].value : 0;
+            return `
+              <div class="text-sm">
+                <div class="font-semibold mb-1">${date}</div>
+                <div class="flex items-center space-x-2">
+                  <div class="w-2 h-2 bg-orange-500 rounded-full"></div>
+                  <span>检测率: ${rate}%</span>
+                </div>
+                <div class="flex items-center space-x-2 mt-1">
+                  <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                  <span>异物发现: ${count}次</span>
+                </div>
+              </div>
+            `;
+          }
+        },
+        legend: {
+          data: ['检测率(%)', '异物发现次数'],
+          textStyle: { color: '#9ca3af' },
+          top: 0
+        },
+        grid: {
+          left: '10%',
+          right: '10%',
+          bottom: '15%',
+          top: '20%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          data: dates,
+          axisLine: { lineStyle: { color: '#374151' } },
+          axisLabel: { 
+            color: '#9ca3af',
+            rotate: 45,
+            formatter: function(value) {
+              return value.split('-').slice(1).join('-'); // Show MM-DD
+            }
+          },
+          splitLine: { show: false }
+        },
+        yAxis: [
+          {
+            type: 'value',
+            name: '检测率(%)',
+            position: 'left',
+            axisLine: { lineStyle: { color: '#374151' } },
+            axisLabel: { color: '#9ca3af' },
+            splitLine: { 
+              lineStyle: { color: '#374151', type: 'dashed' }
+            },
+            max: 100
+          },
+          {
+            type: 'value',
+            name: '次数',
+            position: 'right',
+            axisLine: { lineStyle: { color: '#374151' } },
+            axisLabel: { color: '#9ca3af' },
+            splitLine: { show: false }
+          }
+        ],
+        series: [
+          {
+            name: '检测率(%)',
+            type: 'line',
+            yAxisIndex: 0,
+            data: detectionRates,
+            smooth: true,
+            lineStyle: { 
+              color: '#f97316',
+              width: 3
+            },
+            itemStyle: { color: '#f97316' },
+            areaStyle: {
+              color: {
+                type: 'linear',
+                x: 0, y: 0, x2: 0, y2: 1,
+                colorStops: [
+                  { offset: 0, color: 'rgba(249, 115, 22, 0.3)' },
+                  { offset: 1, color: 'rgba(249, 115, 22, 0.05)' }
+                ]
+              }
+            },
+            emphasis: {
+              itemStyle: { 
+                color: '#fb923c',
+                borderColor: '#fff',
+                borderWidth: 2
+              }
+            }
+          },
+          {
+            name: '异物发现次数',
+            type: 'bar',
+            yAxisIndex: 1,
+            data: detectionCounts,
+            itemStyle: { 
+              color: function(params) {
+                return params.value > 0 ? '#ef4444' : '#22c55e';
+              },
+              borderRadius: [2, 2, 0, 0]
+            },
+            emphasis: {
+              itemStyle: { 
+                color: function(params) {
+                  return params.value > 0 ? '#f87171' : '#34d399';
+                }
+              }
+            },
+            barWidth: '60%'
+          }
+        ],
+        animationDuration: 1000,
+        animationEasing: 'cubicOut'
+      };
+
+      foreignObjectChart.setOption(option);
+
+      // Resize handler
+      window.addEventListener('resize', () => {
+        if (foreignObjectChart) {
+          foreignObjectChart.resize();
+        }
+      });
+    };
+
+    const exportDetectionReport = () => {
+      if (detectionData.length === 0) {
+        showNotification('暂无数据可导出', 'error');
+        return;
+      }
+
+      const headers = ['日期时间', '异物检测状态', '温度(°C)', '湿度(%)', '气压(hPa)', '光照(Lux)', '晃动速度(°/s)'];
+      const csvContent = [
+        headers.join(','),
+        ...detectionData.map(row => [
+          row.timestamp_Beijing,
+          row.wire_foreign_object === 1 ? '发现异物' : '正常',
+          (row.temperature_C || '--').toString(),
+          (row.humidity_RH || '--').toString(),
+          (row.pressure_hPa || '--').toString(),
+          (row.lux || '--').toString(),
+          (row.sway_speed_dps || '--').toString()
+        ].join(','))
+      ].join('\\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `foreign-object-detection-7days-${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      showNotification('检测报告已导出', 'success');
+    };
+
     // Event listeners
     document.getElementById('refresh-stream').addEventListener('click', () => {
       reconnectAttempts = 0;
@@ -826,6 +1182,14 @@
       showNotification('缓存已清除', 'success');
     });
 
+    // Foreign object detection event listeners
+    document.getElementById('refresh-detection-data').addEventListener('click', () => {
+      showNotification('正在刷新检测数据...', 'info');
+      fetchDetectionData();
+    });
+
+    document.getElementById('export-detection-report').addEventListener('click', exportDetectionReport);
+
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
       if (e.key === 'f' || e.key === 'F') {
@@ -843,12 +1207,18 @@
     document.addEventListener('DOMContentLoaded', () => {
       initializeStream();
       
+      // Initialize foreign object detection chart
+      fetchDetectionData();
+      
       // Update timers every second
       setInterval(updateTimers, 1000);
       
       // Update metrics
       setInterval(updateLatency, 5000);
       setInterval(updateDataRate, 3000);
+      
+      // Periodic foreign object data refresh (every 5 minutes)
+      setInterval(fetchDetectionData, 300000);
       
       // Periodic connection health check
       setInterval(async () => {

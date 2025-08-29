@@ -534,6 +534,95 @@ export class LineScopeApp {
     if (totalRecordsElement) {
       totalRecordsElement.textContent = this.state.sensorData.length;
     }
+
+    // 更新异物检测状态
+    this.updateForeignObjectStatus();
+  }
+
+  /**
+   * 更新异物检测状态
+   */
+  updateForeignObjectStatus() {
+    if (this.state.sensorData.length === 0) return;
+
+    const data = this.state.sensorData;
+    const foreignObjectValues = data.map(d => d.wire_foreign_object || 0);
+    const totalDetections = foreignObjectValues.reduce((sum, val) => sum + val, 0);
+    const detectionRate = data.length > 0 ? (totalDetections / data.length * 100) : 0;
+    const latestDetection = data[data.length - 1].wire_foreign_object || 0;
+
+    // 更新检测率
+    const detectionRateElement = document.getElementById('detection-rate');
+    if (detectionRateElement) {
+      detectionRateElement.textContent = `${detectionRate.toFixed(1)}%`;
+    }
+
+    // 更新异物检测状态
+    const statusElement = document.getElementById('foreign-object-status');
+    if (statusElement) {
+      if (latestDetection === 1) {
+        statusElement.textContent = '检测到异物';
+        statusElement.className = 'metric-big text-red-400';
+      } else {
+        statusElement.textContent = '状态正常';
+        statusElement.className = 'metric-big text-green-400';
+      }
+    }
+
+    // 更新检测率显示
+    const rateElement = document.getElementById('foreign-object-rate');
+    if (rateElement) {
+      rateElement.textContent = `${detectionRate.toFixed(1)}%`;
+    }
+
+    // 更新总检测次数
+    const totalDetectionsElement = document.getElementById('total-detections');
+    if (totalDetectionsElement) {
+      totalDetectionsElement.textContent = data.length;
+    }
+
+    // 更新异物发现次数
+    const foreignObjectCountElement = document.getElementById('foreign-object-count');
+    if (foreignObjectCountElement) {
+      foreignObjectCountElement.textContent = totalDetections;
+    }
+
+    // 更新最新状态指示器
+    const indicatorElement = document.getElementById('foreign-object-indicator');
+    const latestElement = document.getElementById('foreign-object-latest');
+    if (indicatorElement && latestElement) {
+      if (latestDetection === 1) {
+        indicatorElement.className = 'w-2 h-2 rounded-full bg-red-500 status-indicator';
+        latestElement.textContent = '发现异物';
+        latestElement.className = 'font-semibold text-red-400';
+      } else {
+        indicatorElement.className = 'w-2 h-2 rounded-full bg-green-500';
+        latestElement.textContent = '正常';
+        latestElement.className = 'font-semibold text-green-400';
+      }
+    }
+
+    // 更新趋势指示器
+    const trendElement = document.getElementById('foreign-object-trend');
+    if (trendElement) {
+      if (detectionRate > 10) {
+        trendElement.className = 'trend-indicator trend-up';
+      } else if (detectionRate > 5) {
+        trendElement.className = 'trend-indicator trend-stable';
+      } else {
+        trendElement.className = 'trend-indicator trend-down';
+      }
+    }
+
+    // 更新卡片警告状态
+    const foreignObjectCard = document.getElementById('foreign-object-card');
+    if (foreignObjectCard) {
+      if (latestDetection === 1) {
+        foreignObjectCard.classList.add('alert-high');
+      } else {
+        foreignObjectCard.classList.remove('alert-high');
+      }
+    }
   }
 
   /**
@@ -641,6 +730,17 @@ export class LineScopeApp {
         type: 'numericColumn',
         cellStyle: { color: '#fbbf24' },
         valueFormatter: (params) => formatNumber(params.value, 0)
+      },
+      { 
+        field: 'wire_foreign_object', 
+        headerName: '异物检测', 
+        width: 100,
+        type: 'numericColumn',
+        cellStyle: (params) => ({
+          color: params.value === 1 ? '#f87171' : '#34d399',
+          fontWeight: params.value === 1 ? 'bold' : 'normal'
+        }),
+        valueFormatter: (params) => params.value === 1 ? '有异物' : '正常'
       }
     ];
 
@@ -660,10 +760,16 @@ export class LineScopeApp {
       rowHeight: 40,
       headerHeight: 45,
       getRowStyle: (params) => {
-        if (params.data.sway_speed_dps > 60) {
+        // 优先级：异物检测 > 晃动速度
+        if (params.data.wire_foreign_object === 1) {
+          return { 
+            backgroundColor: 'rgba(239, 68, 68, 0.15)',
+            borderLeft: '4px solid #f87171'
+          };
+        } else if (params.data.sway_speed_dps > 60) {
           return { 
             backgroundColor: 'rgba(239, 68, 68, 0.1)',
-            borderLeft: '3px solid #f87171'
+            borderLeft: '3px solid #fbbf24'
           };
         }
         return null;
@@ -781,7 +887,7 @@ export class LineScopeApp {
       return;
     }
 
-    const headers = ['时间戳', '晃动速度(°/s)', '温度(°C)', '湿度(%)', '气压(hPa)', '光照(Lux)'];
+    const headers = ['时间戳', '晃动速度(°/s)', '温度(°C)', '湿度(%)', '气压(hPa)', '光照(Lux)', '异物检测'];
     const csvContent = [
       headers.join(','),
       ...this.state.sensorData.map(row => [
@@ -790,7 +896,8 @@ export class LineScopeApp {
         formatNumber(row.temperature_C),
         formatNumber(row.humidity_RH),
         formatNumber(row.pressure_hPa),
-        formatNumber(row.lux, 0)
+        formatNumber(row.lux, 0),
+        (row.wire_foreign_object === 1 ? '有异物' : '正常')
       ].join(','))
     ].join('\n');
 

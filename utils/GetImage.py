@@ -98,8 +98,14 @@ def get_processed_image(return_rgb: bool = False) -> np.ndarray:
         # 增加计数并写回
         _write_number(num_path, (n + 1) % 100)
 
-        # 延迟 200ms
-        time.sleep(0.2)
+        # 使用配置的异物检测间隔
+        try:
+            from config.settings import AppConfig
+            delay = AppConfig().foreign_object_check_interval_sec
+        except ImportError:
+            delay = 0.2  # 默认延迟
+        
+        time.sleep(delay)
 
     if return_rgb:
         return cv2.cvtColor(drawn, cv2.COLOR_BGR2RGB)

@@ -14,13 +14,22 @@ try:
 except Exception:
     from GetSensorData import generate_random_sample   # 脚本直跑兼容
 
+# 从配置文件加载时间间隔设置
+try:
+    from config.settings import AppConfig
+    _config = AppConfig()
+    # 使用配置的传感器数据采集间隔
+    INTERVAL = timedelta(minutes=_config.sensor_data_interval_minutes)
+except ImportError:
+    # 如果无法加载配置，使用默认值
+    INTERVAL = timedelta(minutes=30)
+
 # ------------------------
 # 常量与路径
 # ------------------------
 DATA_DIR = Path(__file__).resolve().parent / "data"
 DATA_FILE = DATA_DIR / "data.txt"
 TZ = ZoneInfo("Asia/Shanghai")
-INTERVAL = timedelta(minutes=30)
 
 COLUMNS = [
     "timestamp_Beijing",
@@ -29,6 +38,7 @@ COLUMNS = [
     "humidity_RH",
     "pressure_hPa",
     "lux",
+    "wire_foreign_object",
 ]
 
 # ------------------------
@@ -156,8 +166,8 @@ def update_data_file() -> int:
     for i in range(1, needed + 1):
         ts = last_dt + i * INTERVAL
         ts_str = _format_ts(ts)
-        sway, temp, hum, press, lux = generate_random_sample()
-        to_append.append(f"{ts_str},{sway:.2f},{temp:.2f},{hum:.2f},{press:.2f},{lux:.2f}")
+        sway, temp, hum, press, lux, wire_obj = generate_random_sample()
+        to_append.append(f"{ts_str},{sway:.2f},{temp:.2f},{hum:.2f},{press:.2f},{lux:.2f},{wire_obj}")
 
     # 旧数据行（不含表头）
     data_lines = lines[1:]

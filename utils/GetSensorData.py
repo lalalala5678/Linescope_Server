@@ -38,17 +38,17 @@ def _frac_day(dt: datetime) -> float:
     return (dt.hour * 60 + dt.minute) / (24 * 60)
 
 
-def generate_random_sample(dt: Optional[datetime] = None) -> Tuple[float, float, float, float, float]:
+def generate_random_sample(dt: Optional[datetime] = None) -> Tuple[float, float, float, float, float, int]:
     """
     生成一条随机数据（不含时间戳）：
-        (sway_speed_dps, temperature_C, humidity_RH, pressure_hPa, lux)
+        (sway_speed_dps, temperature_C, humidity_RH, pressure_hPa, lux, wire_foreign_object)
 
     参数：
         dt: 可选北京时间。若提供，则按昼夜节律生成更贴近真实的数值；
             不提供则使用与旧实现一致的时间无关分布。
 
     返回：
-        五元组（float, 保留两位小数）
+        六元组（5个float保留两位小数 + 1个int：0/1）
     """
     if dt is None:
         # —— 时间无关版本（保持与旧实现一致） ——
@@ -58,7 +58,11 @@ def generate_random_sample(dt: Optional[datetime] = None) -> Tuple[float, float,
         humidity = _clamp(random.gauss(60.0, 15.0), 5.0, 100.0)
         pressure = _clamp(random.gauss(1013.0, 6.0), 900.0, 1050.0)
         lux = _clamp(10_000.0 * (random.random() ** 3), 0.0, 10_000.0)
-        return (round(sway, 2), round(temperature, 2), round(humidity, 2), round(pressure, 2), round(lux, 2))
+        
+        # 异物检测：模拟低概率异物检测事件（约5%概率）
+        wire_foreign_object = 1 if random.random() < 0.05 else 0
+        
+        return (round(sway, 2), round(temperature, 2), round(humidity, 2), round(pressure, 2), round(lux, 2), wire_foreign_object)
 
     # —— 时间相关版本：将 dt 转换/设定为北京时间 ----
     if dt.tzinfo is None:
@@ -95,7 +99,18 @@ def generate_random_sample(dt: Optional[datetime] = None) -> Tuple[float, float,
         lux = random.gauss(0, 2)
     lux = _clamp(lux, 0.0, 10_000.0)
 
-    return (round(sway, 2), round(temperature, 2), round(humidity, 2), round(pressure, 2), round(lux, 2))
+    # 异物检测：时间相关逻辑 - 夜间和恶劣天气（高湿度/强风）时检测概率略高
+    base_prob = 0.03  # 基础概率3%
+    if not (6 <= hour <= 18):  # 夜间
+        base_prob *= 1.5
+    if humidity > 80:  # 高湿度
+        base_prob *= 1.3
+    if sway > 100:  # 强风晃动
+        base_prob *= 2.0
+    
+    wire_foreign_object = 1 if random.random() < base_prob else 0
+
+    return (round(sway, 2), round(temperature, 2), round(humidity, 2), round(pressure, 2), round(lux, 2), wire_foreign_object)
 
 
 __all__ = ["generate_random_sample"]

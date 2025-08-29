@@ -21,6 +21,7 @@ _EXPECTED_COLUMNS = [
     "humidity_RH",
     "pressure_hPa",
     "lux",
+    "wire_foreign_object",
 ]
 
 # 简单的内存缓存（向后兼容）
@@ -71,6 +72,7 @@ def read_sensor_data(file_path: Optional[str] = None, use_cache: bool = True) ->
         - humidity_RH:      float
         - pressure_hPa:     float
         - lux:              float
+        - wire_foreign_object: int (0=无异物, 1=有异物)
     
     Args:
         file_path: 文件路径，默认为 data/data.txt
@@ -138,7 +140,7 @@ def _read_sensor_data_legacy(file_path: Optional[str] = None, use_cache: bool = 
             raise ValueError(f"表头缺失字段：{missing}，请检查文件格式是否正确。")
 
         for row in reader:
-            # 类型转换：保留时间戳为 str，其余转换为 float
+            # 类型转换：保留时间戳为 str，数值转换为 float，异物检测转换为 int
             try:
                 parsed = {
                     "timestamp_Beijing": row["timestamp_Beijing"],
@@ -148,6 +150,12 @@ def _read_sensor_data_legacy(file_path: Optional[str] = None, use_cache: bool = 
                     "pressure_hPa":    float(row["pressure_hPa"]),
                     "lux":             float(row["lux"]),
                 }
+                
+                # 兼容性处理：如果存在异物检测字段则解析，否则默认为0
+                if "wire_foreign_object" in row:
+                    parsed["wire_foreign_object"] = int(float(row["wire_foreign_object"]))
+                else:
+                    parsed["wire_foreign_object"] = 0
             except (KeyError, ValueError) as e:
                 raise ValueError(f"解析行失败：{row}\n错误：{e}")
             rows.append(parsed)

@@ -98,6 +98,7 @@ class FileDataSource(DataSource):
         "humidity_RH",
         "pressure_hPa",
         "lux",
+        "wire_foreign_object",
     ]
     
     def __init__(self, file_path: Optional[str] = None):
@@ -164,7 +165,7 @@ class FileDataSource(DataSource):
     
     def _parse_data_row(self, row: Dict[str, str]) -> Dict[str, Any]:
         """解析单行数据"""
-        return {
+        parsed = {
             "timestamp_Beijing": row["timestamp_Beijing"].strip(),
             "sway_speed_dps": float(row["sway_speed_dps"]),
             "temperature_C": float(row["temperature_C"]),
@@ -172,6 +173,14 @@ class FileDataSource(DataSource):
             "pressure_hPa": float(row["pressure_hPa"]),
             "lux": float(row["lux"]),
         }
+        
+        # 兼容性处理：如果存在异物检测字段则解析，否则默认为0
+        if "wire_foreign_object" in row:
+            parsed["wire_foreign_object"] = int(float(row["wire_foreign_object"]))
+        else:
+            parsed["wire_foreign_object"] = 0
+            
+        return parsed
     
     def read_all_data(self) -> List[Dict[str, Any]]:
         """读取所有传感器数据"""

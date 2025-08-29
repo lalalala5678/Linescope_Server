@@ -11,6 +11,10 @@ class AppConfig:
     # 原有配置
     datastore_interval_minutes: int = 30
     stream_frame_interval_sec: float = 0.2  # 约 5 FPS（按需调整）
+    
+    # 数据采集时间间隔配置
+    sensor_data_interval_minutes: int = 30  # 传感器数据采集间隔（分钟）
+    foreign_object_check_interval_sec: float = 0.2  # 异物检测间隔（秒）
     log_file: str = os.path.join(PROJECT_ROOT, "app.log")
     log_max_bytes: int = 5 * 1024 * 1024  # 5MB
     log_backup_count: int = 3

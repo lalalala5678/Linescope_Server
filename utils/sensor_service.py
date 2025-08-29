@@ -232,6 +232,7 @@ class SensorService:
             pressure_values = [record["pressure_hPa"] for record in data]
             lux_values = [record["lux"] for record in data]
             sway_values = [record["sway_speed_dps"] for record in data]
+            foreign_object_values = [record.get("wire_foreign_object", 0) for record in data]
             
             stats = {
                 "total_records": len(data),
@@ -261,6 +262,11 @@ class SensorService:
                     "min": min(sway_values),
                     "max": max(sway_values),
                     "avg": sum(sway_values) / len(sway_values)
+                },
+                "foreign_objects": {
+                    "total_detections": sum(foreign_object_values),
+                    "detection_rate": sum(foreign_object_values) / len(foreign_object_values) * 100,
+                    "latest_detection": data[-1].get("wire_foreign_object", 0) if data else 0
                 },
                 "computed_at": datetime.now().isoformat()
             }
