@@ -22,6 +22,45 @@ Linescope_Server 是一个高性能现代化的智能线缆监测系统，基于
 - RESTful API设计：完善的错误处理和响应格式
 - 生产环境部署：Docker容器化、Kubernetes支持
 
+## 最新更新记录 (2025-08-29)
+
+### CSV导出中文编码问题修复
+**问题背景**: 系统中的CSV导出功能存在中文字符乱码问题，特别是在Excel中打开时，中文列标题和数据值显示为乱码。
+
+**解决方案**:
+- **异物检测监控页面** (`templates/result.html:1127-1170`): 完整重构CSV导出功能
+  - 添加UTF-8 BOM (`\uFEFF`) 确保Excel正确识别中文字符编码
+  - 实现符合RFC 4180标准的 `escapeCsvField()` 函数，处理包含逗号、引号或换行符的字段
+  - 修复换行符问题：从 `\\n` 改为 `\n`，确保Excel中每条记录独占一行
+
+- **数据仪表盘历史记录** (`static/js/app.js:884-929`): 统一CSV导出标准
+  - 在 `exportToCSV()` 函数中添加相同的UTF-8 BOM和字段转义机制
+  - 确保中文列标题（时间戳、晃动速度(°/s)、温度(°C)等）和状态值（有异物/正常）正确显示
+  - 所有数据字段都经过适当的CSV转义处理
+
+**技术实现**:
+```javascript
+// UTF-8 BOM用于Excel中文字符识别
+const BOM = '\uFEFF';
+
+// RFC 4180标准的CSV字段转义
+const escapeCsvField = (field) => {
+  if (field === null || field === undefined) return '';
+  const str = String(field);
+  if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
+    return '"' + str.replace(/"/g, '""') + '"';
+  }
+  return str;
+};
+```
+
+**验证结果**: Excel中完美显示所有中文字符，数据格式规范，每条记录独占一行。
+
+### 自动数据更新系统修复
+- 修复 `wire_foreign_object` 字段 None 值解析错误
+- 实现时间依赖的异物检测数据生成算法
+- 解决5:30自动更新任务失败问题
+
 ## 架构重构与优化成果 (2025-08-24)
 
 ### 核心架构改进
@@ -438,5 +477,5 @@ timestamp_Beijing,sway_speed_dps,temperature_C,humidity_RH,pressure_hPa,lux
 - **文档策略**: 仅在用户明确要求时创建文档文件
 
 **项目维护者**: Linescope Team  
-**最后更新**: 2025-08-27  
-**文档版本**: v2.1.0
+**最后更新**: 2025-08-29  
+**文档版本**: v2.2.0

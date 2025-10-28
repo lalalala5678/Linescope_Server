@@ -6,6 +6,7 @@ from config import AppConfig, configure_logging
 from routes import register_main_routes, register_api_routes
 from core.jobs import PeriodicJob
 from utils import DataStore
+from utils.i1 import initialize_i1_data_store, start_i1_tcp_server
 
 
 def run_datastore_main() -> None:
@@ -24,48 +25,52 @@ def create_app() -> Flask:
     configure_logging(cfg)
     logger = logging.getLogger(__name__)
 
-    # 获取项目根目录路径
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     template_folder = os.path.join(project_root, 'templates')
     static_folder = os.path.join(project_root, 'static')
-    
-    app = Flask(__name__, 
-                template_folder=template_folder,
-                static_folder=static_folder)
+
+    app = Flask(__name__, template_folder=template_folder, static_folder=static_folder)
     app.config["APP_CFG"] = cfg
     app.config["JOBS_STARTED"] = False
 
-    # 添加全局错误处理器
+    werkzeug_flag = os.environ.get("WERKZEUG_RUN_MAIN")
+    should_start_services = (werkzeug_flag == "true") or (werkzeug_flag is None and not app.debug)
+
+    if cfg.data_source_type.lower() == "i1":
+        store = initialize_i1_data_store(
+            max_records=cfg.i1_max_records,
+            line_temp_alert_threshold=cfg.i1_line_temp_alert_threshold,
+            line_temp_alert_timeout=cfg.i1_line_temp_alert_timeout,
+        )
+        if should_start_services and cfg.i1_server_enabled:
+            start_i1_tcp_server(cfg.i1_listen_host, cfg.i1_listen_port, store)
+            logger.info("I1 TCP server listening on %s:%s", cfg.i1_listen_host, cfg.i1_listen_port)
+        elif not should_start_services:
+            logger.info("Skip starting I1 TCP server in reloader parent process")
+        else:
+            logger.info("I1 data source enabled; TCP server disabled by configuration")
+
     @app.errorhandler(404)
     def not_found_error(error):
         return jsonify({"error": "Resource not found"}), 404
-    
+
     @app.errorhandler(500)
     def internal_error(error):
         logger.error(f"Internal server error: {error}")
         return jsonify({"error": "Internal server error"}), 500
-    
-    # 注册路由
+
     register_main_routes(app)
     register_api_routes(app)
 
-    # 后台任务：每 30 分钟执行一次 DataStore.main()
-    # 防止 Flask debug reloader 导致的多次启动后台线程
-    should_start_jobs = True
-    if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
-        # 这是 reloader 的子进程；只在该分支中启动任务
-        should_start_jobs = True
-    elif os.environ.get("WERKZEUG_RUN_MAIN") is None:
-        # 非 debug（生产）模式：也需要启动
-        should_start_jobs = True
-
-    if should_start_jobs and not app.config.get("JOBS_STARTED", False):
-        interval = cfg.datastore_interval_minutes * 60
-        datastore_job = PeriodicJob(interval_seconds=interval, target=run_datastore_main, name="DataStoreJob")
-        datastore_job.start()
-        # 把句柄挂到 app，便于将来优雅关闭（如需的话）
-        app.config["DATASTORE_JOB"] = datastore_job
-        app.config["JOBS_STARTED"] = True
-        logger.info("Background job started: DataStore.main() every %s minutes", cfg.datastore_interval_minutes)
+    if should_start_services and not app.config.get("JOBS_STARTED", False):
+        if cfg.data_source_type.lower() != "i1":
+            interval = cfg.datastore_interval_minutes * 60
+            datastore_job = PeriodicJob(interval_seconds=interval, target=run_datastore_main, name="DataStoreJob")
+            datastore_job.start()
+            app.config["DATASTORE_JOB"] = datastore_job
+            app.config["JOBS_STARTED"] = True
+            logger.info("Background job started: DataStore.main() every %s minutes", cfg.datastore_interval_minutes)
+        else:
+            logger.info("I1 data source active; skip legacy DataStore refresh job")
 
     return app

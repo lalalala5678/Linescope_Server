@@ -54,6 +54,9 @@ class DataFactory:
         """
         if not self.config.cache_enabled:
             return None
+        if self.config.data_source_type.lower() == "i1":
+            self.logger.debug("Cache manager disabled for I1 data source")
+            return None
             
         if self._cache_manager is None:
             self._cache_manager = self._create_cache_manager()
@@ -92,6 +95,8 @@ class DataFactory:
         try:
             if source_type == "file":
                 return self._create_file_data_source()
+            elif source_type == "i1":
+                return self._create_i1_data_source()
             elif source_type == "sql":
                 return self._create_sql_data_source()
             else:
@@ -116,6 +121,15 @@ class DataFactory:
             file_path = os.path.join(PROJECT_ROOT, file_path)
         
         return FileDataSource(file_path)
+
+    def _create_i1_data_source(self) -> DataSource:
+        """创建 I1 实时数据源"""
+        return create_data_source(
+            "i1",
+            max_records=self.config.i1_max_records,
+            line_temp_alert_threshold=self.config.i1_line_temp_alert_threshold,
+            line_temp_alert_timeout=self.config.i1_line_temp_alert_timeout,
+        )
     
     def _create_sql_data_source(self) -> SQLDataSource:
         """创建SQL数据源"""

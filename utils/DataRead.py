@@ -149,6 +149,13 @@ def _read_sensor_data_legacy(file_path: Optional[str] = None, use_cache: bool = 
                     "humidity_RH":     float(row["humidity_RH"]),
                     "pressure_hPa":    float(row["pressure_hPa"]),
                     "lux":             float(row["lux"]),
+                    "component_id":    row.get("component_id", "LEGACY"),
+                    "wind_speed_avg_10min": None,
+                    "wind_direction_deg": None,
+                    "wind_speed_max": None,
+                    "wind_speed_extreme": None,
+                    "precipitation_mm": None,
+                    "precipitation_intensity_mm_min": None,
                 }
                 
                 # 兼容性处理：如果存在异物检测字段且值有效则解析，否则默认为0

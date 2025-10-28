@@ -388,6 +388,62 @@ export class LineScopeApp {
       }
     });
 
+    const updateRangeIndicator = (elementId, key, unit = '') => {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+
+      if (!Array.isArray(this.state.sensorData) || this.state.sensorData.length === 0) {
+        el.textContent = `-- ~ --${unit}`;
+        return;
+      }
+
+      const series = this.state.sensorData
+        .map(item => item[key])
+        .filter(value => value !== null && value !== undefined && !Number.isNaN(value));
+
+      if (series.length === 0) {
+        el.textContent = `-- ~ --${unit}`;
+        return;
+      }
+
+      const minVal = Math.min(...series);
+      const maxVal = Math.max(...series);
+      el.textContent = `${formatNumber(minVal)} ~ ${formatNumber(maxVal)}${unit}`;
+    };
+
+    const setDetail = (id, value, unit = '', precision = 2) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (value === null || value === undefined || Number.isNaN(value)) {
+        el.textContent = `--${unit}`;
+      } else {
+        el.textContent = `${formatNumber(value, precision)}${unit}`;
+      }
+    };
+
+    setDetail('wind-current', data.wind_speed_avg_10min, ' m/s');
+    setDetail('wind-max-value', data.wind_speed_max, ' m/s');
+    setDetail('wind-extreme-value', data.wind_speed_extreme, ' m/s');
+    setDetail('precipitation-current', data.precipitation_mm, ' mm');
+    setDetail('precipitation-intensity-value', data.precipitation_intensity_mm_min, ' mm/min');
+
+    updateRangeIndicator('wind-range', 'wind_speed_avg_10min', ' m/s');
+    updateRangeIndicator('precipitation-range', 'precipitation_mm', ' mm');
+
+    const windDirectionEl = document.getElementById('wind-direction-value');
+    if (windDirectionEl) {
+      const direction = typeof data.wind_direction_deg === 'number' && !Number.isNaN(data.wind_direction_deg)
+        ? ((data.wind_direction_deg % 360) + 360) % 360
+        : null;
+      windDirectionEl.textContent = direction === null ? '--°' : `${Math.round(direction)}°`;
+    }
+
+    const componentEl = document.getElementById('component-id-value');
+    if (componentEl) {
+      componentEl.textContent = data.component_id || '--';
+    }
+
+
     // 更新时间戳
     const timestampElement = document.getElementById('timestamp-value');
     if (timestampElement) {
@@ -442,6 +498,11 @@ export class LineScopeApp {
       { key: 'sway_speed_dps', id: 'sway-mini-chart', color: '#f87171' }
     ];
 
+    metrics.push(
+      { key: 'wind_speed_avg_10min', id: 'wind-mini-chart', color: '#38bdf8' },
+      { key: 'precipitation_mm', id: 'precipitation-mini-chart', color: '#fb923c' }
+    );
+
     const recentData = this.state.sensorData.slice(-20);
     
     for (const metric of metrics) {
@@ -493,6 +554,11 @@ export class LineScopeApp {
       { key: 'sway_speed_dps', id: 'sway', unit: ' °/s' }
     ];
 
+    metrics.push(
+      { key: 'wind_speed_avg_10min', id: 'wind', unit: ' m/s' },
+      { key: 'precipitation_mm', id: 'precipitation', unit: ' mm' }
+    );
+
     metrics.forEach(metric => {
       const current = latest[metric.key];
       const prev = previous ? previous[metric.key] : null;
@@ -500,7 +566,7 @@ export class LineScopeApp {
       // 更新当前值
       const currentElement = document.getElementById(`${metric.id}-current`);
       if (currentElement) {
-        currentElement.textContent = formatNumber(current) + metric.unit;
+        currentElement.textContent = (current === null || current === undefined || Number.isNaN(current)) ? `--${metric.unit}` : `${formatNumber(current)}${metric.unit}`;
       }
 
       // 更新趋势
@@ -509,17 +575,47 @@ export class LineScopeApp {
 
       // 计算范围
       const values = this.state.sensorData.map(d => d[metric.key]).filter(v => v !== null && !isNaN(v));
-      if (values.length > 0) {
-        const min = Math.min(...values);
-        const max = Math.max(...values);
-        const rangeElement = document.getElementById(`${metric.id}-range`);
-        if (rangeElement) {
+      const rangeElement = document.getElementById(`${metric.id}-range`);
+      if (rangeElement) {
+        if (values.length > 0) {
+          const min = Math.min(...values);
+          const max = Math.max(...values);
           rangeElement.textContent = `${formatNumber(min)} ~ ${formatNumber(max)}${metric.unit}`;
+        } else {
+          rangeElement.textContent = `-- ~ --${metric.unit}`;
         }
       }
     });
 
     // 特殊处理晃动速度警告
+
+
+    const setDetail = (id, value, unit = '', precision = 2) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (value === null || value === undefined || Number.isNaN(value)) {
+        el.textContent = `--${unit}`;
+      } else {
+        el.textContent = `${formatNumber(value, precision)}${unit}`;
+      }
+    };
+
+    setDetail('wind-max-value', latest.wind_speed_max, ' m/s');
+    setDetail('wind-extreme-value', latest.wind_speed_extreme, ' m/s');
+    setDetail('precipitation-intensity-value', latest.precipitation_intensity_mm_min, ' mm/min');
+
+    const windDirectionEl = document.getElementById('wind-direction-value');
+    if (windDirectionEl) {
+      const direction = typeof latest.wind_direction_deg === 'number' && !Number.isNaN(latest.wind_direction_deg)
+        ? ((latest.wind_direction_deg % 360) + 360) % 360
+        : null;
+      windDirectionEl.textContent = direction === null ? '--°' : `${Math.round(direction)}°`;
+    }
+
+    const componentEl = document.getElementById('component-id-value');
+    if (componentEl) {
+      componentEl.textContent = latest.component_id || '--';
+    }
     const swayCard = document.getElementById('sway-card');
     if (swayCard) {
       if (latest.sway_speed_dps > 60) {
@@ -678,16 +774,56 @@ export class LineScopeApp {
     console.log(`正在创建数据表格，数据条数: ${this.state.sensorData.length}`);
 
     const columnDefs = [
-      { 
-        field: 'timestamp_Beijing', 
-        headerName: '时间戳', 
+      {
+        field: 'timestamp_Beijing',
+        headerName: '时间',
         width: 180,
         pinned: 'left',
         cellStyle: { color: '#e2e8f0', fontFamily: 'monospace' }
       },
-      { 
-        field: 'sway_speed_dps', 
-        headerName: '晃动速度 (°/s)', 
+      {
+        field: 'component_id',
+        headerName: '设备ID',
+        width: 130,
+        cellStyle: { color: '#38bdf8' }
+      },
+      {
+        field: 'wind_speed_avg_10min',
+        headerName: '10分钟平均风速 (m/s)',
+        width: 170,
+        type: 'numericColumn',
+        cellStyle: { color: '#38bdf8' },
+        valueFormatter: (params) => formatNumber(params.value)
+      },
+      {
+        field: 'wind_direction_deg',
+        headerName: '平均风向 (°)',
+        width: 140,
+        type: 'numericColumn',
+        cellStyle: { color: '#38bdf8' },
+        valueFormatter: (params) => (params.value === null || params.value === undefined || Number.isNaN(params.value))
+          ? '--'
+          : `${Math.round(((params.value % 360) + 360) % 360)}°`
+      },
+      {
+        field: 'wind_speed_max',
+        headerName: '最大风速 (m/s)',
+        width: 150,
+        type: 'numericColumn',
+        cellStyle: { color: '#22d3ee' },
+        valueFormatter: (params) => formatNumber(params.value)
+      },
+      {
+        field: 'wind_speed_extreme',
+        headerName: '极大风速 (m/s)',
+        width: 150,
+        type: 'numericColumn',
+        cellStyle: { color: '#14b8a6' },
+        valueFormatter: (params) => formatNumber(params.value)
+      },
+      {
+        field: 'sway_speed_dps',
+        headerName: '摆动速度 (°/s)',
         width: 140,
         type: 'numericColumn',
         cellStyle: (params) => {
@@ -699,48 +835,64 @@ export class LineScopeApp {
         },
         valueFormatter: (params) => formatNumber(params.value)
       },
-      { 
-        field: 'temperature_C', 
-        headerName: '温度 (°C)', 
+      {
+        field: 'temperature_C',
+        headerName: '温度 (°C)',
         width: 120,
         type: 'numericColumn',
         cellStyle: { color: '#60a5fa' },
         valueFormatter: (params) => formatNumber(params.value)
       },
-      { 
-        field: 'humidity_RH', 
-        headerName: '湿度 (%)', 
+      {
+        field: 'humidity_RH',
+        headerName: '湿度 (%)',
         width: 120,
         type: 'numericColumn',
         cellStyle: { color: '#34d399' },
         valueFormatter: (params) => formatNumber(params.value)
       },
-      { 
-        field: 'pressure_hPa', 
-        headerName: '气压 (hPa)', 
+      {
+        field: 'pressure_hPa',
+        headerName: '气压 (hPa)',
         width: 130,
         type: 'numericColumn',
         cellStyle: { color: '#a78bfa' },
         valueFormatter: (params) => formatNumber(params.value)
       },
-      { 
-        field: 'lux', 
-        headerName: '光照 (Lux)', 
+      {
+        field: 'precipitation_mm',
+        headerName: '降水 (mm)',
+        width: 130,
+        type: 'numericColumn',
+        cellStyle: { color: '#f97316' },
+        valueFormatter: (params) => formatNumber(params.value)
+      },
+      {
+        field: 'precipitation_intensity_mm_min',
+        headerName: '降水强度 (mm/min)',
+        width: 170,
+        type: 'numericColumn',
+        cellStyle: { color: '#fb7185' },
+        valueFormatter: (params) => formatNumber(params.value)
+      },
+      {
+        field: 'lux',
+        headerName: '光照 (Lux)',
         width: 120,
         type: 'numericColumn',
         cellStyle: { color: '#fbbf24' },
         valueFormatter: (params) => formatNumber(params.value, 0)
       },
-      { 
-        field: 'wire_foreign_object', 
-        headerName: '异物检测', 
-        width: 100,
+      {
+        field: 'wire_foreign_object',
+        headerName: '异物检测',
+        width: 110,
         type: 'numericColumn',
         cellStyle: (params) => ({
           color: params.value === 1 ? '#f87171' : '#34d399',
           fontWeight: params.value === 1 ? 'bold' : 'normal'
         }),
-        valueFormatter: (params) => params.value === 1 ? '有异物' : '正常'
+        valueFormatter: (params) => params.value === 1 ? '异常' : '正常'
       }
     ];
 
@@ -755,7 +907,6 @@ export class LineScopeApp {
       },
       pagination: true,
       paginationPageSize: 20,
-      paginationPageSizeSelector: [10, 20, 50, 100],
       animateRows: true,
       rowHeight: 40,
       headerHeight: 45,
@@ -897,7 +1048,7 @@ export class LineScopeApp {
       return str;
     };
 
-    const headers = ['时间戳', '晃动速度(°/s)', '温度(°C)', '湿度(%)', '气压(hPa)', '光照(Lux)', '异物检测'];
+    const headers = ['时间', '设备ID', '10分钟平均风速(m/s)', '平均风向(°)', '最大风速(m/s)', '极大风速(m/s)', '降水(mm)', '降水强度(mm/min)', '摆动速度(°/s)', '温度(°C)', '湿度(%)', '气压(hPa)', '光照(Lux)', '异物检测'];
     
     // 添加UTF-8 BOM以确保Excel正确显示中文字符
     const BOM = '\uFEFF';
@@ -905,12 +1056,19 @@ export class LineScopeApp {
       headers.map(header => escapeCsvField(header)).join(','),
       ...this.state.sensorData.map(row => [
         escapeCsvField(row.timestamp_Beijing),
+        escapeCsvField(row.component_id || ''),
+        escapeCsvField(formatNumber(row.wind_speed_avg_10min)),
+        escapeCsvField(row.wind_direction_deg === null || row.wind_direction_deg === undefined ? '' : Math.round(((row.wind_direction_deg % 360) + 360) % 360)),
+        escapeCsvField(formatNumber(row.wind_speed_max)),
+        escapeCsvField(formatNumber(row.wind_speed_extreme)),
+        escapeCsvField(formatNumber(row.precipitation_mm)),
+        escapeCsvField(formatNumber(row.precipitation_intensity_mm_min)),
         escapeCsvField(formatNumber(row.sway_speed_dps)),
         escapeCsvField(formatNumber(row.temperature_C)),
         escapeCsvField(formatNumber(row.humidity_RH)),
         escapeCsvField(formatNumber(row.pressure_hPa)),
         escapeCsvField(formatNumber(row.lux, 0)),
-        escapeCsvField(row.wire_foreign_object === 1 ? '有异物' : '正常')
+        escapeCsvField(row.wire_foreign_object === 1 ? '异常' : '正常')
       ].join(','))
     ];
     

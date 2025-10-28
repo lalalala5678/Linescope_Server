@@ -12,6 +12,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 import logging
+from utils.i1.store import initialize_i1_data_store, get_i1_data_store
 
 
 class DataSource(ABC):
@@ -253,6 +254,52 @@ class FileDataSource(DataSource):
         return info
 
 
+class I1LiveDataSource(DataSource):
+    """基于 I1 TCP 服务的实时数据源。"""
+
+    def __init__(
+        self,
+        max_records: int = 288,
+        line_temp_alert_threshold: float = 80.0,
+        line_temp_alert_timeout: int = 600,
+    ) -> None:
+        self.logger = logging.getLogger(__name__)
+        self.store = initialize_i1_data_store(
+            max_records=max_records,
+            line_temp_alert_threshold=line_temp_alert_threshold,
+            line_temp_alert_timeout=line_temp_alert_timeout,
+        )
+        self.logger.info(
+            "Initialized I1LiveDataSource (records=%s, threshold=%.2f)",
+            max_records,
+            line_temp_alert_threshold,
+        )
+
+    def read_all_data(self) -> List[Dict[str, Any]]:
+        data = self.store.get_all_weather()
+        self.logger.info("I1LiveDataSource read_all_data -> %s records", len(data))
+        return data
+
+    def read_latest_data(self) -> Optional[Dict[str, Any]]:
+        data = self.store.get_latest_weather()
+        self.logger.info("I1LiveDataSource read_latest_data -> %s", bool(data))
+        return data
+
+    def get_data_count(self) -> int:
+        return self.store.get_weather_count()
+
+    def read_recent_data(self, limit: int) -> List[Dict[str, Any]]:
+        data = self.store.get_recent_weather(limit)
+        self.logger.info("I1LiveDataSource read_recent_data(limit=%s) -> %s", limit, len(data))
+        return data
+
+    def is_data_updated(self) -> bool:
+        return self.store.is_data_updated()
+
+    def get_data_info(self) -> Dict[str, Any]:
+        return self.store.get_data_info()
+
+
 class SQLDataSource(DataSource):
     """基于SQL数据库的数据源实现（预留接口）"""
     
@@ -344,6 +391,12 @@ def create_data_source(
     """
     if source_type.lower() == "file":
         return FileDataSource(file_path)
+    elif source_type.lower() == "i1":
+        return I1LiveDataSource(
+            max_records=kwargs.get("max_records", 288),
+            line_temp_alert_threshold=kwargs.get("line_temp_alert_threshold", 80.0),
+            line_temp_alert_timeout=kwargs.get("line_temp_alert_timeout", 600),
+        )
     elif source_type.lower() == "sql":
         if not connection_string:
             raise ValueError("SQL data source requires connection_string")

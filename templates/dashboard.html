@@ -375,6 +375,62 @@
           </div>
         </div>
 
+        <!-- Wind Overview -->
+        <div class="data-card rounded-2xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-3">
+              <div class="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="wind" class="w-6 h-6 text-cyan-400"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-white">风速 / 风向</h3>
+                <p class="text-sm text-gray-400">10分钟平均风场指标</p>
+              </div>
+            </div>
+            <div class="trend-indicator trend-stable" id="wind-trend">
+              <i data-lucide="minus" class="w-3 h-3"></i>
+              <span>0.0%</span>
+            </div>
+          </div>
+          <div class="mb-4 space-y-2">
+            <div class="metric-big text-cyan-400" id="wind-current">-- m/s</div>
+            <div class="text-sm text-gray-400">范围: <span id="wind-range">-- ~ -- m/s</span></div>
+            <div class="text-sm text-gray-400">风向: <span id="wind-direction-value">--°</span></div>
+            <div class="text-sm text-gray-400">最大/极大风速: <span id="wind-max-value">-- m/s</span> / <span id="wind-extreme-value">-- m/s</span></div>
+            <div class="text-sm text-gray-400">设备编号: <span id="component-id-value">--</span></div>
+          </div>
+          <div class="mini-chart">
+            <div id="wind-mini-chart" style="width: 100%; height: 60px;"></div>
+          </div>
+        </div>
+
+        <!-- Precipitation Overview -->
+        <div class="data-card rounded-2xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-3">
+              <div class="w-12 h-12 bg-sky-500/20 rounded-xl flex items-center justify-center">
+                <i data-lucide="cloud-rain" class="w-6 h-6 text-sky-400"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-white">降水</h3>
+                <p class="text-sm text-gray-400">降水量与降水强度</p>
+              </div>
+            </div>
+            <div class="trend-indicator trend-stable" id="precipitation-trend">
+              <i data-lucide="minus" class="w-3 h-3"></i>
+              <span>0.0%</span>
+            </div>
+          </div>
+          <div class="mb-4 space-y-2">
+            <div class="metric-big text-sky-400" id="precipitation-current">-- mm</div>
+            <div class="text-sm text-gray-400">范围: <span id="precipitation-range">-- ~ -- mm</span></div>
+            <div class="text-sm text-gray-400">降水强度: <span id="precipitation-intensity-value">-- mm/min</span></div>
+          </div>
+          <div class="mini-chart">
+            <div id="precipitation-mini-chart" style="width: 100%; height: 60px;"></div>
+          </div>
+        </div>
+
         <!-- Foreign Object Detection -->
         <div class="data-card rounded-2xl p-6" id="foreign-object-card">
           <div class="flex items-center justify-between mb-4">

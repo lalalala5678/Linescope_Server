@@ -20,8 +20,16 @@ class AppConfig:
     log_backup_count: int = 3
     
     # 数据源配置
-    data_source_type: str = "file"  # "file" | "sql"
+    data_source_type: str = "i1"  # "file" | "sql"
     data_file_path: str = os.path.join("utils", "data", "data.txt")  # 相对于PROJECT_ROOT
+
+    # I1 传感器接入配置
+    i1_server_enabled: bool = True
+    i1_listen_host: str = "0.0.0.0"
+    i1_listen_port: int = 9100
+    i1_max_records: int = 288  # 约支持 2 天的 10 分钟粒度数据
+    i1_line_temp_alert_threshold: float = 80.0  # 触发外物/高温告警的阈值 (°C)
+    i1_line_temp_alert_timeout: int = 600  # 告警保持时长 (秒)
     
     # 缓存配置
     cache_enabled: bool = True

@@ -298,6 +298,39 @@
 
         <div class="metric-card rounded-2xl p-6 hover-lift">
           <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center">
+              <i data-lucide="wind" class="w-6 h-6 text-cyan-400"></i>
+            </div>
+            <div class="text-right">
+              <div class="text-2xl font-bold text-white" id="wind-current">-- m/s</div>
+              <div class="text-sm text-white/60">10分钟平均风速</div>
+            </div>
+          </div>
+          <div class="space-y-2 text-sm text-white/60">
+            <div>范围: <span id="wind-range">-- ~ -- m/s</span></div>
+            <div>风向: <span id="wind-direction-value">--°</span></div>
+            <div>最大 / 极大: <span id="wind-max-value">-- m/s</span> / <span id="wind-extreme-value">-- m/s</span></div>
+            <div>设备编号: <span id="component-id-value">--</span></div>
+          </div>
+        </div>
+
+        <div class="metric-card rounded-2xl p-6 hover-lift">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-sky-500/20 rounded-xl flex items-center justify-center">
+              <i data-lucide="cloud-rain" class="w-6 h-6 text-sky-400"></i>
+            </div>
+            <div class="text-right">
+              <div class="text-2xl font-bold text-white" id="precipitation-current">-- mm</div>
+              <div class="text-sm text-white/60">降水</div>
+            </div>
+          </div>
+          <div class="space-y-2 text-sm text-white/60">
+            <div>范围: <span id="precipitation-range">-- ~ -- mm</span></div>
+            <div>降水强度: <span id="precipitation-intensity-value">-- mm/min</span></div>
+          </div>
+        </div>
+        <div class="metric-card rounded-2xl p-6 hover-lift">
+          <div class="flex items-center justify-between mb-4">
             <div class="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center">
               <i data-lucide="clock" class="w-6 h-6 text-indigo-400"></i>
             </div>
